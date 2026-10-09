@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B provides the core diagnostic checks and fixes more concisely while avoiding A’s misleading claim that JVM heaps ignore container limits unless MaxRAMPercentage or Xmx is explicitly set; modern JVMs are generally container-aware."
+ }
+}

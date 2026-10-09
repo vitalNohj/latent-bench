@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "docker-slim",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A more explicitly preserves the current Python version and Debian release while covering the main size reductions concisely; B adds misleading advice about pipdeptree finding unused dependencies and riskier package-file deletion and CPU-wheel substitutions."
+ }
+}

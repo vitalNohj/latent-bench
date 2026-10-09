@@ -1,0 +1,19 @@
+{
+ "arm": "caveman",
+ "pid": "docker-slim",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5,
+   1,
+   1
+  ],
+  "errors": [
+   "Unqualified python:3.12 and python:3.12-slim tags do not guarantee Debian Bookworm. To preserve the existing Debian release, inspect the current base and pin the matching distro-specific slim tag rather than assuming Bookworm."
+  ]
+ }
+}

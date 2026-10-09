@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "utf16-csv",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A appropriately treats UTF-16 as a likely diagnosis rather than a certainty, since a lone 0xff byte does not establish the encoding, while providing equally actionable confirmation and fixes."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "utf16-csv",
+ "sample": 1,
+ "ok": true,
+ "text": "The file is almost certainly **UTF-16**, not UTF-8. A leading `0xFF 0xFE` is the UTF-16 little-endian byte order mark (BOM). Excel's \"Unicode Text\" export and many Windows tools produce this.\n\n**Fix: specify the encoding**\n\n```python\nimport pandas as pd\ndf = pd.read_csv(\"file.csv\", encoding=\"utf-16\")\n```\n\nor with the stdlib:\n\n```python\nimport csv\nwith open(\"file.csv\", encoding=\"utf-16\", newline=\"\") as f:\n    rows = list(csv.reader(f))\n```\n\n`utf-16` reads the BOM and picks the byte order automatically.\n\n**Watch for tabs:** Excel's \"Unicode Text\" export is usually **tab-delimited**. If everything lands in one column, add `sep=\"\\t\"` (pandas) or `delimiter=\"\\t\"` (csv).\n\n**To confirm the encoding:**\n\n```bash\nfile file.csv\nhead -c 4 file.csv | xxd    # expect: fffe ...\n```\n\nIf you'd rather get UTF-8 files going forward, ask the client to export as \"CSV UTF-8\". You can also convert this one: `iconv -f UTF-16 -t UTF-8 file.csv > file_utf8.csv`.",
+ "usage": {
+  "input": 2,
+  "output": 472,
+  "cacheRead": 859,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1333,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 169,
+ "secs": 4.9
+}

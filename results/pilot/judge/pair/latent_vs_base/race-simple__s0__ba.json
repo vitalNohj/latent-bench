@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "race-simple",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives the more accurate definition in terms of uncontrolled ordering rather than which operation finishes first, and explains the lost update and standard fixes more directly without unnecessary code or formatting."
+ }
+}

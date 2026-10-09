@@ -1,0 +1,19 @@
+{
+ "arm": "latent",
+ "pid": "drop-prod",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   0.5,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "Option A does not preserve grants on dropped tables. CASCADE can also remove dependent functions and other objects, so its claim to preserve functions and types is too broad.",
+   "Tables outside public are not necessarily untouched: dropping a partitioned table in public also drops its partitions, including partitions in other schemas."
+  ]
+ }
+}

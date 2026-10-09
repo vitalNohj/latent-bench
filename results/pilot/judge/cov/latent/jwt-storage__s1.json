@@ -1,0 +1,19 @@
+{
+ "arm": "latent",
+ "pid": "jwt-storage",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5,
+   1
+  ],
+  "errors": [
+   "The table implies cookie authentication for a cross-domain API requires the API to be same-site. Cross-site cookie authentication is possible with SameSite=None; Secure and credentialed CORS, subject to browser third-party-cookie restrictions.",
+   "The table implies cookie-based authentication always requires both SameSite and a CSRF token. Appropriate SameSite protections can suffice in some designs; both are not universally required."
+  ]
+ }
+}

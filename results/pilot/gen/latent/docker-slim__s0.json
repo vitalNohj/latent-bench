@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "docker-slim",
+ "sample": 0,
+ "ok": true,
+ "text": "target ≈ 150-300 MB from 1.4 GB [inferred]: swap `python:3.X` → `python:3.X-slim` (same Debian release) plus multi-stage build\nassumed: current base `python:3.X` full image, bookworm. The Dockerfile has not been read. [assumed]\n\nplan:\n1. measure: `docker history --no-trunc <img>` plus `dive <img>` → rank layers by size before changing anything\n2. base: `python:3.12-bookworm` → `python:3.12-slim-bookworm`. Same distro and release, drops ≈ 900 MB of compilers, headers, and docs. Never `-alpine`, which changes distro and breaks musl wheels\n3. multi-stage:\n   - builder: slim + `build-essential`, `-dev` headers → `pip wheel -w /wheels -r requirements.txt` | build a venv at `/opt/venv`\n   - runtime: slim + runtime libs only (`libpq5` not `libpq-dev`) + `COPY --from=builder /opt/venv`\n4. pip: `--no-cache-dir`, or `PIP_NO_CACHE_DIR=1`. The cache otherwise stays in the layer\n5. apt: one `RUN` with `--no-install-recommends` and `&& rm -rf /var/lib/apt/lists/*` in the same layer. A later-layer `rm` frees nothing\n6. `.dockerignore`: `.git`, `.venv`, `__pycache__`, `tests/`, `node_modules`, `*.pyc`, local data/uploads\n7. deps: split `requirements.txt` | `requirements-dev.txt` → no pytest, black, or debug tools in prod. Audit heavy deps (`pandas`, `numpy`, `torch`, `opencv` → `opencv-python-headless`)\n8. layers: `COPY --chown=app:app`, never `COPY` then `RUN chown -R`. The latter duplicates every file into a second layer\n9. order: copy `requirements*.txt` → install → copy app. This shrinks rebuilds, not image size, but costs nothing\n\nsketch:\n```dockerfile\nFROM python:3.12-slim-bookworm AS builder\nRUN apt-get update && apt-get install -y --no-install-recommends build-essential libpq-dev \\\n && rm -rf /var/lib/apt/lists/*\nRUN python -m venv /opt/venv\nENV PATH=/opt/venv/bin:$PATH\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\nFROM python:3.12-slim-bookworm\nRUN apt-get update && apt-get install -y --no-install-recommends libpq5 \\\n && rm -rf /var/lib/apt/lists/* && useradd -m app\nCOPY --from=builder /opt/venv /opt/venv\nENV PATH=/opt/venv/bin:$PATH PYTHONDONTWRITEBYTECODE=1\nWORKDIR /app\nCOPY --chown=app:app . .\nUSER app\nCMD [\"gunicorn\", \"-b\", \"0.0.0.0:8000\", \"app:app\"]\n```\n\nexpected Δ by step [inferred]: base swap ≈ -900 MB, multi-stage ≈ -200 MB if compilers are installed, pip cache ≈ -50-150 MB, `.dockerignore` varies with repo contents (`.git` is often the largest item)\nrisk: runtime `ImportError` / missing `.so` after dropping build libs → map each `-dev` package to its runtime package. Smoke test: `docker run <img> python -c \"import app\"`\nnext: paste the Dockerfile plus `docker history` output → exact Δ per line",
+ "usage": {
+  "input": 2,
+  "output": 1632,
+  "cacheRead": 0,
+  "cacheWrite": 5392,
+  "reasoning": 0,
+  "totalTokens": 7026,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12117,
+ "secs": 16.2
+}

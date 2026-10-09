@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better qualifies the SQLite recommendation and warns about long write transactions, while B overstates busy_timeout’s protection against lock errors and recommends synchronous=NORMAL without noting reduced crash durability, though A also oversimplifies migration to Postgres."
+ }
+}

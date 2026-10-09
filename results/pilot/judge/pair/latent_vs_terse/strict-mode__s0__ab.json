@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives the core StrictMode explanation and actionable cleanup guidance more clearly, while A misleadingly suggests module-scope or useRef-guarded POSTs and conflicts with its own warning against run-once guards."
+ }
+}

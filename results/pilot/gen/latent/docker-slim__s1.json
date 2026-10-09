@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "docker-slim",
+ "sample": 1,
+ "ok": true,
+ "text": "plan: multi-stage build on `python:3.X-slim` (same Debian release as now) + runtime stage with no compilers → ≈ 150-300 MB [assumed: current base is full `python:3.X` (Debian), which alone is ≈ 1 GB; Dockerfile not seen]\n\nsteps, biggest win first:\n\n1. Base `python:3.12` → `python:3.12-slim-bookworm`. Same distro and same glibc, so wheels stay compatible. Drops ≈ 850 MB of gcc, headers, and dev libs [inferred: typical full vs slim delta]. Pin the same Python minor and Debian codename as now.\n2. Multi-stage build:\n   - `builder`: slim + `build-essential` + `lib*-dev` → `pip wheel -r requirements.txt -w /wheels` or `pip install --prefix=/install`\n   - `runtime`: slim + only runtime `.so` packages (e.g. `libpq5`, not `libpq-dev`) → `COPY --from=builder /install /usr/local`\n   - ∴ compilers never reach the final image\n3. pip hygiene: `pip install --no-cache-dir`, plus `PIP_NO_CACHE_DIR=1` and `PYTHONDONTWRITEBYTECODE=1`. Avoids keeping ≈ 50-200 MB of pip cache.\n4. apt hygiene: `apt-get install --no-install-recommends ... && rm -rf /var/lib/apt/lists/*` in the **same `RUN`**. A later `RUN rm` does not shrink the earlier layer.\n5. `.dockerignore`: `.git`, `venv/`, `__pycache__`, `tests/`, `node_modules/`, `*.db`, data dumps. `COPY . .` often pulls in hundreds of MB [assumed: no `.dockerignore` yet].\n6. Prune dependencies: move dev and test tools (`pytest`, `black`, etc.) to `requirements-dev.txt`. Check for heavy packages that are unused or only imported in scripts (`pandas`, `numpy`, `torch`, `boto3`): `pip list --format=freeze` → `du -sh site-packages/*`.\n7. Layer order: `COPY requirements.txt` → install → `COPY app/`. This is for cache speed, not size, but it comes free with the restructure.\n\nmeasure, before and after each step:\n- `docker images <img>`: total size\n- `docker history --no-trunc <img>`: which layer holds the weight\n- `dive <img>`: wasted bytes and files that were deleted but still exist in lower layers\n\nrisk:\n- `-slim` lacks some runtime libs → `ImportError: lib*.so` at start. Fix: add the matching non-`-dev` apt package to `runtime`\n- packages without manylinux wheels need the builder stage. They are already covered by step 2\n- ruled out: alpine ∵ it changes distro and uses musl. That breaks the keep constraint and forces source builds of wheels\n\nnext: send the current `Dockerfile` + `requirements.txt` + `docker history` output → exact Δ and a per-step size estimate",
+ "usage": {
+  "input": 2,
+  "output": 1224,
+  "cacheRead": 5392,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6618,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12117,
+ "secs": 14.1
+}

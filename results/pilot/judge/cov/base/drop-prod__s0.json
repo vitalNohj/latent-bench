@@ -1,0 +1,18 @@
+{
+ "arm": "base",
+ "pid": "drop-prod",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   0.5,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "GRANT ALL ON SCHEMA public TO public does not generally restore default permissions. In PostgreSQL 15+ newly created databases, PUBLIC normally has USAGE but not CREATE on the public schema; this command grants CREATE to every role."
+  ]
+ }
+}

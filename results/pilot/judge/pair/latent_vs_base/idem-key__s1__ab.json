@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "idem-key",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the same core explanation more compactly while adding the crucial warning that deduplication records and payment side effects require atomicity or recovery logic to prevent crashes from causing lost or duplicate charges."
+ }
+}

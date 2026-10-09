@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A includes important actionable details B omits—queue-time diagnosis, critical-path prioritization, lockfile-keyed dependency caching, and fetching the merge base for affected detection—which outweigh B’s greater brevity."
+ }
+}

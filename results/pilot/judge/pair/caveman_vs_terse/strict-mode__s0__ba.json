@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the essential StrictMode explanation, cleanup guidance, and warning against per-component run-once guards just as effectively as B, but is substantially faster to read."
+ }
+}

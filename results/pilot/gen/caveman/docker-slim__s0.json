@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "docker-slim",
+ "sample": 0,
+ "ok": true,
+ "text": "# Plan: Shrink Flask Image (1.4GB), Same Distro\n\nI can't see the Dockerfile. This plan assumes a common setup: `python:3.x` full image (Debian bookworm). Send the Dockerfile and `requirements.txt` for an exact plan.\n\n## 1. Measure first\n- `docker history --no-trunc <image>` shows which layers are big.\n- `dive <image>` shows wasted space and files duplicated across layers.\n- Record the baseline size.\n\n## 2. Slim variant, same distro\n- Switch `python:3.12` (bookworm, about 1GB) to `python:3.12-slim-bookworm` (about 130MB).\n- Distro stays Debian bookworm. Only the preinstalled build tooling and docs go away.\n- Pin the exact tag or digest.\n\n## 3. Multi-stage build\n- **Builder stage** (`slim-bookworm` plus `build-essential`, `*-dev` headers):\n  - Create a venv at `/opt/venv`.\n  - Run `pip install --no-cache-dir -r requirements.txt`, or build wheels with `pip wheel -w /wheels`.\n- **Runtime stage** (`slim-bookworm`):\n  - Copy only `/opt/venv` (or the wheels) plus the app code.\n  - Install only runtime shared libraries (e.g. `libpq5`, not `libpq-dev`).\n- Compilers and headers never reach the final image.\n\n## 4. apt hygiene\n- Use `apt-get install --no-install-recommends ...`.\n- Run `rm -rf /var/lib/apt/lists/*` in the same `RUN` as the install. Cleanup in a separate layer saves nothing.\n- Purge temporary packages in the same layer they were installed.\n\n## 5. pip hygiene\n- Set `PIP_NO_CACHE_DIR=1` and `PYTHONDONTWRITEBYTECODE=1`.\n- Audit `requirements.txt`:\n  - Remove dev/test dependencies (`pytest`, `black`) or move them to `requirements-dev.txt`.\n  - Find heavy packages with `pip list --format=freeze` and `du -sh site-packages/*`.\n  - Swap where possible: `opencv-python` to `opencv-python-headless`, `psycopg2` to `psycopg2-binary` (or keep a source build in the builder stage).\n  - For `torch`, use the CPU-only index.\n- Optionally strip `__pycache__`, `tests/` dirs, and `*.pyi` from site-packages. Retest afterwards.\n\n## 6. Build context\n- Add a `.dockerignore`: `.git`, `__pycache__`, `*.pyc`, `.venv`, `node_modules`, `tests/`, `.env`, data/media files, `Dockerfile*`.\n- Replace `COPY . .` with targeted `COPY app/ ./app/`.\n\n## 7. Layer order\n1. Copy `requirements.txt`.\n2. Install dependencies.\n3. Copy the code.\n\nFaster rebuilds; doesn't shrink the image itself.\n\n## 8. Runtime\n- Serve with `gunicorn`, not the Flask dev server.\n- Run as a non-root user.\n- If frontend assets are built in the image, build them in a separate stage and copy only `dist/`.\n\n## 9. Verify\n- Compare the new size against the baseline.\n- Smoke test: app boots, imports work, no missing `.so` errors (`ImportError: lib...so: cannot open shared object file`). Add runtime libraries as needed.\n- Run the test suite in a container built from the same runtime stage.\n\n## Expected result\n- Typical result: 1.4GB down to about 150–300MB.\n- Exception: heavy ML dependencies (torch, tensorflow). These dominate image size, and the requirements audit (step 5) is the main lever.\n\n## Skeleton\n```dockerfile\nFROM python:3.12-slim-bookworm AS builder\nRUN apt-get update && apt-get install -y --no-install-recommends build-essential libpq-dev \\\n    && rm -rf /var/lib/apt/lists/*\nRUN python -m venv /opt/venv\nENV PATH=/opt/venv/bin:$PATH PIP_NO_CACHE_DIR=1\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\n\nFROM python:3.12-slim-bookworm\nRUN apt-get update && apt-get install -y --no-install-recommends libpq5 \\\n    && rm -rf /var/lib/apt/lists/* && useradd -r app\nCOPY --from=builder /opt/venv /opt/venv\nENV PATH=/opt/venv/bin:$PATH PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1\nWORKDIR /app\nCOPY app/ ./app/\nUSER app\nCMD [\"gunicorn\", \"-b\", \"0.0.0.0:8000\", \"app:app\"]\n```",
+ "usage": {
+  "input": 2,
+  "output": 1809,
+  "cacheRead": 0,
+  "cacheWrite": 2718,
+  "reasoning": 0,
+  "totalTokens": 4529,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4811,
+ "secs": 17.6
+}

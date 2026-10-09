@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives accurate, actionable storage guidance without A’s misleading suggestion that cross-domain cookie authentication requires same-site deployment, and adds useful warnings about refresh-token rotation and unencrypted JWT payloads."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "docker-slim",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A prioritizes measurement and explicitly verifies application startup and native-extension imports, while B omits that validation and misleadingly claims Alpine necessarily forces wheel packages to build from source."
+ }
+}

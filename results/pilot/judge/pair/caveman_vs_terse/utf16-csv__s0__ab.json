@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "utf16-csv",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "Both identify the likely encoding issue and provide fixes and confirmation steps, but B is faster to read and explicitly covers tab delimiters for both pandas and the standard library."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "pg-port",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "Both correctly identify the default port as 5432, but A answers the question faster without unnecessary configuration details."
+ }
+}

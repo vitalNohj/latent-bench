@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "utf16-csv",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B better addresses correctness by flagging the UTF-32 possibility, explains why UTF-8 decoding fails, and warns against misleading decoding workarounds while providing the same practical UTF-16 and delimiter fixes."
+ }
+}

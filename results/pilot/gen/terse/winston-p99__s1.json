@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "text": "Most likely the logging is **blocking the event loop or creating backpressure**, and the tail latency shows it. Common causes, roughly in order of likelihood:\n\n1. **Synchronous or blocking transports.** Console output to a file or pipe is synchronous in Node. If stdout is redirected (Docker or systemd capturing logs), every `logger.info` blocks the event loop. One slow write stalls every in-flight request, and that shows up in p99.\n2. **Expensive formatting.** `format.prettyPrint()`, `format.json()` on large objects, `colorize`, or `printf` with `JSON.stringify` adds per-request CPU, and logging `req`/`res` makes it worse. Serializing a full `req` or a large body is very costly and can hit circular refs.\n3. **File transport backpressure.** With `transports.File` under load, the write stream buffers, memory grows, and GC pauses lengthen. Long GC pauses are a classic p99 killer.\n4. **Remote transports** (HTTP, Loggly, Datadog, etc.) that are awaited or flush inline per request.\n5. **Wrong log level in prod**, such as `debug`/`silly` enabled, multiplying the volume.\n\n**Quick diagnosis:**\n- Run `node --cpu-prof` or `clinic doctor`/`clinic flame` under load and look for `format`/`stringify`/`writeSync` in the profile.\n- Check event-loop lag with `perf_hooks.monitorEventLoopDelay()`.\n- Remove the transports one at a time and see which one restores the 80ms.\n\n**Fixes:**\n- Log to stdout as plain JSON and let the platform ship the logs.\n- Log selected fields (`method`, `url`, `status`, `duration`), not whole `req`/`res` objects.\n- Drop `prettyPrint` and `colorize` in prod.\n- Set the level to `info` or higher.\n- Consider **pino** (with async `pino.destination({ sync: false })` or a worker-thread transport). It's built for this and is typically 5–10× cheaper than winston.",
+ "usage": {
+  "input": 2,
+  "output": 714,
+  "cacheRead": 826,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1542,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 108,
+ "secs": 8.8
+}

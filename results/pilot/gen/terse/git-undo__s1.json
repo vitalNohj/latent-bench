@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "git-undo",
+ "sample": 1,
+ "ok": true,
+ "text": "```bash\ngit reset --soft HEAD~1\n```\n\nThis removes the last commit and keeps its changes **staged**.\n\nTo keep the changes but **unstaged**, use:\n\n```bash\ngit reset HEAD~1\n```\n\nIf you've already pushed the commit, use `git revert HEAD` instead so you don't rewrite shared history.",
+ "usage": {
+  "input": 2,
+  "output": 117,
+  "cacheRead": 814,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 933,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 72,
+ "secs": 2.5
+}

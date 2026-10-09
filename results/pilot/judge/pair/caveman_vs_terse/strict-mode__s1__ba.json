@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "strict-mode",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B more accurately describes StrictMode’s effect replay, provides actionable cleanup examples, and warns against useRef guards that can hide cleanup bugs, outweighing its extra length."
+ }
+}

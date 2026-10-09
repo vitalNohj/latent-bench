@@ -1,0 +1,18 @@
+{
+ "arm": "base",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "On Linux/POSIX, process.stdout writes are asynchronous when stdout is a pipe, not synchronous as claimed. Writes to regular files and TTYs are synchronous; slow Docker/k8s pipe consumers can cause backpressure without each write directly blocking the event loop.",
+   "Multiple Winston transports do not necessarily each repeat formatting. Logger-level formatting runs before dispatch to transports; additional per-transport formatting occurs only when configured."
+  ]
+ }
+}

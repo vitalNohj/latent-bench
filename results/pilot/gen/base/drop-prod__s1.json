@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "drop-prod",
+ "sample": 1,
+ "ok": true,
+ "text": "**Back up first.** This is prod and the drop is irreversible:\n\n```bash\npg_dump -Fc -d \"$PROD_DATABASE_URL\" -f prod_backup_$(date +%Y%m%d_%H%M%S).dump\n```\n\n**Option 1: Drop and recreate the `public` schema** (simplest; removes tables, views, sequences, functions, and types in it)\n\n```sql\nBEGIN;\nDROP SCHEMA public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO public;  -- restore default grants if your app relies on them\nCOMMIT;\n```\n\nFrom the shell:\n\n```bash\npsql \"$PROD_DATABASE_URL\" -v ON_ERROR_STOP=1 -c \"BEGIN; DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO public; COMMIT;\"\n```\n\n**Option 2: Drop only tables** (keeps the schema, its grants, and extensions)\n\n```sql\nDO $$\nDECLARE r record;\nBEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\n**Before running:**\n- Run `SELECT current_database(), inet_server_addr();` to confirm you're connected to the right DB.\n- Extensions (e.g. `uuid-ossp`, `pgcrypto`) installed in `public` are removed by Option 1. Re-create them or make sure your migrations do.\n- If you have tables in other schemas, repeat for each one.\n- Stop or pause app traffic during the reseed.\n- If you use a migration tool (Prisma, Rails, Django, Alembic), it may have a reset command, e.g. `prisma migrate reset` or `rails db:schema:load`. Those usually refuse to run in prod without an override flag, for good reason.\n\nTo restore if needed: `pg_restore -d \"$PROD_DATABASE_URL\" --clean prod_backup_*.dump`",
+ "usage": {
+  "input": 2,
+  "output": 783,
+  "cacheRead": 812,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1597,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 62,
+ "secs": 8.7
+}

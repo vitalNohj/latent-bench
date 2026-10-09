@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "winston-p99",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A is faster to read and offers a useful transport-isolation test; both incorrectly claim POSIX stdout pipes are synchronous, but B adds the misleading blanket claim that Pino uses asynchronous output and a longer fix that retains the potentially problematic console transport."
+ }
+}

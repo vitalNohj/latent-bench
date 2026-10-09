@@ -1,0 +1,17 @@
+{
+ "arm": "caveman",
+ "pid": "winston-p99",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The stdout behavior is misstated: Node stdout writes to pipes are asynchronous on POSIX, not synchronous. TTY writes are synchronous on POSIX but asynchronous on Windows. A slow Docker logging pipe can cause backpressure, but does not inherently make each stdout write synchronously block."
+  ]
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "ok": true,
+ "text": "SQLite, WAL mode. 20 users on one server is well inside its range [assumed: write-light CRUD, not heavy concurrent writes]\n\n| | SQLite | Postgres |\n|---|---|---|\n| ops | a file, nothing to run | service, users, auth, upgrades |\n| backup | `sqlite3 app.db \".backup x.db\"` or Litestream | `pg_dump` / WAL archiving |\n| concurrency | many readers, **one writer at a time** | full MVCC, concurrent writers |\n| latency | in-process, no network hop | socket round trip |\n| features | JSON, FTS5, CTEs | + `LISTEN/NOTIFY`, rich types, extensions, row-level security |\n| scale out | single host only | replicas, multiple app servers |\n\nsetup: `PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; PRAGMA foreign_keys=ON;` → writes queue briefly instead of failing with `SQLITE_BUSY`\n\npick Postgres if:\n- a second app server or separate worker host is planned\n- long write transactions or bulk imports run during working hours\n- Postgres is already run and backed up elsewhere → near-zero marginal ops cost\n- needs PG-only features: `LISTEN/NOTIFY`, PostGIS, RLS\n\nmigration later: low cost when access goes through an ORM or query builder and SQLite-only quirks are avoided (loose typing, `INSERT OR REPLACE`)",
+ "usage": {
+  "input": 2,
+  "output": 540,
+  "cacheRead": 5379,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 5921,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12085,
+ "secs": 8.1
+}

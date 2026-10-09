@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqli-review",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives an actionable parameterized fix with explicit columns and correctly qualifies that stacked-statement attacks depend on driver support, whereas A misleadingly implies that DROP TABLE input will necessarily execute."
+ }
+}

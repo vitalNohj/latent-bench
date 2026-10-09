@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "flag-names",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives five names aligned with finding dead flags, while B’s description of Unfurl implies flag removal, a capability the developer did not request."
+ }
+}

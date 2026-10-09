@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "pg-port",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both give the correct default port, 5432, but A is faster to read and B adds configuration advice the question does not require."
+ }
+}

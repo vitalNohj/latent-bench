@@ -1,0 +1,17 @@
+{
+ "arm": "latent",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "On Linux, process.stdout writes to pipes are asynchronous, not synchronous. Writes to regular files are synchronous, so grouping Docker/k8s/pm2 pipes with files and claiming they all block until each log line is flushed is incorrect."
+  ]
+ }
+}

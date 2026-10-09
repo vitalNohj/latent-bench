@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "utf16-csv",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives the same practical UTF-16 fix and delimiter warning while also flagging the UTF-32 BOM alternative and warning against decoding workarounds that silently corrupt the data."
+ }
+}

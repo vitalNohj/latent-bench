@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "drop-prod",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B provides safer schema grants, puts connection verification before deletion, addresses non-public schemas, and offers TRUNCATE for data-only reseeding, though both overstate what the tables-only CASCADE command preserves."
+ }
+}

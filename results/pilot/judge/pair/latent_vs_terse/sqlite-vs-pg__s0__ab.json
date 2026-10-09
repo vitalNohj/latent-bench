@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better covers safe backups, local-disk storage, and write contention; although it overstates migration simplicity, B’s claim that backups are just copying a file is unsafe for a live WAL-mode database."
+ }
+}

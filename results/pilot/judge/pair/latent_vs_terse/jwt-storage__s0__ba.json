@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the key risks and safer alternatives clearly without B’s misleading claim that cookie-based cross-domain APIs require a shared site; cross-site cookies can work with SameSite=None and Secure, subject to browser restrictions."
+ }
+}

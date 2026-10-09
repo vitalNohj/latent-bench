@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the essential risks and safer patterns clearly, while B misleadingly implies cross-domain cookie authentication requires same-site deployment and that cookie authentication always needs a CSRF token in addition to SameSite."
+ }
+}

@@ -1,0 +1,17 @@
+{
+ "arm": "caveman",
+ "pid": "utf16-csv",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0
+  ],
+  "errors": [
+   "The claim that the file is definitely UTF-16 is not justified by a leading 0xFF alone. Confirm the full byte sequence; even FF FE can begin a UTF-32 LE BOM (FF FE 00 00)."
+  ]
+ }
+}

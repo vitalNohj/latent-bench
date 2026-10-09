@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B adds actionable guidance on queue wait and critical-path bottlenecks, preserves typechecking when suggesting faster transpilers, and warns that affected detection needs merge-base history, making its extra length worthwhile."
+ }
+}

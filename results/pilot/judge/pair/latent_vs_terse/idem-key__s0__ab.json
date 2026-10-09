@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A explains safe payment retries while also covering atomic duplicate handling, crash consistency, and downstream idempotency boundaries, important qualifications missing from B’s simpler at-most-once guarantee."
+ }
+}

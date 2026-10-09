@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "jwt-storage",
+ "sample": 0,
+ "ok": true,
+ "text": "It works, but it's generally **not recommended** for sensitive apps.\n\n**Main risk: XSS.** Any JavaScript running on your page, including injected scripts or compromised third-party deps, can read `localStorage` and steal the token. It can then be used from anywhere until it expires.\n\n**Better option: `HttpOnly` cookie**\n- `HttpOnly`: JS can't read it\n- `Secure`: HTTPS only\n- `SameSite=Lax` or `Strict`: mitigates CSRF (add CSRF tokens if you need `None`)\n\n**Common pattern:**\n- Short-lived access token kept **in memory** (JS variable)\n- Long-lived refresh token in an `HttpOnly` cookie\n- Silent refresh on page load or expiry\n\n**localStorage is acceptable when:**\n- The app is low-risk or internal\n- Tokens are short-lived\n- You have a strong CSP and tightly controlled dependencies\n\nKeep in mind that XSS is game over either way, since an attacker can still make requests as the user. `HttpOnly` cookies just prevent the token from being exfiltrated and reused elsewhere.",
+ "usage": {
+  "input": 2,
+  "output": 395,
+  "cacheRead": 0,
+  "cacheWrite": 814,
+  "reasoning": 0,
+  "totalTokens": 1211,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 59,
+ "secs": 5.4
+}

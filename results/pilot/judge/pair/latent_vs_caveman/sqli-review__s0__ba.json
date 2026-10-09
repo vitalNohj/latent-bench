@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "sqli-review",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B more accurately qualifies destructive injection as driver-dependent and avoids A’s misleading claim that parameterization works by escaping values, while providing an actionable fix and covering the main review concerns concisely."
+ }
+}

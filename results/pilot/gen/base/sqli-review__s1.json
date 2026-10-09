@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "sqli-review",
+ "sample": 1,
+ "ok": true,
+ "text": "## Critical: SQL injection\n\n`user_id` is interpolated directly into the SQL string. Input like `\"1 OR 1=1\"` or `\"1; DROP TABLE users\"` gets executed as SQL.\n\n**Fix:** use a parameterized query. The placeholder depends on your driver:\n\n```python\ndef get_user(user_id):\n    query = \"SELECT * FROM users WHERE id = ?\"   # sqlite3\n    # query = \"SELECT * FROM users WHERE id = %s\"  # psycopg2 / MySQLdb\n    return db.execute(query, (user_id,)).fetchone()\n```\n\n## Minor\n\n- **`SELECT *`**: Name the columns you need (e.g. `id, name, email`). This avoids leaking sensitive fields like password hashes and protects callers from schema changes.\n- **Global `db`**: Passing the connection or cursor in as a parameter makes the function easier to test.\n- **Not-found case**: `fetchone()` returns `None` when no row matches. Make sure callers handle that, or document it with a return type hint like `-> Row | None`.\n- **Input validation (optional)**: If IDs are integers, `int(user_id)` fails fast on bad input. This adds clarity but doesn't replace parameterization.",
+ "usage": {
+  "input": 2,
+  "output": 428,
+  "cacheRead": 850,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1280,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 145,
+ "secs": 5.0
+}

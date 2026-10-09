@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "strict-mode",
+ "sample": 1,
+ "ok": true,
+ "text": "Not a bug. It's **React 18+ `StrictMode`** behavior, and it only happens in development.\n\nIn dev, StrictMode intentionally mounts, unmounts, and remounts each component. That runs effect → cleanup → effect, which exposes effects that don't clean up properly. Production builds skip this.\n\n**Fix the effect, not StrictMode.** Return a cleanup so running it twice is harmless:\n\n```js\nuseEffect(() => {\n  const controller = new AbortController();\n  fetch(url, { signal: controller.signal }).then(/* ... */);\n  return () => controller.abort();\n}, [url]);\n```\n\nSame idea for subscriptions, timers, and listeners: unsubscribe, clear, or remove them in the cleanup.\n\n**Options:**\n- Removing `<React.StrictMode>` from your root stops the double run, but you lose the checks. Not recommended.\n- For truly one-time work like analytics init, guard it with a `useRef` flag or move it outside the component.\n- For data fetching, a library (React Query, SWR) or framework loader handles this for you.",
+ "usage": {
+  "input": 2,
+  "output": 393,
+  "cacheRead": 822,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1217,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 76,
+ "secs": 5.0
+}

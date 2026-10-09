@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "strict-mode",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the same actionable cleanup guidance without B’s misleading assurances that duplicate requests are necessarily aborted or ignored and that missing-cleanup bugs will inevitably appear in production."
+ }
+}

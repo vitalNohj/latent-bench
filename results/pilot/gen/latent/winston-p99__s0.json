@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "winston-p99",
+ "sample": 0,
+ "ok": true,
+ "text": "Cause: logging work now runs on the event loop for every request. One slow log call delays every request queued behind it → p99 jumps far more than p50.\n\n[p=.5] synchronous stdout: `transports.Console` → `process.stdout`. On Linux, writes to pipes and files are synchronous (Docker, systemd, k8s log pipes) → every log line blocks the loop until the write finishes → requests queue → tail latency balloons.\n[p=.3] serialization cost: logging `req`, `res`, bodies, or headers → large or nested objects → `safe-stable-stringify` plus formats (`prettyPrint`, `colorize`, `splat`, `metadata`) run per request on the main thread. `prettyPrint` is especially slow. Allocation churn → GC pauses → p99 spikes.\n[p=.2] file transport backpressure: `transports.File` at high request rate → stream buffer grows → memory climbs → GC. Rotation (`winston-daily-rotate-file`) stalls during the file swap.\n\nwhy p99 ≫ p50: Node is single-threaded, so blocking time adds up across queued requests. Spikes from bursts and GC land in the tail.\n\ncheck:\n1. `perf_hooks.monitorEventLoopDelay()`, before vs after. A rise in loop delay p99 confirms blocking.\n2. Disable transports one at a time. Swap the format to plain `json()` without `prettyPrint` or `colorize`.\n3. Capture a flame graph with `clinic flame` or `0x` under load. Look for hotspots in `stringify`, `writeSync`, or `format`.\n4. Run `node --trace-gc` to check GC pause frequency and length.\n\nfix, strongest first:\n- Log a small fixed object: `{method, url, status, ms, reqId}`. Never log `req`, `res`, or bodies.\n- `pino` over winston: ≈5-10× cheaper per line [inferred: published benchmarks]. Use `pino.transport()` to move formatting and I/O to a worker thread, or `pino-http`.\n- Staying on winston: keep only the `json()` format, gate with `level: 'info'` and skip debug, sample success logs (e.g. 1-10%) while logging all errors.\n- No pretty or colorized output in prod. Pretty-print later through a separate process (`| pino-pretty`).\n\nnext: paste the winston config and the middleware log call. They show which of the 3 causes applies.",
+ "usage": {
+  "input": 2,
+  "output": 1269,
+  "cacheRead": 0,
+  "cacheWrite": 5384,
+  "reasoning": 0,
+  "totalTokens": 6655,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12112,
+ "secs": 19.4
+}

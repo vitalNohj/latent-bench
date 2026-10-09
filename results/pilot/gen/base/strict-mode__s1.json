@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "strict-mode",
+ "sample": 1,
+ "ok": true,
+ "text": "Not a bug. It's **React 18+ StrictMode** behaving as designed.\n\n**What's happening**\n\nIn development, `<React.StrictMode>` mounts each component, unmounts it, and mounts it again. Your effect runs, its cleanup runs, then the effect runs again. Production builds skip this, so you only see it in dev.\n\n**Why React does this**\n\nIt's a deliberate stress test. It catches effects that don't clean up properly, such as leaked subscriptions, duplicate listeners, or timers that never clear. Those bugs would otherwise show up later with Fast Refresh, Suspense, or future features like Offscreen/Activity, which really do remount components.\n\n**What to do**\n\nMake the effect idempotent with a proper cleanup. Don't suppress the double run.\n\n```jsx\nuseEffect(() => {\n  const id = setInterval(tick, 1000);\n  return () => clearInterval(id);         // cleanup makes double-run harmless\n}, []);\n\nuseEffect(() => {\n  const ctrl = new AbortController();\n  fetch(url, { signal: ctrl.signal })\n    .then(r => r.json())\n    .then(setData)\n    .catch(e => { if (e.name !== 'AbortError') throw e; });\n  return () => ctrl.abort();              // first request gets cancelled\n}, [url]);\n```\n\n**Patterns to avoid**\n\n- **A `useRef` \"hasRun\" guard.** It hides real bugs and can break under remounts.\n- **Removing `<StrictMode>`.** It works, but you lose the safety checks.\n\n**For true one-time side effects** (analytics init, etc.), move them outside the component: module scope, an event handler, or app bootstrap code. For data fetching, a library like TanStack Query or SWR, or your framework's loader, handles dedup for you.\n\nIf your effect has correct cleanup and the double run causes no visible difference, you're good.",
+ "usage": {
+  "input": 2,
+  "output": 640,
+  "cacheRead": 814,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1456,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 57,
+ "secs": 7.8
+}

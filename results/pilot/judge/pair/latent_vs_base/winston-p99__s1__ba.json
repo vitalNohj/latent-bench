@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "winston-p99",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "Both incorrectly claim Linux stdout pipes are synchronous, but B delivers the key queueing explanation and practical checks more concisely while avoiding A’s additional misleading claims that logging itself is rarely slow and pino-http is a drop-in replacement."
+ }
+}

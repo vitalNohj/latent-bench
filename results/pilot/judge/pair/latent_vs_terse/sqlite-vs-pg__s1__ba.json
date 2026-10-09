@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B better states the write-light workload assumption and SQLite’s single-writer limit, provides safer backup guidance and foreign-key setup, and qualifies migration advice rather than promising a painless transition."
+ }
+}

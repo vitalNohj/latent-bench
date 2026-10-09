@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "idem-key",
+ "sample": 1,
+ "ok": true,
+ "text": "An **idempotency key** is a unique, client-generated identifier (usually a UUID) sent with a request, typically in a header like `Idempotency-Key: 8e03978e-40d5-43e8-bc93-6894a57f9324`. The server uses it to recognize retries of the same operation and make sure the operation happens **at most once**, even if the request is sent several times.\n\n## The problem it solves\n\nNetworks are unreliable. Suppose a client sends \"charge $50\" and then:\n\n1. The server processes the charge successfully.\n2. The response is lost (timeout, dropped connection, client crash).\n3. The client can't tell whether the charge happened, so it retries.\n\nWithout protection, the customer is charged **twice**. Never retrying isn't safe either, because the first request may genuinely have failed. Idempotency keys make retries safe.\n\n## How it works\n\n```\nClient                                 Server\n  |-- POST /charges (key=abc) -------->|  no record for \"abc\": process, store result under \"abc\"\n  |<----------- (response lost) -------|\n  |-- POST /charges (key=abc) -------->|  \"abc\" seen: return the stored result, don't charge again\n  |<------------ 200 {charge_123} -----|\n```\n\nOn the server side:\n\n1. **Look up the key.** If it's new, record it (often with status \"in progress\") atomically, e.g. with a unique constraint.\n2. **Do the work**, then store the response alongside the key.\n3. **On a repeat key**, return the saved response instead of running the operation again.\n4. **Handle edge cases:**\n   - If the same key arrives while the original is still in progress, return `409 Conflict` or block until it finishes.\n   - If the same key arrives with a *different* request body, reject it as a likely client bug (Stripe does this).\n5. **Expire keys** after a while (Stripe keeps them about 24 hours).\n\n## Why payment APIs specifically\n\n- **Duplicate side effects are expensive.** A double charge means angry customers, refunds, support tickets, and possibly chargebacks and fees.\n- **POST isn't idempotent by default.** GET, PUT, and DELETE are designed to be repeatable, but \"create a charge\" is not. The key adds that property.\n- **Retries are everywhere.** Mobile clients, load balancers, queue consumers, and SDKs all retry automatically. Payments flow through many hops (merchant, gateway, processor, bank), and any of them can time out.\n- **It's how you get \"exactly-once\" in practice.** True exactly-once delivery is impossible over a network. \"At-least-once delivery plus idempotent processing\" gives you exactly-once *effects*.\n\n## Client-side best practices\n\n- Generate the key **once per logical operation** (e.g. per checkout attempt), not once per HTTP attempt. A new key on each retry defeats the purpose.\n- Persist the key before sending, so a crash-and-restart retry reuses it.\n- Use enough randomness (UUIDv4) to avoid collisions.\n\nStripe, Adyen, PayPal, and Square all support this pattern. The IETF also has a draft standard for the `Idempotency-Key` header.",
+ "usage": {
+  "input": 2,
+  "output": 1046,
+  "cacheRead": 808,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1856,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 59,
+ "secs": 13.0
+}

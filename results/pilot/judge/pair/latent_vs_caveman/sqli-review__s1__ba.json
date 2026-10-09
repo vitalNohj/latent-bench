@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "sqli-review",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B correctly qualifies stacked-statement attacks as driver-dependent, provides a safe parameterized fix and the key review points, and is faster to read than A, which overstates arbitrary SQL execution."
+ }
+}

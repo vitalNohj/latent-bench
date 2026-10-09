@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "ok": true,
+ "text": "**SQLite**, almost certainly.\n\n**Why it fits:**\n- 20 users on one server is well within its capacity; it handles thousands of reads/sec and hundreds of writes/sec easily.\n- No separate service to run, secure, upgrade, or monitor.\n- Backups are simple: `sqlite3 app.db \".backup backup.db\"` or Litestream for continuous replication to S3.\n- Tests are fast, and dev setup is trivial.\n\n**Settings to use:**\n```sql\nPRAGMA journal_mode = WAL;      -- concurrent readers during writes\nPRAGMA busy_timeout = 5000;     -- wait instead of failing on lock\nPRAGMA synchronous = NORMAL;    -- safe with WAL, faster\nPRAGMA foreign_keys = ON;       -- off by default!\n```\n\n**Choose Postgres instead if:**\n- You'll need **multiple app servers** or a separate DB host later.\n- You have **heavy concurrent writes**, since SQLite allows only one writer at a time.\n- You need Postgres-specific features: rich JSONB querying, full-text search beyond FTS5, PostGIS, `LISTEN/NOTIFY`, row-level security.\n- Your org already runs managed Postgres (e.g., RDS), so the ops cost is near zero.\n- Other tools (BI, analysts) need to connect directly over the network.\n\n**Hedge:** Use an ORM or query builder (SQLAlchemy, Prisma, Drizzle, etc.) and avoid dialect-specific SQL. Migrating later is then mostly a data copy.",
+ "usage": {
+  "input": 2,
+  "output": 568,
+  "cacheRead": 0,
+  "cacheWrite": 813,
+  "reasoning": 0,
+  "totalTokens": 1383,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 62,
+ "secs": 6.8
+}

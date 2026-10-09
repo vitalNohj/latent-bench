@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "pg-port",
+ "sample": 0,
+ "ok": true,
+ "text": "`5432` (TCP)\n\noverride: `port` in `postgresql.conf` | `PGPORT` env for clients",
+ "usage": {
+  "input": 2,
+  "output": 87,
+  "cacheRead": 5362,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 5451,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12045,
+ "secs": 2.3
+}

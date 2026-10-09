@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "exit-137",
+ "sample": 0,
+ "ok": true,
+ "text": "Exit 137 = SIGKILL (128+9). Usually OOMKilled. Empty logs mean process died before writing, or you're reading the new container's logs.\n\n**Check first:**\n```bash\nkubectl describe pod <pod> | grep -A5 \"Last State\"\nkubectl logs <pod> --previous\nkubectl get events --sort-by=.lastTimestamp | grep <pod>\n```\n`Reason: OOMKilled` in Last State confirms memory.\n\n**Likely causes:**\n\n1. **Memory limit too low.** Container exceeds `resources.limits.memory`, and the kernel kills it. Raise the limit, or check usage with `kubectl top pod`.\n2. **JVM/Node/Python heap ignores cgroup limit.**\n   - Java: `-XX:MaxRAMPercentage=75`\n   - Node: `--max-old-space-size`\n   - Heap bigger than limit means instant OOM at startup, often with no logs.\n3. **Liveness probe failing.** Kubelet kills the container. Events show `Liveness probe failed`. Fix: raise `initialDelaySeconds`/`failureThreshold`, or add a `startupProbe` for slow boot.\n4. **Node memory pressure.** Node OOM killer or eviction hits the pod. Check `kubectl describe node <node>` for `MemoryPressure`, and `dmesg | grep -i oom` on the node.\n5. **Something external sends SIGKILL.** `terminationGracePeriodSeconds` expired after SIGTERM because the app ignores SIGTERM. Check whether PID 1 is a shell wrapper that doesn't forward signals; use `exec` or `tini`.\n6. **Memory leak or startup spike.** Large file load, cache warmup, etc.\n\n**Debug trick:** override the command to keep the container alive, then exec in and run the app manually:\n```yaml\ncommand: [\"sleep\", \"infinity\"]\n```\nWatch memory with `top` or `cat /sys/fs/cgroup/memory.max`, `memory.current`.\n\nPaste `describe pod` Last State + events if still stuck.",
+ "usage": {
+  "input": 2,
+  "output": 760,
+  "cacheRead": 0,
+  "cacheWrite": 2713,
+  "reasoning": 0,
+  "totalTokens": 3475,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4776,
+ "secs": 8.9
+}

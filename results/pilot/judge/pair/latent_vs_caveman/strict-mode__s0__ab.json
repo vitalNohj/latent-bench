@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B more accurately describes StrictMode’s simulated remount and consistently warns against useRef run-once guards, whereas A misleadingly recommends such guards and module-scope execution for once-only work including POST requests."
+ }
+}

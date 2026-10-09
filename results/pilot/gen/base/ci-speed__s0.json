@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "ci-speed",
+ "sample": 0,
+ "ok": true,
+ "text": "Here are ideas, roughly ordered by typical payoff.\n\n## 1. Only build and test what changed (biggest win in monorepos)\n- **Affected-only builds**: `nx affected`, `turbo run --filter=...[origin/main]`, Bazel, Pants, or Rush. Run only the packages touched by the diff and their dependents.\n- **Path filters** on workflows (`paths:` in GitHub Actions, `changes:` in GitLab) so a docs-only change doesn't trigger the full pipeline.\n- **Remote build cache** (Turborepo/Nx Cloud, Bazel remote cache, Gradle build cache). Unchanged packages become cache hits, even across PRs.\n\n## 2. Parallelize\n- **Split the pipeline into parallel jobs** (lint, typecheck, unit, integration, build) instead of running them sequentially.\n- **Shard tests** across N runners: `jest --shard`, `vitest --shard`, `pytest-split`, `playwright --shard`, or Knapsack/CircleCI timing-based splitting.\n- **Matrix by package** so each affected package gets its own job.\n\n## 3. Cache aggressively\n- Dependency caches keyed on the lockfile (`node_modules`/pnpm store, `~/.cargo`, `~/.m2`, pip, Go mod).\n- Tool caches: TS `.tsbuildinfo`, ESLint `--cache`, Jest cache, `sccache` for Rust/C++, Docker layer cache (`cache-from`/`cache-to` with BuildKit, registry cache).\n- Bake toolchains into a **custom runner image** so you aren't installing them every run.\n\n## 4. Faster setup\n- `pnpm` or `bun` instead of npm/yarn classic. Use `--frozen-lockfile` / `npm ci` with a warm cache.\n- Shallow clone (`fetch-depth: 1`). Fetch more history only where affected-detection needs it.\n- Sparse checkout if the repo is huge.\n\n## 5. Faster tools\n- `tsc` → `tsc --build` with project references, or type-check with `tsgo`.\n- Babel/ts-jest → `swc`/`esbuild`. Jest → Vitest.\n- ESLint → Biome/oxlint for the bulk of rules.\n- webpack → Vite/Rspack/esbuild.\n\n## 6. Restructure test tiers\n- Run fast checks (lint, typecheck, unit) first and **fail fast**.\n- Move slow E2E/integration tests to the merge queue or nightly, or run only the suites tied to affected areas.\n- Find and fix the slowest tests: look for sleeps, real network calls, and per-test DB setup. Use transactions or testcontainers that are reused across tests.\n- Quarantine flaky tests. Retries hide wasted minutes.\n\n## 7. Bigger or better runners\n- Larger runners, or third-party ones (Depot, Blacksmith, BuildJet, Namespace, Ubicloud) are often 2–3x faster and cheaper per minute.\n- Self-hosted runners with persistent disks keep caches warm.\n\n## 8. Pipeline hygiene\n- `concurrency: cancel-in-progress` so new pushes cancel stale runs.\n- Skip CI for draft PRs, or run a lighter suite on them.\n- Use a **merge queue** so the full suite runs once at merge, while PRs run a reduced set.\n\n## First step: measure\nBefore changing anything, find out where the 25 minutes actually go: critical path, setup vs. test time, and the slowest jobs and tests. Usually 1–2 jobs dominate.\n\nIf you share your CI config (e.g. `.github/workflows/*.yml`) and your monorepo tooling (Nx, Turbo, Bazel, plain workspaces?), I can give specific recommendations.",
+ "usage": {
+  "input": 2,
+  "output": 1355,
+  "cacheRead": 0,
+  "cacheWrite": 813,
+  "reasoning": 0,
+  "totalTokens": 2170,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 46,
+ "secs": 16.3
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A clearly covers the definition, payment-retry problem, expiration, and key-reuse rules without B’s misleading claim that networks provide at-least-once delivery and receiver-side deduplication generally yields effectively-once processing."
+ }
+}

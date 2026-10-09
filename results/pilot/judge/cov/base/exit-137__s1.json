@@ -1,0 +1,19 @@
+{
+ "arm": "base",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "SIGKILL does not necessarily explain empty logs: output already written to stdout/stderr should remain available, though buffered output may be lost.",
+   "The claim that ignoring SIGTERM only matters on shutdown, not in a crash loop, is incorrect: repeated liveness-probe failures can trigger termination, followed by SIGKILL after the grace period, and produce a crash loop."
+  ]
+ }
+}

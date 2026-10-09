@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more precise and faster to use, while B misleadingly claims its CASCADE table-drop loop keeps everything else even though it can also drop dependent views and constraints."
+ }
+}

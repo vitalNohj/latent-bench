@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqli-review",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A more accurately qualifies stacked-statement injection as driver-dependent, states its DB-API assumption, and covers missing-user handling, while B misleadingly implies that a DROP TABLE payload would execute on any driver."
+ }
+}

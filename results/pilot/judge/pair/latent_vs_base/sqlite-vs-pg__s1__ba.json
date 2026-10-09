@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B makes the write-light workload assumption explicit and clearly states SQLite’s single-writer limitation, while A overstates write capacity, calls synchronous=NORMAL safe without noting reduced durability, and oversells migration ease."
+ }
+}

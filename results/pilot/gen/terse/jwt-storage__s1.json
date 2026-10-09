@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "jwt-storage",
+ "sample": 1,
+ "ok": true,
+ "text": "It's common, but generally **not recommended** for sensitive apps.\n\n**Risk:** Any JavaScript on the page can read localStorage. One XSS bug, or one compromised npm dependency or third-party script, can steal the token. Since a JWT usually can't be revoked before it expires, the attacker can use it from anywhere.\n\n**Better option:** Store it in an **`HttpOnly`, `Secure`, `SameSite=Lax/Strict` cookie**:\n- JS can't read it, so XSS can't steal it, though XSS can still make requests while the user is on the page.\n- Add CSRF protection. `SameSite` covers most cases; use a CSRF token if you need cross-site requests or `SameSite=None`.\n\n**Common pattern for SPAs:**\n- Short-lived access token (5–15 min) kept **in memory**.\n- Long-lived refresh token in an `HttpOnly` cookie, rotated on each use.\n- Silent refresh on page load or expiry.\n\n**localStorage is acceptable when:**\n- The app is low-risk (internal tools, prototypes).\n- Tokens are short-lived.\n- You have a strict CSP and careful dependency hygiene.\n\n**Bottom line:** For anything handling real user data, prefer `HttpOnly` cookies or in-memory storage.",
+ "usage": {
+  "input": 2,
+  "output": 468,
+  "cacheRead": 814,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1284,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 59,
+ "secs": 6.5
+}

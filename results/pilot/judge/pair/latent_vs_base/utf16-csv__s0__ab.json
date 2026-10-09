@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "utf16-csv",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "B appropriately qualifies the UTF-16 diagnosis and gives the necessary checks and fixes, while A overstates what a lone 0xFF proves and misleadingly rules out UTF-16 without a BOM."
+ }
+}

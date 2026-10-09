@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "flag-names",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "B provides five clear, relevant names without A’s unsupported claim that its preferred name is unlikely to collide with existing internal tools."
+ }
+}

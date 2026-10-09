@@ -1,0 +1,18 @@
+{
+ "arm": "caveman",
+ "pid": "exit-137",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "A heap limit larger than the container memory limit does not necessarily cause an instant startup OOM; the kill depends on actual memory consumption, not merely the configured maximum heap size."
+  ]
+ }
+}

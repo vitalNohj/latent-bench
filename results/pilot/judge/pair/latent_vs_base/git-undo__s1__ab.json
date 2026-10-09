@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "git-undo",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "Both give the correct command and essential warnings, but B is faster to read and avoids A’s unnecessary amend suggestion and potentially misleading claim that a soft reset restores lost changes."
+ }
+}

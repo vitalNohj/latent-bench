@@ -1,0 +1,17 @@
+{
+ "arm": "latent",
+ "pid": "git-undo",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   0.5,
+   1
+  ],
+  "errors": [
+   "The claim that --hard deletes any uncommitted work is too broad: it discards tracked-file changes, but generally leaves untracked files alone unless they obstruct checkout."
+  ]
+ }
+}

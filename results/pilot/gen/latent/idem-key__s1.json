@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "idem-key",
+ "sample": 1,
+ "ok": true,
+ "text": "idempotency key = client-generated unique ID (usually UUID v4) sent with a mutating request, so the server executes it **at most once**, no matter how many times it is retried\n\nwhy payments need it:\n- network failure is ambiguous: timeout | dropped connection → client cannot tell whether the charge happened\n- safe move is retry, but a naive retry of `POST /charges` → double charge\n- the key makes retry safe: same key → server returns the stored first result instead of charging again\n- result: at-least-once delivery from the client + dedup on the server ≈ exactly-once effect\n\nmechanism, server side:\n1. request arrives with `Idempotency-Key: 7f3a…`\n2. look up key, scoped per account or API key\n   - not found → insert key as `in_progress`, execute, store status code + response body\n   - found + completed → replay the stored response, no side effects\n   - found + `in_progress` → `409 Conflict` | wait ∵ a concurrent duplicate is still running\n   - found + different request body → `422` | `400` ∵ key reuse is a client bug\n3. keys expire after a TTL. Stripe: 24 h\n\nexample:\n```\nPOST /v1/charges            Idempotency-Key: 7f3a-…  amount=5000\n  → timeout, client unsure\nPOST /v1/charges            Idempotency-Key: 7f3a-…  amount=5000   (retry)\n  → 200, same charge id ch_123, card charged once\n```\n\nclient rules:\n- one key per logical operation, generated before the first attempt and reused on every retry\n- new operation → new key. Reusing a key across different charges → the second charge is silently swallowed\n- persist the key with the order record ∴ retries survive a client crash or restart\n\nwhy not natural dedup on (customer, amount): legit identical charges exist, e.g. 2 coffees at $5 ∴ only the client knows whether a request is a retry or a new intent\n\nrelated:\n- HTTP `PUT` and `DELETE` are idempotent by spec. `POST` is not ∴ it needs the key\n- IETF draft standardizes the `Idempotency-Key` header. Stripe, Adyen, PayPal, and Square use the same pattern\n- hard part: the key insert and the side effect must commit atomically, or a crash between them → lost | duplicated work. Fix: same DB transaction, or a state machine with recovery points (Stripe's design)",
+ "usage": {
+  "input": 2,
+  "output": 810,
+  "cacheRead": 5374,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6186,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12082,
+ "secs": 10.1
+}

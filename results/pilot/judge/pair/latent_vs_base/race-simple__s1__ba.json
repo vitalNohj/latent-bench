@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B explains the timing-dependent bug, lost-update example, and standard fixes just as effectively as A, but is faster to read and avoids A’s potentially confusing JavaScript example involving shared variables across threads."
+ }
+}

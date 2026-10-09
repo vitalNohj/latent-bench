@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "jwt-storage",
+ "sample": 1,
+ "ok": true,
+ "text": "Not recommended for anything sensitive. It works, but it is the weakest common option.\n\n**Any JavaScript running on your page can read localStorage, so a single XSS bug lets an attacker copy the token and use it from their own machine until it expires.** This includes an injected script, a compromised npm dependency, or a third-party analytics tag. An httpOnly cookie cannot be read by JavaScript, so XSS can still act inside the victim's open tab but cannot take the token elsewhere.\n\n| | localStorage | httpOnly cookie | memory + httpOnly refresh cookie |\n|---|---|---|---|\n| XSS steals token | yes | no | access token only, short-lived |\n| CSRF exposure | none | yes, needs `SameSite` + CSRF token | refresh endpoint only |\n| survives reload | yes | yes | yes, via silent refresh |\n| cross-domain API | easy | needs CORS `credentials` + same site | same |\n| effort | lowest | low | medium |\n\npick: httpOnly cookie with `Secure; SameSite=Lax|Strict` for same-site apps. Use access token in memory plus an httpOnly refresh cookie when the SPA and API sit on different origins or need `Authorization` headers.\n\nlocalStorage is acceptable when all of these hold:\n- the token is short-lived, ≈ 5-15 min\n- the token can be revoked server-side\n- a strict CSP blocks inline and third-party scripts\n- the app holds low-value data\n\nCookies do not fix XSS. They only stop the token from being stolen. XSS prevention (output escaping, CSP, dependency hygiene) is still the main defense.",
+ "usage": {
+  "input": 2,
+  "output": 669,
+  "cacheRead": 5372,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6043,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12063,
+ "secs": 8.2
+}

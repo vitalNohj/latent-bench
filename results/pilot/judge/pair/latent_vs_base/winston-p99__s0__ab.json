@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "winston-p99",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "Both incorrectly claim Linux stdout pipes are synchronous, but A is more concise and avoids B’s additional misleading claim that Pino moves serialization off the main thread, while covering the key diagnostics and fixes."
+ }
+}

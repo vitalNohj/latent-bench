@@ -1,0 +1,20 @@
+{
+ "arm": "latent",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "An OOMKilled reason confirms an OOM kill, but does not by itself prove the container exceeded its own memory limit; node-wide OOM can also cause it.",
+   "kubectl top pod reports recent memory usage, not peak usage; it can miss the spike that killed a container. Peak measurement requires historical metrics sampled frequently enough.",
+   "A failing sidecar or init container does not ordinarily cause the application container to receive SIGKILL; listing this as a generic SIGKILL cause is misleading."
+  ]
+ }
+}

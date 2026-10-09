@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqli-review",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B is more accurate because it qualifies the destructive stacked-query example as driver-dependent, while also providing a parameterized fix with explicit columns and covering the same key review points as A."
+ }
+}

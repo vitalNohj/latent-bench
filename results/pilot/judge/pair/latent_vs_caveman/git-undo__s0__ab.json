@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "git-undo",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B explicitly warns that revert does not preserve the changes, avoiding A’s misleading recommendation for a pushed commit, and offers recovery without A’s potentially destructive hard reset."
+ }
+}

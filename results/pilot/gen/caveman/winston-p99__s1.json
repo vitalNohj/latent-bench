@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "text": "Most likely event loop blocked or GC pressure from logging work. p99 hit hardest because stalls stack: one slow log blocks every request queued behind it.\n\n**Usual culprits, most likely first:**\n\n1. **Serializing big objects.** `logger.info('req', { req })` or full bodies/headers. `JSON.stringify` on large or nested objects is sync CPU on main thread. Winston also clones and merges meta through its format pipeline, so cost grows with object size.\n2. **Sync stdout.** `Console` transport writes to `process.stdout`. In Node, stdout is **synchronous** for files and TTYs, and for pipes on Linux. Running under a terminal, `node app > file.log`, or some container/log setups means every write blocks.\n3. **Expensive formats.** `prettyPrint()`, `colorize()`, `splat()`, `errors({ stack: true })`, and custom `printf` all run per log, per transport. `prettyPrint` uses `util.inspect`, which is slow.\n4. **Backpressure.** `File` or `Http` transport cannot drain as fast as you produce. Buffers grow, memory climbs, and GC pauses get long. GC pauses are classic p99 killers.\n5. **Many transports or logs per request.** Each format runs once per transport. Debug level left on in prod multiplies volume.\n\n**Confirm:**\n\n```js\nconst { monitorEventLoopDelay } = require('perf_hooks');\nconst h = monitorEventLoopDelay({ resolution: 10 });\nh.enable();\nsetInterval(() => console.log('loop p99 ms', h.percentile(99) / 1e6), 5000);\n```\n\nIf loop delay p99 is high, the stall is on the main thread. Then profile with `node --cpu-prof` or `npx clinic flame -- node app.js` and look for `stringify`, `inspect`, `logform`, or `writeSync`. Run with `--trace-gc` to check GC pauses.\n\n**Fix:**\n\n- Log only what you need: `{ method, url, status, ms, reqId }`. Never log full `req`/`res` objects or bodies.\n- Drop `prettyPrint` and `colorize` in prod. Use `format.json()` only.\n- Set `level: 'info'` in prod and sample noisy logs.\n- Log once per request, on `res.on('finish')`, not at multiple points.\n- Or switch to `pino` with an async destination (`pino.destination({ sync: false })`) or a `pino.transport` worker thread. It is far cheaper than winston on hot paths.\n\nPaste your logger config and the per-request log call for an exact diagnosis.",
+ "usage": {
+  "input": 2,
+  "output": 1138,
+  "cacheRead": 2710,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3850,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4806,
+ "secs": 13.2
+}

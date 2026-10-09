@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "git-undo",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the correct reset command, covers the single-commit edge case, and more accurately limits the revert recommendation to shared history, whereas B recommends reverting any pushed commit even though that does not keep the changes."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both provide workable commands, but A better covers production-critical consequences and precautions, including extension removal, schema ownership, live-connection issues, and an explicit target-verification query."
+ }
+}

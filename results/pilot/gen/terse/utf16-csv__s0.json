@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "utf16-csv",
+ "sample": 0,
+ "ok": true,
+ "text": "The file is almost certainly **UTF-16 (little-endian)**, not UTF-8. A file starting with `0xFF 0xFE` has a UTF-16 LE byte-order mark. Excel's \"Unicode Text\" export and some Windows tools produce this.\n\n**Fix:**\n\n```python\nimport pandas as pd\ndf = pd.read_csv(\"file.csv\", encoding=\"utf-16\")\n```\n\nor with the stdlib:\n\n```python\nimport csv\nwith open(\"file.csv\", encoding=\"utf-16\", newline=\"\") as f:\n    rows = list(csv.reader(f))\n```\n\n`utf-16` uses the BOM to detect the byte order and strips it.\n\n**Notes:**\n- Excel \"Unicode Text\" files are often **tab-delimited**. If everything ends up in one column, add `sep=\"\\t\"` (pandas) or `delimiter=\"\\t\"` (csv).\n- To confirm the encoding, run `head -c 4 file.csv | xxd`. If it starts with `fffe`, it's UTF-16 LE.\n- To convert the file permanently: `iconv -f UTF-16 -t UTF-8 file.csv > file_utf8.csv`",
+ "usage": {
+  "input": 2,
+  "output": 430,
+  "cacheRead": 0,
+  "cacheWrite": 859,
+  "reasoning": 0,
+  "totalTokens": 1291,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 169,
+ "secs": 5.1
+}

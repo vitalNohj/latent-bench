@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "text": "137 = 128 + 9 → SIGKILL from outside the process. Empty logs → killed before the first write | stdout buffered and lost at kill.\n\n[p=.6] OOMKilled: container exceeds `resources.limits.memory` → kernel cgroup OOM killer → SIGKILL. Common startup cases:\n- JVM heap not container-aware, `-Xmx` > limit\n- Node/Python loading a large dataset or model at boot\n- limit set too low, e.g. `128Mi` copied from a template\n\n[p=.2] liveness probe kills it: probe fails before the app is ready → kubelet sends SIGTERM → app ignores it → SIGKILL after `terminationGracePeriodSeconds` → 137\n- fits slow-start apps that have no `startupProbe` and too short an `initialDelaySeconds`\n\n[p=.1] node-level kill: node memory pressure → eviction | system OOM killer picks the pod. Pod has no limit, or is BestEffort/Burstable\n\n[p=.1] other: PID 1 is a shell wrapper that spawns a child and never forwards signals, `preStop` hangs, or a sidecar or init container causes the kill\n\ntriage, in order:\n1. `kubectl describe pod <pod>` → `Last State: Terminated`, `Reason:`\n   - `OOMKilled` → hypothesis 1 confirmed\n   - `Error` + `Liveness probe failed` in Events → hypothesis 2\n   - `Evicted` | node `MemoryPressure` → hypothesis 3\n2. `kubectl logs <pod> --previous`: plain `logs` shows the new, still-empty container; the crashed one's output lives under `--previous`\n3. `kubectl get events --sort-by=.lastTimestamp` + `kubectl describe node <node>` → look for OOM entries and memory pressure on the node\n4. `kubectl top pod` | `container_memory_working_set_bytes` → measure peak usage against the limit\n\nfix by cause:\n- OOM → raise the limit | cap the runtime (`-XX:MaxRAMPercentage=75`, `--max-old-space-size`) | find the startup spike\n- probe → add a `startupProbe` | raise `failureThreshold`\n- buffered output (Python) → `PYTHONUNBUFFERED=1` so logs survive the kill\n\nnext: run step 1, paste the `Last State` block and Events",
+ "usage": {
+  "input": 2,
+  "output": 989,
+  "cacheRead": 5387,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6378,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12082,
+ "secs": 10.8
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives more consistent, actionable guidance, while A misleadingly groups POST requests with one-time initialization and suggests module scope or a useRef guard, which can hide lifecycle bugs rather than fix them."
+ }
+}

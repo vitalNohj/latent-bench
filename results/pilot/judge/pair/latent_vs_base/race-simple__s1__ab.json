@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A explains the timing-dependent bug and standard fixes more directly, while B adds unnecessary repetition and misleadingly suggests ordinary JavaScript variables can be shared and modified by two threads."
+ }
+}

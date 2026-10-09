@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "winston-p99",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "Both incorrectly claim stdout pipes are synchronous (they are asynchronous on Unix), but B gives a more actionable transport-isolation test and avoids A’s unsupported numerical probabilities and claim that event-loop delay alone confirms main-thread blocking."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "ok": true,
+ "text": "**SQLite**, almost certainly.\n\nFor ~20 users on one server, SQLite is more than enough:\n\n- **Load is trivial**: SQLite handles thousands of writes/sec. 20 users won't come close.\n- **Zero ops**: no separate service, no connection pooling, no auth config. The DB is one file.\n- **Easy backups**: `sqlite3 app.db \".backup backup.db\"`, or use Litestream for continuous replication to S3.\n- **Simpler dev/test**: same engine everywhere, no Docker needed.\n\nConfigure it properly:\n```sql\nPRAGMA journal_mode = WAL;      -- concurrent readers during writes\nPRAGMA busy_timeout = 5000;     -- wait instead of failing on lock\nPRAGMA foreign_keys = ON;       -- off by default!\nPRAGMA synchronous = NORMAL;    -- safe with WAL, faster\n```\n\n**Choose Postgres instead if:**\n- You'll need **multiple app servers** or the DB on a separate host. SQLite over network filesystems is a bad idea.\n- You have **heavy concurrent writes** or long-running write transactions. SQLite allows one writer at a time.\n- You need Postgres-specific features: `LISTEN/NOTIFY`, rich JSONB indexing, PostGIS, row-level security, strict types.\n- Your company already runs managed Postgres, so it costs you nothing extra.\n- You expect the tool to grow into something much bigger.\n\nIf you use an ORM or query builder (SQLAlchemy, Prisma, Drizzle, etc.), migrating later is fairly painless. Start with SQLite and switch if you hit a real limit.",
+ "usage": {
+  "input": 2,
+  "output": 609,
+  "cacheRead": 813,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1424,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 62,
+ "secs": 7.3
+}

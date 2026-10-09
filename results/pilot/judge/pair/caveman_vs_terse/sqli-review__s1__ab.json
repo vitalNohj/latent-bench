@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "sqli-review",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives more accurate driver-specific parameterization guidance and covers missing-row behavior, while B more categorically claims that stacked SQL statements would execute despite driver-dependent restrictions."
+ }
+}

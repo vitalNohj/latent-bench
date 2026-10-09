@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better handles a destructive production reset with explicit target verification, a transactional schema reset, narrower grants than B’s GRANT ALL to PUBLIC, and a TRUNCATE alternative when reseeding only requires clearing data."
+ }
+}

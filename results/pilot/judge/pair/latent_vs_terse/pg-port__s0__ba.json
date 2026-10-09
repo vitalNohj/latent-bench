@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "pg-port",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both give the correct default port, 5432, but A answers the question completely and is faster to read without unnecessary configuration details."
+ }
+}

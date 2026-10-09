@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "drop-prod",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better serves production use by checking the connection before destructive commands, avoiding B’s default grant of schema creation privileges to everyone, and offering TRUNCATE for data-only reseeding, though both overstate what their CASCADE table-only loops preserve."
+ }
+}

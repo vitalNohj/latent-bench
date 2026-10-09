@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives a clear, measurement-first plan with comparable coverage while avoiding B’s unsafe suggestion to skip tests for config-only changes and its unsupported claim of frequent 2× speedups from runner changes."
+ }
+}

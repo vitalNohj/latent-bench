@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "git-undo",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A correctly explains the staged and unstaged options and warns about rewriting shared history, while B misleadingly recommends reverting a pushed commit as a substitute even though revert does not keep the commit’s changes."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the essential diagnostics and causes more concisely, while B misleadingly suggests that Python has a configurable heap like JVM/Node and that a heap sized above the container limit necessarily causes an instant startup OOM."
+ }
+}

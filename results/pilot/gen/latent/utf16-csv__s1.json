@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "utf16-csv",
+ "sample": 1,
+ "ok": true,
+ "text": "File is UTF-16, not UTF-8 [p=.9]. Byte `0xff` at position 0 is the start of the UTF-16 LE BOM `FF FE`, a common output of Excel's \"Unicode Text\" export and of Windows tools.\n\n`0xff` can never appear in valid UTF-8, so the decode fails on the first byte.\n\ncheck:\n```bash\nhead -c 4 client.csv | xxd\n```\n- `ff fe` + non-zero bytes → UTF-16 LE\n- `ff fe 00 00` → UTF-32 LE (rare)\n\nfix:\n```python\nimport pandas as pd\ndf = pd.read_csv(\"client.csv\", encoding=\"utf-16\")  # BOM → byte order auto-detected, BOM stripped\n```\nstdlib: `open(\"client.csv\", encoding=\"utf-16\", newline=\"\")` → `csv.reader`\n\ngotcha: Excel UTF-16 exports are often tab-delimited despite the `.csv` name. If all data lands in one column, add `sep=\"\\t\"` (`delimiter=\"\\t\"` for `csv`).\n\navoid: `encoding=\"latin-1\"` or `errors=\"ignore\"`. Both suppress the error, but the data comes back as garbage with `\\x00` between characters.\n\nnext: `xxd` output, if it doesn't start with `ff fe`",
+ "usage": {
+  "input": 2,
+  "output": 540,
+  "cacheRead": 5417,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 5959,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12173,
+ "secs": 6.5
+}

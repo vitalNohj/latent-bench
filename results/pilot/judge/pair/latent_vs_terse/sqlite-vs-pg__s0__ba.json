@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B better qualifies the recommendation and covers safe backups, local storage, and write contention, whereas A’s claim that backup is just copying a file is unsafe with active WAL writes, although B overstates how easy migration to Postgres would be."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "idem-key",
+ "sample": 1,
+ "ok": true,
+ "text": "An **idempotency key** is a unique value (usually a UUID) that the client attaches to a request, typically in a header like `Idempotency-Key: 8f3e...`. It lets the server recognize retries of the same operation.\n\n**How it works:**\n1. The client generates a key and sends it with the request, such as `POST /charges`.\n2. The server stores the key along with the result of the first request.\n3. If a request arrives again with the same key, the server returns the stored result instead of running the operation again.\n\n**Why payment APIs need them:**\n- **Networks are unreliable.** A request can succeed on the server while the response is lost through a timeout, dropped connection, or crash. The client can't tell whether the charge happened.\n- **Retrying without a key is dangerous.** A plain retry could charge the customer twice.\n- **With a key, retries are safe.** The client can retry as often as needed, and the charge happens at most once. This turns \"at-least-once\" delivery into effectively \"exactly-once\" processing.\n- **It handles concurrent duplicates.** Examples include double-clicked buttons or parallel workers. Servers typically lock on the key, so a second in-flight request gets an error or waits instead of executing.\n\n**Typical details (e.g., Stripe):**\n- Keys expire after a window, such as 24 hours.\n- Reusing a key with *different* parameters returns an error.\n- `GET` and `DELETE` are already idempotent by HTTP semantics. Keys matter mainly for `POST`.",
+ "usage": {
+  "input": 2,
+  "output": 494,
+  "cacheRead": 816,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1312,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 78,
+ "secs": 6.2
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "exit-137",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more accurate: B incorrectly claims JVM heaps ignore container limits unless explicitly configured and treats liveness-probe termination as necessarily producing exit 137, whereas A explains the SIGTERM-to-SIGKILL condition and provides clear cause-based triage."
+ }
+}

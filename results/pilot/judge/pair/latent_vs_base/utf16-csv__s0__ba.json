@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "utf16-csv",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives a more appropriately qualified diagnosis and complete fixes, while B overstates that one byte proves UTF-16 LE, incorrectly rules out UTF-16 without a BOM, and assigns an unsupported probability to cp1252."
+ }
+}

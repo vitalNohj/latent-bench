@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the highest-impact optimizations more concisely and includes the crucial warning that affected-only CI requires an accurate dependency graph and a full-run backstop, though its suggestion to skip tests for config-only changes is too broad."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "idem-key",
+ "sample": 0,
+ "ok": true,
+ "text": "An **idempotency key** is a unique client-generated value (usually a UUID) sent with a request, typically in a header like `Idempotency-Key: <uuid>`, so the server can recognize retries of the *same* operation.\n\n**How it works:**\n1. The client generates a key per logical operation (e.g., \"charge order #123\").\n2. The server stores the key with the result of the first request.\n3. If a request arrives with a key it has already seen, the server returns the stored response instead of running the operation again.\n4. Keys usually expire after a set window (Stripe uses 24h). Reusing a key with different parameters returns an error.\n\n**Why payment APIs need them:**\n- **Network ambiguity:** If a request times out or the connection drops, the client can't tell whether the charge succeeded. Retrying blindly risks charging twice.\n- **Safe retries:** With a key, the client can retry as often as needed and the charge happens at most once.\n- **POST isn't idempotent:** GET, PUT and DELETE are naturally idempotent, but \"create a charge\" isn't. The key adds that guarantee.\n- **Concurrency:** It also guards against double-clicks, duplicate job runs, or parallel workers submitting the same payment.\n\n**Example (Stripe):**\n```bash\ncurl https://api.stripe.com/v1/charges \\\n  -u sk_test_...: \\\n  -H \"Idempotency-Key: 8f14e45f-ceea-4e7a-9b1c-2d3e4f5a6b7c\" \\\n  -d amount=2000 -d currency=usd -d source=tok_visa\n```\n\n**Best practice:** Generate the key once per logical operation and persist it (e.g., tied to the order ID) before sending. Reuse the same key on retries, and never create a new key per attempt.",
+ "usage": {
+  "input": 2,
+  "output": 621,
+  "cacheRead": 816,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1439,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 78,
+ "secs": 8.1
+}

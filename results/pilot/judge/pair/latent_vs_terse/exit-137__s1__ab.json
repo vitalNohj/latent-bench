@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better distinguishes OOM kills from probe-triggered SIGTERM followed by forced SIGKILL, explains empty logs without treating them as expected, and provides a clearer cause-driven triage sequence."
+ }
+}

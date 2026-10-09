@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "text": "Exit 137 = SIGKILL (128+9). Usually OOMKilled. Empty logs fit: process killed before flushing output.\n\n**Confirm cause first:**\n```bash\nkubectl describe pod <pod> | grep -A5 \"Last State\"\nkubectl get pod <pod> -o jsonpath='{.status.containerStatuses[*].lastState.terminated.reason}'\n```\n`OOMKilled` means memory problem. `Error` with 137 means something else sent the kill.\n\n**Logs from dead container:**\n```bash\nkubectl logs <pod> --previous\nkubectl get events --sort-by=.lastTimestamp | grep <pod>\n```\n\n**Suspects, by likelihood:**\n\n1. **Memory limit too low.** Raise `resources.limits.memory`. Watch usage with `kubectl top pod <pod>`.\n   - JVM: heap ignores container limit unless `-XX:MaxRAMPercentage=75` is set (or `-Xmx` below the limit).\n   - Node: set `--max-old-space-size` below the limit.\n   - Memory leak or big startup load (cache warm, huge file read).\n2. **Liveness probe failing.** Kubelet kills container, which gives 137 with reason `Error`. Check events for `Liveness probe failed`. Fix with `initialDelaySeconds`, `startupProbe`, or higher `timeoutSeconds`.\n3. **Node memory pressure.** Kernel OOM killer picks the pod even below its limit. Check:\n   ```bash\n   kubectl describe node <node>\n   dmesg | grep -i oom\n   ```\n   Requests set too low lets the scheduler overpack the node.\n4. **Slow graceful shutdown.** SIGTERM ignored, then SIGKILL after `terminationGracePeriodSeconds`. Rarely the cause of a loop, but possible with preStop hooks.\n5. **Sidecar or init container** is the one dying. Check every container status, not only the main one.\n\n**Debug trick:** override the command to keep the container alive, then exec in and run the app by hand while watching memory:\n```yaml\ncommand: [\"sleep\", \"infinity\"]\n```\n```bash\nkubectl exec -it <pod> -- sh\n```\n\nPaste the `describe` output if still stuck.",
+ "usage": {
+  "input": 2,
+  "output": 816,
+  "cacheRead": 2713,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3531,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4776,
+ "secs": 10.0
+}

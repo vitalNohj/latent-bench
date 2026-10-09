@@ -1,0 +1,9 @@
+[
+  "our postgres queries got slow after a migration. where do i start?",
+  "the migration added a column and an index on orders(customer_id, created_at). could that index be the problem?",
+  "how do i check whether the planner actually uses it?",
+  "it uses it, but the query still takes 2s. the table has 40M rows. what next?",
+  "unrelated: what's the difference between a process and a thread?",
+  "thanks, that helps! can you give me a bash one-liner to list the 10 largest files under a directory?",
+  "last one: should we upgrade from postgres 14 to 16 now or wait?"
+]

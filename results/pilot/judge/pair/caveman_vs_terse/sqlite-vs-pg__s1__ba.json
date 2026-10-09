@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the essential recommendation and exceptions more concisely and with fewer overclaims than B's 'zero ops,' guaranteed write capacity, and categorical locking warning, though A should specify that live backups require a safe backup method rather than simply copying the database file."
+ }
+}

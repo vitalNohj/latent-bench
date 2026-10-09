@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives clearer actionable guidance, includes refresh-token rotation and reuse detection, and correctly acknowledges cross-site cookies with SameSite=None, whereas A misleadingly suggests cookie-based cross-domain APIs require the same site."
+ }
+}

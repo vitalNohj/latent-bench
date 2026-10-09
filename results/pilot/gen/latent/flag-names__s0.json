@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "flag-names",
+ "sample": 0,
+ "ok": true,
+ "text": "flagreaper: harvests flags that already died, blunt about the job\ntombstone: marks flags dead, fits a cleanup-PR workflow\ndeadwood: dead branches cluttering the tree, the flag-guarded code paths\nsweep: periodic pass that clears what's stale, verb-friendly (`sweep run`)\nstale: names the condition it detects, short CLI (`stale list`)\npick: flagreaper. Unambiguous inside a large org, and unlikely to collide with existing internal tools.",
+ "usage": {
+  "input": 2,
+  "output": 207,
+  "cacheRead": 0,
+  "cacheWrite": 5382,
+  "reasoning": 0,
+  "totalTokens": 5591,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12102,
+ "secs": 4.7
+}

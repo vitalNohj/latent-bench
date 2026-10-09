@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqli-review",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B more accurately qualifies stacked-statement injection as driver-dependent, provides a parameterized query with explicit columns, and flags the missing-user return case."
+ }
+}

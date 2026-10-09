@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A clearly covers the definition, retry safety, concurrency, and expiration without B’s misleading blanket claim that reusing a key across different charges silently swallows the second charge, when changed parameters typically trigger an error."
+ }
+}

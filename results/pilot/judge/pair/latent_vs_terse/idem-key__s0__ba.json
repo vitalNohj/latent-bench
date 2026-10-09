@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B explains the same core concept correctly while adding important concurrency, crash-consistency, and downstream-service caveats that make its at-most-once guarantee more technically grounded."
+ }
+}

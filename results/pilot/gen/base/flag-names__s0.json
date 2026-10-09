@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "flag-names",
+ "sample": 0,
+ "ok": true,
+ "text": "1. **Flagpole Graveyard** (or just **Graveyard**): finds flags that died and never got buried.\n2. **Reaper**: harvests stale flags ready for removal.\n3. **Deadflag**: blunt and greppable.\n4. **Half-Mast**: a nautical nod to flags that are no longer flying.\n5. **Flagsweeper**: a Minesweeper riff for clearing out hidden cruft.",
+ "usage": {
+  "input": 2,
+  "output": 144,
+  "cacheRead": 0,
+  "cacheWrite": 816,
+  "reasoning": 0,
+  "totalTokens": 962,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 79,
+ "secs": 3.5
+}

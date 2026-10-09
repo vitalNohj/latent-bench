@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "exit-137",
+ "sample": 0,
+ "ok": true,
+ "text": "Exit code **137 = 128 + 9 (SIGKILL)**. The process was killed from outside, so it never got a chance to log anything. Usually it's one of these:\n\n## 1. OOMKilled (most common)\n```bash\nkubectl describe pod <pod> | grep -A5 \"Last State\"\n# Look for: Reason: OOMKilled\nkubectl get pod <pod> -o jsonpath='{.status.containerStatuses[*].lastState}'\n```\n**Fix:** raise `resources.limits.memory`, or reduce usage. Common causes:\n- JVM: heap not container-aware, or `-Xmx` too close to the limit. Use `-XX:MaxRAMPercentage=75`.\n- Node: `--max-old-space-size` set higher than the limit.\n- A memory spike at startup, such as loading a large file, cache warmup, or many workers (e.g. gunicorn `-w` too high).\n\n## 2. Liveness probe killing it\nIf the reason is `Error` rather than `OOMKilled`, check the events:\n```bash\nkubectl describe pod <pod> | grep -i -A10 events\n# Look for: \"Liveness probe failed\" / \"Killing container\"\n```\n**Fix:** increase `initialDelaySeconds`, or add a `startupProbe` for slow-starting apps.\n\n## 3. Node-level pressure / eviction\n```bash\nkubectl describe node <node> | grep -A5 Conditions\nkubectl get events --sort-by=.lastTimestamp -A | grep -i -E \"oom|evict|kill\"\n```\nThe kernel OOM killer can fire on the node even if you're under your limit, when the node is overcommitted.\n\n## 4. Logs \"empty\"? Check the previous container\n```bash\nkubectl logs <pod> --previous\n```\nThe plain `kubectl logs` shows the *current* restart, which may not have output yet.\n\n## 5. Debug interactively\nOverride the entrypoint to keep the container alive, then run the app by hand:\n```yaml\ncommand: [\"sleep\", \"infinity\"]\n```\n```bash\nkubectl exec -it <pod> -- sh\n# run the real entrypoint manually and watch memory with `top`\n```\n\n## Other less common causes\n- An entrypoint script that runs `kill -9` or exits strangely.\n- A sidecar or init container (check *which* container restarted in `describe`).\n- `terminationGracePeriodSeconds` expiring during shutdown (SIGTERM ignored, then SIGKILL).\n\n**Start with `kubectl describe pod`.** The `Last State: Reason` field will tell you right away whether it's OOM.",
+ "usage": {
+  "input": 2,
+  "output": 910,
+  "cacheRead": 0,
+  "cacheWrite": 821,
+  "reasoning": 0,
+  "totalTokens": 1733,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 59,
+ "secs": 11.3
+}

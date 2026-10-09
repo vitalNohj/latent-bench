@@ -1,0 +1,17 @@
+{
+ "arm": "terse",
+ "pid": "strict-mode",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5
+  ],
+  "errors": [
+   "Recommending a useRef flag for one-time effects is misleading: it can mask StrictMode’s cleanup checks rather than make the effect safe to rerun, and it does not prevent execution on a genuine remount."
+  ]
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "utf16-csv",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better qualifies the likely UTF-16 diagnosis, distinguishes the UTF-32 LE BOM that B misidentifies as UTF-16, and warns against decoding workarounds that can silently corrupt the data."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "ci-speed",
+ "sample": 1,
+ "ok": true,
+ "text": "Here are the highest-leverage ideas, roughly ordered by typical payoff:\n\n## 1. Only build/test what changed\n- **Affected-graph builds**: Use Nx (`nx affected`), Turborepo (`--filter=...[origin/main]`), Bazel, Pants, or Moon to run only packages touched by the PR plus their dependents.\n- **Path filters**: For simpler setups, use `dorny/paths-filter` or `on.paths` in GitHub Actions to skip whole jobs, e.g. docs-only PRs skip tests.\n\n## 2. Remote/shared caching\n- **Task output caching**: Turbo/Nx remote cache or Bazel remote cache lets unchanged packages return instantly.\n- **Dependency caching**: Cache `node_modules`/pnpm store, `~/.cargo`, `~/.gradle`, pip wheels, Go mod cache. Key on the lockfile hash.\n- **Docker layer caching**: Use BuildKit with `cache-from/cache-to` (registry or GHA cache), and order Dockerfile layers so deps install before source copy.\n\n## 3. Parallelize\n- **Split jobs**: Run lint, typecheck, unit, and e2e as separate parallel jobs instead of sequential steps.\n- **Test sharding**: Use Jest/Vitest `--shard`, Playwright shards, `pytest-xdist`, or CircleCI/Knapsack timing-based splitting.\n- **Matrix**: Spread jobs per package or per shard.\n\n## 4. Find the actual bottleneck first\n- Look at per-step timings across the last ~50 runs. Usually one or two steps dominate: e2e, Docker build, install, or a slow test suite.\n- List the slowest tests (`--reporters` with durations, `pytest --durations=20`) and fix or quarantine them.\n\n## 5. Faster tooling\n- **Package manager**: Switch npm to pnpm or bun install. Use `--frozen-lockfile` and avoid redundant installs per job.\n- **Transpile/lint/type**: Use swc/esbuild instead of ts-jest/babel, Vitest instead of Jest, Biome/oxlint instead of ESLint, and `tsc --build` with incremental `.tsbuildinfo` cached.\n- **Compiled languages**: Use sccache/ccache, `cargo nextest`, and the Gradle build cache plus configuration cache.\n\n## 6. Bigger or better runners\n- Larger runners (more cores) often pay for themselves when work is parallelizable.\n- Self-hosted runners with warm caches and persistent disks remove cold-start costs.\n- Pre-bake CI images with toolchains and deps so jobs don't install them each run.\n\n## 7. Restructure the pipeline\n- **Tier tests**: Run fast checks (lint, typecheck, unit) on every push. Run heavy e2e/integration only on affected areas, on merge queue, or nightly.\n- **Merge queue**: Use GitHub merge queue so the full suite runs once before merge rather than on every PR push.\n- **Cancel superseded runs**: Add `concurrency: { group: ${{ github.ref }}, cancel-in-progress: true }`.\n- **Fail fast**: Put cheap checks first or gate expensive jobs on them.\n\n## 8. Reduce work\n- Use shallow clones (`fetch-depth: 1`, or just enough for affected detection), sparse checkout, and Git LFS only when needed.\n- Avoid building production artifacts (minification, source maps, multi-arch images) on PRs.\n- Use mocks, testcontainers reuse, or service containers instead of spinning up full stacks per test file.\n\n---\n\n**Typical realistic result**: affected-only builds plus remote cache plus parallel jobs/sharding often takes 25 min down to 5–10 min for most PRs.\n\nIf you share your CI config (e.g. `.github/workflows/*.yml`), the monorepo tool, and a run's step timings, I can point to specific changes.",
+ "usage": {
+  "input": 2,
+  "output": 1403,
+  "cacheRead": 813,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 2218,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 46,
+ "secs": 14.9
+}

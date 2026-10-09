@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "flag-names",
+ "sample": 0,
+ "ok": true,
+ "text": "1. **Flagpole** – finds flags left standing with nothing attached\n2. **Deadswitch** – a play on \"dead man's switch\"\n3. **Flag Reaper** – harvests stale flags\n4. **Toggle Tomb** – where forgotten toggles rest\n5. **Unfurl** – exposes flags that are no longer flying",
+ "usage": {
+  "input": 2,
+  "output": 115,
+  "cacheRead": 0,
+  "cacheWrite": 824,
+  "reasoning": 0,
+  "totalTokens": 941,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 98,
+ "secs": 3.0
+}

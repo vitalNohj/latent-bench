@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "git-undo",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both give the correct reset commands, but A offers non-destructive recovery and explicitly warns that revert does not keep the changes, while B recommends recovery with reset --hard without warning that it discards uncommitted changes."
+ }
+}

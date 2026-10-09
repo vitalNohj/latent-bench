@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "pg-port",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both correctly identify 5432 as the default, but A answers the question more quickly without B’s unnecessary override details."
+ }
+}

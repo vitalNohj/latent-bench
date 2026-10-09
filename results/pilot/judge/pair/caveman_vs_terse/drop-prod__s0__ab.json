@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A explicitly warns about irreversible production data loss and correctly qualifies migration-tool resets as potentially disallowed in production, whereas B unconditionally recommends them despite their production restrictions and risks."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "strict-mode",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A better explains cleanup-safe effects and warns against useRef guards that mask lifecycle problems, whereas B recommends such a guard and omits handling rejected fetches after cancellation."
+ }
+}

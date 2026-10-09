@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "winston-p99",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both misstate stdout behavior, but B explicitly and incorrectly says POSIX pipes block and implies Pino output is always asynchronous, while A offers a shorter diagnostic checklist and explicitly configures asynchronous Pino output."
+ }
+}

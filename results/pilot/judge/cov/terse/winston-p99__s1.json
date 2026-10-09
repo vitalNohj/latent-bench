@@ -1,0 +1,17 @@
+{
+ "arm": "terse",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The claim that console output to a pipe is synchronous and that Docker/systemd capture makes every logger.info block is incorrect as a blanket statement. Node stdout behavior depends on the platform and destination: on POSIX, pipe/socket writes are asynchronous, while file writes are synchronous. Logging can still cause CPU overhead and backpressure without each write synchronously blocking."
+  ]
+ }
+}

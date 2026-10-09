@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "docker-slim",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A explicitly preserves the distro release when switching to slim, whereas B misleadingly assumes the unqualified python:3.12 tag is Bookworm, risking violation of the developer’s key constraint despite its useful extra caveats."
+ }
+}

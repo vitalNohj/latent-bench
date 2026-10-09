@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "idem-key",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B explains safe payment retries clearly while adding important crash-consistency and downstream-idempotency caveats that A omits, making its at-most-once guarantee less misleading."
+ }
+}

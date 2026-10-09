@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives a measurement-first, actionable plan without B’s unsafe suggestion to skip tests for config-only changes, which can affect the entire monorepo, though B usefully warns about dependency-graph accuracy."
+ }
+}

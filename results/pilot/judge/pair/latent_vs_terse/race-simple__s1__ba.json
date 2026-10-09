@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B more accurately explains that race conditions depend on operation timing and interleaving, not simply which task finishes first, while providing a clear lost-update example and a concrete atomic fix."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "jwt-storage",
+ "sample": 0,
+ "ok": true,
+ "text": "Security question, so plain answer for warning part:\n\n**Short answer:** It works, but it's risky. Any XSS on your site can read `localStorage` and steal the token. Stolen JWTs usually can't be revoked until they expire.\n\n**Risks of `localStorage`:**\n- Readable by any JS on the page. That includes injected scripts, compromised npm deps, and third-party scripts.\n- Token persists across sessions and tabs until cleared.\n- An attacker can exfiltrate the token and use it from their own machine.\n\n**Better default: `HttpOnly` cookie**\n```\nSet-Cookie: token=...; HttpOnly; Secure; SameSite=Lax; Path=/\n```\n- JS can't read it, so XSS can't steal it. XSS can still make requests as the user while the page is open, but the token can't leave.\n- Needs CSRF protection. `SameSite=Lax/Strict` covers most cases. Add a CSRF token for state-changing requests if you need cross-site flows.\n\n**Common pattern for SPAs:**\n- Short-lived access token (5–15 min) kept in memory (JS variable), not storage.\n- Refresh token in an `HttpOnly` `Secure` `SameSite` cookie.\n- On page load or expiry, call `/refresh` to get a new access token.\n- Rotate refresh tokens and revoke them on logout.\n\n**When `localStorage` is acceptable:**\n- Low-value app, short token expiry, strict CSP, no third-party scripts.\n- Still worse than the cookie approach. Pick it only if cookies are impossible (e.g. some cross-domain API setups).\n\nEither way: set a strong CSP, sanitize output, and keep token TTL short.",
+ "usage": {
+  "input": 2,
+  "output": 618,
+  "cacheRead": 0,
+  "cacheWrite": 2698,
+  "reasoning": 0,
+  "totalTokens": 3318,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4757,
+ "secs": 8.1
+}

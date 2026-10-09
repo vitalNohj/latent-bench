@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "git-undo",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the correct command and staged-versus-unstaged distinction concisely, while B adds an unqualified `git reset --hard` recovery instruction that can destroy uncommitted changes."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "jwt-storage",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives more accurate cookie and CSRF guidance, while B misleadingly says cross-domain cookie authentication requires a shared site and oversimplifies CSRF protection for the refresh endpoint."
+ }
+}

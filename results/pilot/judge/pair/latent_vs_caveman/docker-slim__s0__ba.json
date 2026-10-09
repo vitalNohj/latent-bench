@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "docker-slim",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more reliable and provides better runtime verification, while B incorrectly claims Alpine breaks musl wheels and presents speculative per-step size savings with unwarranted precision."
+ }
+}

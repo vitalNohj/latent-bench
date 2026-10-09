@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the essential checks without B’s misleading claims that JVM heaps ignore container limits unless explicitly configured and that reason Error with exit 137 rules out an OOM kill."
+ }
+}

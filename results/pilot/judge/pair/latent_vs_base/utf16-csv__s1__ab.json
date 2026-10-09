@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "utf16-csv",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A provides the same likely diagnosis and practical fix more concisely, while also distinguishing UTF-32 LE and warning against decoding workarounds that can silently corrupt the data."
+ }
+}

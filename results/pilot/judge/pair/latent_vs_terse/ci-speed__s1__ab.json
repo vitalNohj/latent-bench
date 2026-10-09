@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A provides similarly actionable optimizations while adding crucial safeguards for affected-only execution—an accurate dependency graph, sufficient Git history, and full-suite backstops—that B omits."
+ }
+}

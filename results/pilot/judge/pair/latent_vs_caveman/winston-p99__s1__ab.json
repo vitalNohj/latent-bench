@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "winston-p99",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "Both incorrectly claim stdout pipes are synchronous on Linux, but B better separates the plausible causes and provides actionable event-loop, CPU, and GC checks without A’s unsupported probabilities or claim that matching event-loop delay confirms the cause."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B offers a more actionable plan by starting with measured bottlenecks and adding cache determinism, timing-balanced shards, and concrete test-setup fixes, though both overstate likely speedups and merge-queue savings."
+ }
+}

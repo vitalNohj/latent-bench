@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "docker-slim",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A better respects the plan-only request and preserves the existing Python version and distro release conditionally, whereas B supplies a full Dockerfile hard-coded to Python 3.12/bookworm without verifying the current base."
+ }
+}

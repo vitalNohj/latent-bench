@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B better explains the crucial client rule—reuse one key across retries of the same logical operation and use a new key for each new operation—though both replies overstate exactly-once guarantees beyond the API’s retention window and implementation constraints."
+ }
+}

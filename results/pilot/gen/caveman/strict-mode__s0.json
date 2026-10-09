@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "strict-mode",
+ "sample": 0,
+ "ok": true,
+ "text": "Not bug. React 18+ `<StrictMode>` does this on purpose, dev only.\n\n**What happen:** StrictMode mount component, run effects, simulate unmount (run cleanup), then mount again. Goal: expose effects missing cleanup or not safe to re-run. Prod build skip this, so prod run once.\n\n**Check:** look for `<StrictMode>` wrapping app, usually `main.jsx` / `index.js`:\n\n```jsx\ncreateRoot(document.getElementById('root')).render(\n  <StrictMode>\n    <App />\n  </StrictMode>\n);\n```\n\n**Right fix: add cleanup so double-run harmless.** Don't remove StrictMode to hide it.\n\nSubscription / listener:\n```jsx\nuseEffect(() => {\n  const handler = () => {/* ... */};\n  window.addEventListener('resize', handler);\n  return () => window.removeEventListener('resize', handler);\n}, []);\n```\n\nFetch, ignore stale result or abort:\n```jsx\nuseEffect(() => {\n  const controller = new AbortController();\n  fetch(url, { signal: controller.signal })\n    .then(r => r.json())\n    .then(setData)\n    .catch(e => { if (e.name !== 'AbortError') throw e; });\n  return () => controller.abort();\n}, [url]);\n```\n\nConnection / socket / timer: close or clear in cleanup.\n\n**Truly once-per-app logic** (analytics init, SDK setup): move outside component, or guard with module-level flag:\n```jsx\nlet didInit = false;\nfunction App() {\n  useEffect(() => {\n    if (didInit) return;\n    didInit = true;\n    initSdk();\n  }, []);\n}\n```\n\n**Avoid:** `useRef` \"has run\" guard inside component. It hides real bugs StrictMode trying to show, and it breaks with Fast Refresh and future features that remount components.\n\nRule: if effect break when run twice, bug is in effect, not React.",
+ "usage": {
+  "input": 2,
+  "output": 705,
+  "cacheRead": 0,
+  "cacheWrite": 2706,
+  "reasoning": 0,
+  "totalTokens": 3413,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4774,
+ "secs": 7.7
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "text": "Logging on every request is almost never slow by itself. A 10× jump in p99 (not p50) usually means **the logger is blocking the event loop**, so one slow log write stalls every in-flight request. Common causes, most likely first:\n\n### 1. Synchronous stdout writes\nOn Linux, `process.stdout` is **synchronous** when it's a file or pipe, which is the normal case in Docker or k8s. Winston's `Console` transport writes there. If the consumer (Docker log driver, journald, fluentd sidecar) is slow or the pipe buffer fills, each `write()` blocks the whole process. That shows up as tail-latency spikes, not average slowdown.\n\n### 2. Expensive formatting on the hot path\n- `format.prettyPrint()`, `format.colorize()`, or `format.json({ space: 2 })` in production\n- Logging whole objects such as `logger.info('req', { req })` or `res`, or large bodies. Winston runs `safe-stable-stringify` on them, which handles cycles and sorts keys. That's CPU-heavy and blocks the event loop.\n- `format.errors({ stack: true })` and `format.splat()` on every call\n- Building log strings even when the level is disabled, e.g. ``logger.debug(`...${JSON.stringify(x)}`)``\n\n### 3. Transport issues\n- **File transport / `winston-daily-rotate-file`**: rotation, or backpressure when the stream's highWaterMark is hit\n- **Http / cloud transports** (Datadog, Loggly, etc.) without batching\n- **Multiple transports**: each one formats separately\n\n### 4. GC pressure\nAllocating big metadata objects per request produces more frequent and longer GC pauses, which also land in p99.\n\n---\n\n### Confirm it quickly\n```js\nconst { monitorEventLoopDelay } = require('perf_hooks');\nconst h = monitorEventLoopDelay({ resolution: 10 }); h.enable();\nsetInterval(() => { console.error('ELD p99 ms', h.percentile(99) / 1e6); h.reset(); }, 5000);\n```\n- If event-loop delay p99 is around the latency spike, the cause is blocking (#1, #2, or #4).\n- Then profile: `node --cpu-prof app.js` or `npx clinic flame -- node app.js`. Look for `stringify`, `writeSync`, or winston `format` frames.\n- A quick A/B test: set `silent: true` on the transport, or redirect output with `> /dev/null`. If p99 recovers with `/dev/null`, stdout backpressure (#1) is the cause.\n\n### Fixes\n1. **Log less per request**: method, url, status, duration, request id. Never the raw `req`/`res`.\n2. **No pretty-printing or colorize in prod.** Use plain `format.json()`.\n3. **Make writes async**: ship logs from a non-blocking sink, or switch to **pino**, which has a much cheaper serializer:\n   ```js\n   const pino = require('pino');\n   const logger = pino(pino.destination({ sync: false, minLength: 4096 }));\n   ```\n   `pino-http` is a drop-in for per-request logs.\n4. Check that the downstream log consumer (Docker driver / agent) isn't throttling. For example, Docker's `mode=non-blocking` log option avoids the blocking writes.\n5. If volume is huge, sample successful requests and log all errors.\n\nIf you paste your winston config and the per-request log call, I can point at the specific culprit.",
+ "usage": {
+  "input": 2,
+  "output": 1653,
+  "cacheRead": 818,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 2473,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 89,
+ "secs": 18.7
+}

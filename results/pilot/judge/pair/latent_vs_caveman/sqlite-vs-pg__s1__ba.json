@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B better qualifies the SQLite recommendation by workload and clearly states its single-writer limit, avoiding A’s misleading blanket throughput claim and implication that WAL is required to prevent concurrent-write failures."
+ }
+}

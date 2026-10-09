@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "utf16-csv",
+ "sample": 0,
+ "ok": true,
+ "text": "File is UTF-16 LE, not UTF-8 [inferred: byte 0 = `0xFF`]. `FF FE` is the UTF-16 little-endian BOM. Excel's \"Unicode Text\" export and many Windows tools write this.\n\ncause: `open()` or `pd.read_csv()` defaults to UTF-8 → `0xFF` is never valid as a UTF-8 lead byte → fails at position 0\n\ncheck:\n```\nhead -c 4 client.csv | xxd\n```\n`fffe` followed by a char and `00` (e.g. `fffe 4100`) → UTF-16 LE confirmed\n\nfix:\n```python\nimport pandas as pd\ndf = pd.read_csv(\"client.csv\", encoding=\"utf-16\")  # BOM picks endianness, BOM stripped\n```\nstdlib: `open(\"client.csv\", encoding=\"utf-16\", newline=\"\")` → `csv.reader`\n\ngotcha: Excel \"Unicode Text\" files are usually **tab-separated**, not comma-separated, despite the `.csv` name → if the whole row lands in one column, add `sep=\"\\t\"` (`delimiter=\"\\t\"` for `csv`)\n\nalt: other bytes after `ff` (no `fe`) → not UTF-16. Try `encoding=\"cp1252\"` [p=.2]\n\nnext: run the `xxd` check before picking the encoding",
+ "usage": {
+  "input": 2,
+  "output": 543,
+  "cacheRead": 0,
+  "cacheWrite": 5417,
+  "reasoning": 0,
+  "totalTokens": 5962,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12173,
+ "secs": 6.5
+}

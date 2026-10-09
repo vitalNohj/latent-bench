@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A more accurately explains that race conditions depend on the ordering of interleaved steps, not merely which task finishes first, and its milk analogy better illustrates a faulty check-then-act sequence than B's cookie competition."
+ }
+}

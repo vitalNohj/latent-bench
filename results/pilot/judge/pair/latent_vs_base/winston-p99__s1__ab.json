@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "winston-p99",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "Both incorrectly claim Linux stdout pipes are synchronous (pipes are asynchronous; files are synchronous), but A gives a more concise diagnostic plan with fewer additional misleading claims, such as B treating recovery with /dev/null as proof of stdout backpressure."
+ }
+}

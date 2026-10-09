@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "flag-names",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A provides five usable names that better match dead-flag detection, while B’s “Unfurl” explanation misleadingly suggests the tool removes flags rather than finds them."
+ }
+}

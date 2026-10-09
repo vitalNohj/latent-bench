@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "jwt-storage",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives similarly actionable storage guidance with fewer misleading simplifications, while A incorrectly implies cross-domain cookie authentication requires a shared site and understates the refresh endpoint’s potential CSRF protection needs."
+ }
+}

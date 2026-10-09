@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "strict-mode",
+ "sample": 0,
+ "ok": true,
+ "text": "Not a bug. It's **React StrictMode** (React 18+). In development it deliberately mounts, unmounts, and remounts each component to surface effects that lack proper cleanup. Production builds skip this.\n\n**What to do:** make the effect safe to run twice by returning a cleanup function.\n\n```jsx\nuseEffect(() => {\n  const id = setInterval(tick, 1000);\n  return () => clearInterval(id);        // cleanup\n}, []);\n\n// fetches: ignore or abort stale results\nuseEffect(() => {\n  const ctrl = new AbortController();\n  fetch(url, { signal: ctrl.signal }).then(/* ... */);\n  return () => ctrl.abort();\n}, [url]);\n```\n\n**Don't:**\n- Remove `<StrictMode>` just to hide it. That only masks real bugs.\n- Use a `useRef` \"has run\" flag to skip the second run. Fix the cleanup instead.\n\nIf something genuinely must run only once per app load (e.g., analytics init), put it at module level, outside any component.",
+ "usage": {
+  "input": 2,
+  "output": 408,
+  "cacheRead": 0,
+  "cacheWrite": 822,
+  "reasoning": 0,
+  "totalTokens": 1232,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 76,
+ "secs": 5.6
+}

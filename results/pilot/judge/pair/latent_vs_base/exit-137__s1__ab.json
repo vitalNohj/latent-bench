@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "exit-137",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives faster, well-ordered triage and correctly explains how failed liveness probes can lead to SIGKILL and crash loops, whereas B misleadingly claims SIGTERM-to-SIGKILL escalation matters only on shutdown, not in a crash loop."
+ }
+}

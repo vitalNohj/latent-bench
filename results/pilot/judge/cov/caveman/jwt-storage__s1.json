@@ -1,0 +1,18 @@
+{
+ "arm": "caveman",
+ "pid": "jwt-storage",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The claim that XSS can send authenticated requests 'only while the page is open' is misleading. XSS can make lasting account changes, establish persistent access, or potentially install a malicious service worker; HttpOnly prevents direct cookie reads, not these effects."
+  ]
+ }
+}

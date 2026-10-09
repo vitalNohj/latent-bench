@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "idem-key",
+ "sample": 0,
+ "ok": true,
+ "text": "idempotency key = client-generated unique ID (usually UUIDv4) sent with a mutating request, so retries of the same request run the operation at most once\n\nwhy payments need it:\n- network failure is ambiguous: client sends `POST /charges` → timeout → client cannot know whether the charge happened\n- retry without key → possible double charge\n- no retry → possible lost payment\n- key makes retry safe: same key → server returns the original result, no second charge\n- ∴ at-least-once delivery + idempotency ≈ exactly-once effect\n\nmechanism (server side):\n1. request arrives with `Idempotency-Key: <uuid>`\n2. lookup key in store, scoped per account/API key\n   - not found → insert key as `in_progress` (unique constraint, atomic), execute, store response, mark `done`\n   - found + `done` → replay stored status code and body, skip execution\n   - found + `in_progress` → `409` | wait, ∵ concurrent duplicate must not run twice\n3. same key + different request body → reject (Stripe: `400`) ∵ likely a client bug, not a retry\n4. expire keys after a TTL (Stripe ≈ 24 h)\n\nexample:\n```\nPOST /v1/charges\nIdempotency-Key: 9f1c...e2\n{amount: 5000, currency: \"usd\"}\n→ timeout\nretry, same key, same body\n→ 200, original charge object; card charged once\n```\n\nclient rules:\n- one key per logical operation, generated before the first attempt and reused on every retry\n- new key only for a new intent, e.g. user clicks \"pay\" again for a separate purchase\n- persist the key with the order record, so a client crash mid-retry still reuses it\n\npitfalls:\n- check-then-insert without atomicity → race → double execution. Need a unique index or a lock\n- storing the key outside the transaction that does the side effect → crash between the two → inconsistent state\n- downstream calls such as the card network need their own idempotency, or the guarantee stops at your service boundary\n\nused by: Stripe, Adyen, PayPal, Square. IETF draft standardizes `Idempotency-Key` header for HTTP",
+ "usage": {
+  "input": 2,
+  "output": 723,
+  "cacheRead": 5374,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6099,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12082,
+ "secs": 9.5
+}

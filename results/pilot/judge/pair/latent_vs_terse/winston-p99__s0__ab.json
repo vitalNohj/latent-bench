@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "winston-p99",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "Both wrongly claim stdout pipes are synchronous on Linux, but A provides better targeted diagnostics while B additionally mischaracterizes Winston’s normally asynchronous File transport and implies that awaiting logger.log() waits for network delivery, although it normally returns the logger rather than a promise."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "ci-speed",
+ "sample": 0,
+ "ok": true,
+ "text": "Ideas, roughly by impact:\n\n**Do less work**\n- **Affected-only builds/tests**: use Nx, Turborepo, Bazel, or Pants to run only targets touched by the diff and their dependents.\n- **Path filters**: skip workflows when only docs or unrelated packages change.\n- **Remote build cache**: Turbo, Nx Cloud, or Bazel remote cache, so unchanged packages are never rebuilt or retested.\n- **Move slow suites off the PR path**: run full E2E, cross-browser, or fuzz tests on merge or nightly. Keep a smoke subset on PRs.\n\n**Parallelize**\n- **Shard tests** across runners (Jest `--shard`, Playwright shards, pytest-xdist, Go `-p`).\n- **Split the pipeline into a DAG** so lint, typecheck, unit, and build run concurrently instead of serially.\n- **Use bigger runners** for CPU-bound steps. They often cost less overall than slow small ones.\n\n**Cut overhead**\n- **Cache dependencies** (pnpm store, `~/.cache`, Go mod, Gradle) keyed on lockfile hashes.\n- **Prebuilt CI images** with toolchains baked in, instead of installing them every run.\n- **Shallow or sparse checkout** (`fetch-depth`, sparse-checkout) for large repos.\n- **Docker layer caching** (BuildKit `--cache-from`, registry cache).\n- **Faster tools**: swc/esbuild instead of tsc/babel for test transpiling, Biome or oxlint instead of ESLint, `tsc --incremental`, uv instead of pip.\n\n**Find the real bottleneck**\n- **Profile first**: get per-step timings and identify the critical path. A single 15-min job often dominates.\n- **Rebalance or split the slowest test files**, and fix flaky retries, which silently add minutes.\n- **Remove sleeps and real network calls** from tests.\n\n**Process**\n- **Merge queue** so the full suite runs once at merge, not on every push.\n- **Cancel in-progress runs** on new pushes (`concurrency: cancel-in-progress`).\n- **Shift checks left**: pre-commit hooks for lint and format.\n\nA typical win: affected-only builds plus a remote cache plus sharding often takes 25 min down to 5–10.",
+ "usage": {
+  "input": 2,
+  "output": 850,
+  "cacheRead": 0,
+  "cacheWrite": 821,
+  "reasoning": 0,
+  "totalTokens": 1673,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 65,
+ "secs": 10.7
+}

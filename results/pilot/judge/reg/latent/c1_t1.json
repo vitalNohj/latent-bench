@@ -1,0 +1,12 @@
+{
+ "arm": "latent",
+ "convo": 1,
+ "turn": 1,
+ "ok": true,
+ "judge": {
+  "register": 2,
+  "social": false,
+  "offer": false,
+  "meta": false
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "arm": "latent",
+ "pid": "ci-speed",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "Blanket skipping of test jobs for config-only PRs is unsafe: configuration changes can affect builds, runtime behavior, or tests and may require validation."
+  ]
+ }
+}

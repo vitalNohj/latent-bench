@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "docker-slim",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more technically reliable and better qualified: B’s copy-then-delete wheels strategy retains their bytes in an earlier layer and its stripping advice lacks a testing warning, although A unnecessarily includes a Dockerfile despite the plan-only request."
+ }
+}

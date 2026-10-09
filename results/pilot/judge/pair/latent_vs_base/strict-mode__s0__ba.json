@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "Both explain StrictMode and cleanup correctly, but B misleadingly recommends a useRef guard for once-only work and categorically moves POSTs out of effects, while A gives more coherent, actionable guidance."
+ }
+}

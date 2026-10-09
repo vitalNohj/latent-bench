@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A explicitly states the crucial client rules—reuse one key for retries of a logical operation and use a new key for a new operation—while B omits that guidance and overstates retry safety as unlimited despite key expiration."
+ }
+}

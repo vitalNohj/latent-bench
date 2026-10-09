@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "ci-speed",
+ "sample": 1,
+ "ok": true,
+ "text": "First step: measure. Find where 25 min go: install, build, test, lint, queue wait. Per-job timings from CI UI or `gh run view --log`. Fix biggest slice first.\n\n**Run less (biggest win in monorepo)**\n- Affected-only builds/tests. Nx `affected`, Turborepo `--filter=...[origin/main]`, Bazel, Pants, or path filters (`dorny/paths-filter`). Only touch changed packages plus dependents.\n- Skip CI for docs-only changes (`paths-ignore`).\n- Full suite on merge queue / main / nightly. PRs get affected subset.\n\n**Cache harder**\n- Remote build cache (Turbo remote cache, Nx Cloud, Bazel remote cache). Unchanged packages restore in seconds.\n- Cache dependency install keyed on lockfile hash. pnpm store, `~/.cache/pip`, Gradle, Cargo `target/`.\n- Docker: BuildKit layer cache (`cache-from: type=gha` or registry). Order Dockerfile so deps install before source copy.\n- Prebuilt CI image with toolchains baked in. No `apt-get install` each run.\n\n**Parallelize**\n- Split lint, typecheck, unit, integration, e2e into separate jobs.\n- Shard tests across runners (`jest --shard`, `pytest-split`, Playwright `--shard`). Use timing data so shards balance.\n- Matrix per package for big ones.\n- Watch critical path. Longest job sets wall time. Split that one first.\n\n**Faster machines**\n- Bigger runners (more cores, RAM). Often cheaper than dev time wasted waiting.\n- Self-hosted or warm runners (Buildjet, Namespace, Depot, Blacksmith). Warm disk keeps cache local.\n- Check queue time. If jobs wait 5 min for a runner, fix capacity, not code.\n\n**Faster tools**\n- tsc to `tsc --build` incremental, or swc/esbuild for transpile with typecheck in a separate job.\n- ESLint to Biome/oxlint. Jest to Vitest.\n- Python: `uv` instead of pip. Ruff instead of flake8/black/isort.\n- Lint only changed files on PR.\n\n**Tame slow tests**\n- Find top 10 slowest tests (`--durations`, reporter output). Usually a few cause most of the time.\n- Kill sleeps and real network calls. Mock external services.\n- DB tests: transaction rollback per test, not re-migrate. Use tmpfs for Postgres.\n- Quarantine flaky tests. Retries waste minutes and hide problems.\n- E2E: run only on affected apps, or move to merge queue.\n\n**Pipeline shape**\n- Fail fast: cheap checks (lint, format, typecheck) first or in parallel. Cancel the rest on failure.\n- `concurrency: cancel-in-progress` so new pushes kill stale runs.\n- Shallow clone (`fetch-depth: 1`). For affected detection, fetch only the merge base.\n- Merge queue (GitHub, Mergify): PR runs a light check, the queue runs full.\n\n**Typical order of payoff**\n1. Affected-only.\n2. Remote cache.\n3. Test sharding.\n4. Bigger/warm runners.\n5. Tool swaps.\n\nShare stack (language, build tool, CI provider) plus a job timing breakdown for a targeted plan.",
+ "usage": {
+  "input": 2,
+  "output": 1198,
+  "cacheRead": 2705,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3905,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4763,
+ "secs": 14.5
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B is faster to scan, ties optimizations to measured bottlenecks, and adds the crucial warning that affected-only CI requires an accurate dependency graph and a full-suite backstop."
+ }
+}

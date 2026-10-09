@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "git-undo",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the correct reset command, covers the single-commit edge case, and more accurately limits the revert recommendation to shared branches, though neither reply explains that reverting does not keep the changes in the working tree."
+ }
+}

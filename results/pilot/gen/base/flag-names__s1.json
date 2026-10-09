@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "flag-names",
+ "sample": 1,
+ "ok": true,
+ "text": "1. **Flagfall**: plays on \"windfall\"; flags that have fallen out of use.\n2. **Stale Mate**: finds stale flags and helps you clean them up.\n3. **Half-Mast**: flags that are lowered and no longer flying.\n4. **Flag Reaper**: harvests dead flags from the codebase.\n5. **Toggle Tomb**: where retired toggles are laid to rest.",
+ "usage": {
+  "input": 2,
+  "output": 175,
+  "cacheRead": 816,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 993,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 79,
+ "secs": 3.6
+}

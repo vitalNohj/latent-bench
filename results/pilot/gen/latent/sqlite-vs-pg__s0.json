@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "ok": true,
+ "text": "SQLite in WAL mode. 20 users on one server is well inside its range [assumed: write-light CRUD, not heavy concurrent writes]\n\n| | SQLite | Postgres |\n|---|---|---|\n| ops | a file, no service, no auth, no tuning | one more daemon, users, upgrades |\n| backup | Litestream continuous to S3, or `sqlite3 .backup` | `pg_dump`, WAL archiving |\n| concurrency | many readers, one writer at a time; WAL keeps readers unblocked | MVCC, many concurrent writers |\n| latency | in-process, no network hop | socket round-trip per query |\n| features | JSON, FTS5, CTEs, window functions | richer types, extensions (PostGIS, pgvector), `LISTEN/NOTIFY`, row-level security |\n| migrations | `ALTER TABLE` limited, often needs table rebuild | full `ALTER` |\n\nsetup: `PRAGMA journal_mode=WAL; PRAGMA busy_timeout=5000; PRAGMA foreign_keys=ON;`\nrisk: long write transactions block every other writer, so keep writes short. Storing the db on network storage (NFS, SMB) breaks locking, so keep it on local disk only.\nswitch to Postgres when: a second app server needs the same db | sustained concurrent writes cause `SQLITE_BUSY` | you need a Postgres-only feature | the org already runs managed Postgres, so it adds no ops work\nmigration path: use an ORM or query builder that supports both (Drizzle, Prisma, SQLAlchemy) so switching later is a config change plus data copy",
+ "usage": {
+  "input": 2,
+  "output": 587,
+  "cacheRead": 0,
+  "cacheWrite": 5379,
+  "reasoning": 0,
+  "totalTokens": 5968,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12085,
+ "secs": 8.3
+}

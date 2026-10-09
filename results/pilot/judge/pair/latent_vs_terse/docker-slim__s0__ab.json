@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "docker-slim",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more technically sound because its runtime-only virtualenv avoids B’s retained wheel layer (deleting copied wheels later does not shrink the image), and it flags assumptions and missing-library risks, though its Dockerfile sketch exceeds the requested plan-only scope."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "docker-slim",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "B better respects the plan-only request, preserves the existing Python version and distro release, and includes more complete dependency diagnosis and runtime verification without A’s unsolicited full Dockerfile and hard-coded Python upgrade."
+ }
+}

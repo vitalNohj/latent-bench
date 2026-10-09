@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "jwt-storage",
+ "sample": 0,
+ "ok": true,
+ "text": "It's common, but generally **not recommended** for anything sensitive. The tradeoff:\n\n**Risk: XSS**\n- Any JavaScript running on your page can read `localStorage`. That includes injected scripts, compromised npm dependencies, and third-party scripts like analytics or ads.\n- A stolen JWT works until it expires, from anywhere. You can't easily revoke it unless you maintain a denylist.\n\n**Safer alternative: `HttpOnly` cookie**\n```\nSet-Cookie: token=...; HttpOnly; Secure; SameSite=Lax; Path=/\n```\n- JS can't read it, so XSS can't exfiltrate it. XSS can still make requests *as* the user while they're on the page, but the token itself doesn't leave.\n- You then need CSRF protection. `SameSite=Lax`/`Strict` covers most cases; add a CSRF token for state-changing requests if you need cross-site flows or support older browsers.\n\n**Common robust pattern**\n- **Short-lived access token** (5–15 min), kept in memory (a JS variable, not storage).\n- **Refresh token** in an `HttpOnly; Secure; SameSite` cookie, ideally rotated on each use.\n- On page load or expiry, call `/refresh` to get a new access token.\n\n**When localStorage is \"okay enough\"**\n- Low-stakes apps, internal tools, or prototypes.\n- Short token lifetimes plus a strong CSP (no `unsafe-inline`, strict script sources) and careful dependency hygiene.\n- Cases where cookies are impractical, e.g. some cross-domain API setups. Even then, prefer in-memory storage with a refresh flow.\n\n**Bottom line:** For production apps handling user accounts or money, use `HttpOnly` cookies (or in-memory access token + cookie refresh token). Reserve localStorage for low-risk scenarios, and regardless of storage, keep tokens short-lived and lock down XSS.",
+ "usage": {
+  "input": 2,
+  "output": 699,
+  "cacheRead": 0,
+  "cacheWrite": 806,
+  "reasoning": 0,
+  "totalTokens": 1507,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 40,
+ "secs": 9.1
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "drop-prod",
+ "sample": 0,
+ "ok": true,
+ "text": "**Warning:** This permanently deletes all tables and data in prod and cannot be undone. Take a backup first and confirm you're connected to the right database.\n\nBack up first:\n```bash\npg_dump -Fc -h HOST -U USER -d DBNAME -f prod_backup_$(date +%F).dump\n```\n\n**Option 1: Drop and recreate the `public` schema.** This removes tables, views, sequences, functions, and types in `public`.\n```sql\nDROP SCHEMA public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO public;  -- restore default grants if needed\nGRANT ALL ON SCHEMA public TO <app_user>;\n```\n\n**Option 2: Drop only the tables and keep the schema, functions, and types.**\n```sql\nDO $$\nDECLARE r record;\nBEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\n**Option 3: Keep the tables and wipe the data.** This works if your seed doesn't recreate the schema.\n```sql\nTRUNCATE TABLE t1, t2, ... RESTART IDENTITY CASCADE;\n```\n\nVerify host and DB before running: `SELECT current_database(), inet_server_addr();`. Other schemas (not `public`) need the same treatment. If migrations are managed by a tool (Prisma, Rails, Alembic), it may already have a reset command, but check that the command is allowed against prod.",
+ "usage": {
+  "input": 2,
+  "output": 598,
+  "cacheRead": 0,
+  "cacheWrite": 2704,
+  "reasoning": 0,
+  "totalTokens": 3304,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4779,
+ "secs": 8.1
+}

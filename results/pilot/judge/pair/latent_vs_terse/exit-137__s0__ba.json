@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B more accurately explains how failed liveness probes lead to SIGKILL, covers previous-instance and multi-container logs, and gives a clearer diagnostic next step, though its numerical probabilities are unsupported."
+ }
+}

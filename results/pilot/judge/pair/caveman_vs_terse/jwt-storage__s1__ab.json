@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both give broadly correct guidance, but A better explains refresh-token reuse revocation and emphasizes that storage choices only limit XSS damage rather than prevent attacks."
+ }
+}

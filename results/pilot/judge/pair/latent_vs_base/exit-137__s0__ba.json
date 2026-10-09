@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "exit-137",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B is faster to act on and adds useful details about SIGTERM-to-SIGKILL escalation, log buffering, and container selection, although its numerical probabilities are unsupported."
+ }
+}

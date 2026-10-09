@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "strict-mode",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A more accurately describes StrictMode’s effect setup–cleanup–setup replay, while B misleadingly describes a full component remount and suggests module-level calls or data libraries as fixes for POST-on-load effects."
+ }
+}

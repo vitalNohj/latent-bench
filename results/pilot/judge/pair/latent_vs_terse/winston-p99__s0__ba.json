@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "winston-p99",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both misstate stdout behavior, but B makes Linux pipe writes its leading diagnosis even though they are asynchronous, while A offers a broader, less overconfident set of causes and useful isolation steps."
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "arm": "base",
+ "pid": "docker-slim",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5,
+   1,
+   1
+  ],
+  "errors": [
+   "The package-size command leaves the wildcard unquoted and runs no shell inside the container, so the host shell expands it rather than the container shell; it will not reliably measure the container's site-packages.",
+   "pipdeptree shows dependency relationships, but does not determine whether dependencies are unused."
+  ]
+ }
+}

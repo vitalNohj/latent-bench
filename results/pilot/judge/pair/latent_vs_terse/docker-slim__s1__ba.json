@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "docker-slim",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B better qualifies its base-image and size assumptions, explicitly preserves the current Python minor and Debian release, and explains runtime-library risks and why layer ordering improves caching rather than image size."
+ }
+}

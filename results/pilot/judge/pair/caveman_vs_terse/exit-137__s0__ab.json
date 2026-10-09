@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B covers the essential checks and fixes more concisely, while avoiding A’s misleading suggestion that Java, Node, and Python uniformly ignore cgroup limits or that a heap configured above the limit necessarily causes an immediate OOM."
+ }
+}

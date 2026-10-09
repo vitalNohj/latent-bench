@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "winston-p99",
+ "sample": 0,
+ "ok": true,
+ "text": "Likely cause: logging work blocks event loop on every request. Tail latency spikes because requests queue behind it.\n\nCommon culprits, most likely first:\n\n1. **Logging whole `req`/`res` object.** `logger.info(req)` or `{ req }` makes winston serialize a huge graph: sockets, headers, and circular refs (`safe-stable-stringify` walks it all). That costs milliseconds of synchronous CPU per call. Log only picked fields.\n2. **Console transport to slow stdout.** In Node, `process.stdout` is **synchronous** for files and TTYs, and on POSIX also for pipes. If stdout is a terminal, Docker log driver, or a slow pipe, each write blocks.\n3. **Expensive formats.** `prettyPrint()`, `colorize()`, `splat()`, `errors({ stack: true })`, and multiple `combine` steps all run per log line. `prettyPrint` uses `util.inspect`, which is slow.\n4. **File transport backpressure.** High RPS fills the stream buffer, memory grows, and GC pauses push up p99.\n5. **HTTP or remote transport** (Loggly, Datadog HTTP, etc.) running per request without batching. Extra sockets and promise churn add up.\n6. **Logging at debug level in prod**, or building log strings eagerly (template literals, `JSON.stringify` before the level check).\n\nConfirm:\n```bash\nnode --cpu-prof server.js        # load test, open .cpuprofile in Chrome DevTools\n# or\nnpx clinic flame -- node server.js\n```\nLook for `stringify`, `inspect`, `writeSync`, or `format` frames. Also measure event loop lag:\n```js\nconst { monitorEventLoopDelay } = require('perf_hooks');\nconst h = monitorEventLoopDelay(); h.enable();\nsetInterval(() => console.error('p99 lag ms', h.percentile(99) / 1e6), 5000);\n```\n\nFix:\n```js\nconst logger = winston.createLogger({\n  level: process.env.LOG_LEVEL || 'info',\n  format: winston.format.combine(\n    winston.format.timestamp(),\n    winston.format.json()          // no prettyPrint/colorize in prod\n  ),\n  transports: [new winston.transports.Console()],\n});\n\napp.use((req, res, next) => {\n  const start = process.hrtime.bigint();\n  res.on('finish', () => {\n    logger.info('req', {\n      method: req.method,\n      url: req.originalUrl,\n      status: res.statusCode,\n      ms: Number(process.hrtime.bigint() - start) / 1e6,\n    });\n  });\n  next();\n});\n```\n\nIf still slow, switch to `pino`. It is roughly 5–10x faster, uses async `sonic-boom` output, and can move transport work to a worker thread (`pino.transport`). Ship logs with a sidecar (Vector or Fluent Bit) instead of an in-process HTTP transport.\n\nPaste your logger config and middleware for an exact diagnosis.",
+ "usage": {
+  "input": 2,
+  "output": 1140,
+  "cacheRead": 0,
+  "cacheWrite": 2710,
+  "reasoning": 0,
+  "totalTokens": 3852,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4806,
+ "secs": 12.1
+}

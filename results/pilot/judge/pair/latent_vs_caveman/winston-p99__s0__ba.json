@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "winston-p99",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both incorrectly claim POSIX stdout pipes are synchronous, but B elevates that error into its leading diagnosis with unsupported probabilities, whereas A is more appropriately conditional and provides broader causes and a concrete minimal-logging example."
+ }
+}

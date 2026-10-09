@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "ci-speed",
+ "sample": 1,
+ "ok": true,
+ "text": "Biggest win is usually affected-only builds plus remote cache: PRs touching 1 package stop rebuilding and testing all of them. Ranked by typical payoff/effort [assumed: no tool access to your repo; JS/TS-style monorepo]:\n\n1. affected-only: run build/test/lint only for packages changed vs base + their dependents. Nx `affected`, Turborepo `--filter=...[origin/main]`, Bazel/Pants native\n2. remote cache: Turbo/Nx remote cache, Bazel remote cache → unchanged tasks restore in seconds instead of re-running\n3. test sharding: split suite across N parallel jobs by timing data. Jest/Vitest `--shard`, Playwright `--shard`, CircleCI/Buildkite timing splits\n4. dependency install cache: cache pnpm store / `~/.npm` / `node_modules` keyed on lockfile hash; `pnpm install --frozen-lockfile --prefer-offline`\n5. parallel DAG > serial pipeline: lint, typecheck, unit, build as independent jobs; e2e waits only on build\n6. Docker layer cache: BuildKit `--cache-from`/`cache-to type=gha|registry`; deps layer before source copy\n7. bigger | self-hosted runners: more cores + warm disk cache. Often 2× for config-only change\n8. split fast vs slow gates: PR runs unit + affected e2e; full e2e/matrix runs on merge queue or nightly\n9. faster tools: `tsc` → `tsc --build` incremental | `tsgo`; Jest → Vitest; webpack → esbuild/Rspack; eslint → Biome/oxlint for hot rules\n10. typecheck once: project references + `tsc -b` instead of per-package full `tsc`\n11. kill flaky retries: retries silently add minutes; quarantine flaky tests\n12. shallow clone: `fetch-depth` minimal, but deep enough for affected base diff\n13. cancel superseded runs: `concurrency: cancel-in-progress` → frees runners, cuts queue wait\n14. skip by path: docs-only / config-only PRs skip test jobs\n\ntrap: affected-only needs an accurate dependency graph. Undeclared cross-package imports → missed tests → green CI, broken main. Keep a full run on main/merge queue as backstop.\n\nnext: profile one 25 min run per job/step. Where the time goes decides the ranking:\n- install-heavy → 4\n- test-heavy → 1+3\n- build-heavy → 2+6\n- queue-heavy → 7+13",
+ "usage": {
+  "input": 2,
+  "output": 923,
+  "cacheRead": 5379,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6304,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12069,
+ "secs": 12.4
+}

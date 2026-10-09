@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B provides a more reliable, actionable plan by emphasizing measurement, deterministic caching, timing-balanced shards, and slow-test fixes, while avoiding A’s misleading near-linear scaling claim for larger runners."
+ }
+}

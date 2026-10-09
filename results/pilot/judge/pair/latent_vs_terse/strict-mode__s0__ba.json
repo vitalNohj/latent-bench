@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the core explanation and cleanup guidance more clearly, while B misleadingly suggests a useRef guard for once-only work and module scope for POSTs, undermining its own warning against masking remount bugs."
+ }
+}

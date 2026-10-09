@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives clearer, actionable guidance and includes refresh-token rotation, while avoiding A’s misleading suggestion that cross-domain cookie authentication requires a same-site deployment."
+ }
+}

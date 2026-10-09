@@ -1,0 +1,18 @@
+{
+ "arm": "terse",
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   0.5,
+   1,
+   1
+  ],
+  "errors": [
+   "Copying only the SQLite database file is not a safe backup while writes are occurring, especially in WAL mode; use SQLite's backup API or a coordinated snapshot.",
+   "Using an ORM or query builder does not guarantee a painless migration to Postgres; schema, SQL, data types, and database behavior may still require changes."
+  ]
+ }
+}

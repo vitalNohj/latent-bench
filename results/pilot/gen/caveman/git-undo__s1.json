@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "git-undo",
+ "sample": 1,
+ "ok": true,
+ "text": "```bash\ngit reset --soft HEAD~1\n```\n\nCommit gone, changes stay staged.\n\nWant changes unstaged instead:\n\n```bash\ngit reset HEAD~1\n```\n\n(`--mixed` default: changes kept in working tree, not staged.)\n\n**Warning:** if commit already pushed, resetting rewrites history. Others pulling get conflicts. For pushed commit, use `git revert HEAD` instead, or force-push only if branch is yours alone.",
+ "usage": {
+  "input": 2,
+  "output": 191,
+  "cacheRead": 2698,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 2891,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4770,
+ "secs": 3.6
+}

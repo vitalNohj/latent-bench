@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "sqli-review",
+ "sample": 0,
+ "ok": true,
+ "text": "**Security warning:** This function is vulnerable to SQL injection. `user_id` is interpolated directly into the SQL string, so an attacker-controlled value like `1 OR 1=1` or `1; DROP TABLE users; --` gets executed as SQL. This can leak or destroy data.\n\nFix: use parameterized query. Driver escapes value.\n\n```python\ndef get_user(user_id):\n    query = \"SELECT * FROM users WHERE id = ?\"  # %s for psycopg2/MySQLdb\n    return db.execute(query, (user_id,)).fetchone()\n```\n\nOther issues:\n\n- `SELECT *` fetches all columns, maybe `password_hash` and other secrets. List needed columns explicitly.\n- No input validation. Cast or check type early: `int(user_id)` raises on garbage.\n- `db` is global. Hard to test and to manage transactions. Pass connection in or use context-managed session.\n- Not-found case returns `None` silently. Caller must handle it. Document it or raise a custom `UserNotFound`.\n- No type hints. Add `def get_user(user_id: int) -> Row | None:`.\n\nPlaceholder style depends on driver: `?` (sqlite3), `%s` (psycopg2, MySQLdb), `:id` (SQLAlchemy `text()`, oracledb).",
+ "usage": {
+  "input": 2,
+  "output": 490,
+  "cacheRead": 0,
+  "cacheWrite": 2742,
+  "reasoning": 0,
+  "totalTokens": 3234,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4862,
+ "secs": 6.0
+}

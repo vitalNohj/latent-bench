@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "exit-137",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A more accurately explains that liveness failures produce 137 only after SIGTERM escalates to SIGKILL, avoids B’s misleading claim that a killed process never had a chance to log, and provides concise checks for previous-instance logs, buffering, and container selection."
+ }
+}

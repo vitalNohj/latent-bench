@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "idem-key",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more precise about safe implementation—atomic key reservation, crash consistency, and downstream idempotency—while B's process-then-store description and unqualified promise of exactly one charge obscure important failure cases."
+ }
+}

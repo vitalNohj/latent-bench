@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "race-simple",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both explain the lost-update problem and standard fixes adequately, but A’s natural phrasing and straightforward example are clearer for a beginner than B’s choppy prose and extra technical detail."
+ }
+}

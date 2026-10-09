@@ -1,0 +1,18 @@
+{
+ "arm": "base",
+ "pid": "exit-137",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "SIGKILL does not imply the process never had a chance to write logs; it prevents logging or cleanup after the signal, but earlier output may exist."
+  ]
+ }
+}

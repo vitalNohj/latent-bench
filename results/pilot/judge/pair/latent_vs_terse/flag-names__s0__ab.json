@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "flag-names",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives five clear, relevant name ideas more quickly, without A’s unsupported claim that its preferred name is unlikely to collide with existing internal tools."
+ }
+}

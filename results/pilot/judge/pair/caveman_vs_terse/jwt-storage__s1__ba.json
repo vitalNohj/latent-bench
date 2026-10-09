@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the safer recommendation without B’s misleading suggestion that lacking a cookie option makes localStorage acceptable, since in-memory storage remains available and avoids persistent token exposure."
+ }
+}

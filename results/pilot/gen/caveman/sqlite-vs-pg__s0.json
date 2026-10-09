@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "ok": true,
+ "text": "**SQLite.** 20 users, one server, well within its range.\n\n**Why:**\n- Zero ops. No daemon, no auth setup, no connection pooling.\n- Backup means copying one file (`sqlite3 db.sqlite \".backup out.sqlite\"`), or use Litestream for continuous replication to S3.\n- Fast. In-process reads beat network round-trips.\n\n**Setup that matters:**\n```sql\nPRAGMA journal_mode=WAL;\nPRAGMA busy_timeout=5000;\nPRAGMA foreign_keys=ON;\nPRAGMA synchronous=NORMAL;\n```\nWAL lets reads run concurrently with writes. `busy_timeout` stops `database is locked` errors under light contention.\n\n**Pick Postgres instead if:**\n- Multiple app servers or containers need the same DB, or DB lives on network storage (NFS breaks SQLite locking).\n- Heavy concurrent writes. SQLite allows one writer at a time, which 20 users rarely hit.\n- You need Postgres features: `LISTEN/NOTIFY`, rich JSONB indexing, PostGIS, row-level security, roles.\n- Other tools (BI, Metabase, analysts) need direct network access to the data.\n- You expect the tool to grow into a multi-instance production service soon.\n\n**Hedge:** use an ORM or query builder (Drizzle, SQLAlchemy, Prisma). If you outgrow SQLite, migrating is cheap. Watch for dialect differences: SQLite types are loose, and date handling and `RETURNING`/upsert syntax differ slightly.",
+ "usage": {
+  "input": 2,
+  "output": 571,
+  "cacheRead": 0,
+  "cacheWrite": 2705,
+  "reasoning": 0,
+  "totalTokens": 3278,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4779,
+ "secs": 7.2
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B provides better production safeguards, transactional rollback, safer schema grants, and explicit warnings about migration history and cross-schema CASCADE effects, though its claim that deletion cannot be undone is overstated."
+ }
+}

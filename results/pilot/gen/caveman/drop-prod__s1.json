@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "drop-prod",
+ "sample": 1,
+ "ok": true,
+ "text": "**Warning:** This permanently deletes all tables and data in production. It cannot be undone without a backup. Verify you're connected to the right database before running anything.\n\n**1. Back up first:**\n```bash\npg_dump -Fc -h <host> -U <user> -d <db> -f prod_backup_$(date +%F).dump\n```\n\n**2. Wipe the schema (all tables, views, sequences, functions, types in `public`):**\n```sql\nBEGIN;\nDROP SCHEMA public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO public;  -- or restrict to your app role\nCOMMIT;\n```\n\n**Tables only** (keeps functions, types, extensions):\n```sql\nDO $$\nDECLARE r record;\nBEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\nNotes:\n- `DROP SCHEMA ... CASCADE` also drops extensions installed in `public` (e.g. `uuid-ossp`, `pgcrypto`). Run `CREATE EXTENSION` again before reseeding.\n- Restore original grants and owner if your app role isn't the owner (`ALTER SCHEMA public OWNER TO app_user;`).\n- Stop the app or enable maintenance mode first. Live connections will fail or hold locks.\n- If you use migrations (Prisma, Rails, Alembic, etc.), drop the migration table too, then run migrations and seed.\n\nCheck your target first:\n```sql\nSELECT current_database(), inet_server_addr();\n```",
+ "usage": {
+  "input": 2,
+  "output": 714,
+  "cacheRead": 2704,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3420,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4779,
+ "secs": 8.7
+}

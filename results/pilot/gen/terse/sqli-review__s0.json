@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "sqli-review",
+ "sample": 0,
+ "ok": true,
+ "text": "**Critical: SQL injection.** `user_id` is interpolated directly into the query, so input like `1 OR 1=1` or `1; DROP TABLE users` runs as SQL.\n\n**Fix: use a parameterized query.**\n\n```python\ndef get_user(user_id):\n    query = \"SELECT * FROM users WHERE id = ?\"   # or %s, depending on driver\n    return db.execute(query, (user_id,)).fetchone()\n```\n\n**Other issues:**\n- **`SELECT *`**: List the columns explicitly. This avoids leaking sensitive fields like password hashes and protects against schema changes.\n- **No validation**: Consider checking the type, e.g. `int(user_id)`, to fail early on bad input.\n- **Implicit global `db`**: Passing the connection in, or using dependency injection, makes the function testable.\n- **Return value**: It returns `None` when no user is found. Document that or handle it explicitly.",
+ "usage": {
+  "input": 2,
+  "output": 385,
+  "cacheRead": 0,
+  "cacheWrite": 858,
+  "reasoning": 0,
+  "totalTokens": 1245,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 164,
+ "secs": 5.2
+}

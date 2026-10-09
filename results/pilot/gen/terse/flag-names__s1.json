@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "flag-names",
+ "sample": 1,
+ "ok": true,
+ "text": "1. **FlagReaper** – harvests flags past their prime\n2. **Tombstone** – marks flags that are dead and buried\n3. **StaleMate** – finds flags stuck in a stale state\n4. **Flagpole** – surveys every flag and spots the ones nobody salutes anymore\n5. **Ghostflag** – hunts flags that haunt the code but do nothing",
+ "usage": {
+  "input": 2,
+  "output": 127,
+  "cacheRead": 824,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 953,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 98,
+ "secs": 3.1
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "git-undo",
+ "sample": 1,
+ "ok": true,
+ "text": "`git reset --soft HEAD~1`: undoes the last commit; changes stay staged\n\nvariants:\n- `git reset HEAD~1` (`--mixed`, default): changes stay in the working tree, unstaged\n- `git commit --amend`: edit the last commit in place\n\nalready pushed → reset rewrites history; teammates who pulled diverge. Safer: `git revert HEAD` adds a new commit that undoes it.\n\nDo not use `git reset --hard HEAD~1` here. It deletes the changes from the last commit along with any uncommitted work.\n\nrecovery: `git reflog` → find the old commit hash → `git reset --soft <hash>` restores it",
+ "usage": {
+  "input": 2,
+  "output": 277,
+  "cacheRead": 5372,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 5651,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12076,
+ "secs": 6.8
+}

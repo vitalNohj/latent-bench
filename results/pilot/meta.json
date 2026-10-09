@@ -1,0 +1,11 @@
+{
+ "created": "2026-10-09T09:36:50",
+ "gen_model": "claude-opus-5-5 (via private proxy)",
+ "judge_model": "gpt-6.1-sol (via private proxy)",
+ "skills": {
+  "latent": "c487577d5e1ef720b1a1c570617bb1537b8104c100231694f93cd93a4a6dbe85",
+  "caveman": "5e30bb56afbd0b01bd736f2da84180e76f18db4a64de8e124525d5c8dc2e8605"
+ },
+ "focus": "latent",
+ "notes": "caveman: github.com/JuliusBrussee/caveman skills/caveman/SKILL.md, folder hash 166040c0 (installed 2026-07-13)"
+}

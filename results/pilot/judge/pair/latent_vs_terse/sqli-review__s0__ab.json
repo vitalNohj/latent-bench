@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqli-review",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A correctly qualifies destructive SQL injection as dependent on drivers allowing multiple statements, whereas B implies it always works, and A also applies explicit column selection in its fix."
+ }
+}

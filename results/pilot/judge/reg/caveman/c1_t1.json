@@ -1,0 +1,12 @@
+{
+ "arm": "caveman",
+ "convo": 1,
+ "turn": 1,
+ "ok": true,
+ "judge": {
+  "register": 3,
+  "social": false,
+  "offer": false,
+  "meta": false
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives a sound default and the key XSS, CSRF, and token-lifetime tradeoffs, while B misleadingly implies cross-domain cookies require same-site deployment and conflates different origins with different sites."
+ }
+}

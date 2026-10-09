@@ -1,0 +1,18 @@
+{
+ "arm": "latent",
+ "pid": "strict-mode",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5
+  ],
+  "errors": [
+   "Recommending a useRef flag for once-only work is misleading: it can suppress StrictMode's setup rerun without fixing cleanup, and it does not prevent the work from repeating after a real remount.",
+   "The claim that a POST necessarily belongs in an event handler rather than useEffect is too broad; some POST requests legitimately synchronize with component state and require appropriate deduplication or server-side idempotency."
+  ]
+ }
+}

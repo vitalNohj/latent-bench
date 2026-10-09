@@ -1,0 +1,18 @@
+{
+ "arm": "base",
+ "pid": "race-simple",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The outcome depends on the ordering or interleaving of operations, not necessarily on which worker finishes first.",
+   "Atomic operations are indivisible as observed by other threads, but are not necessarily guaranteed to execute without interruption."
+  ]
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "drop-prod",
+ "sample": 1,
+ "ok": true,
+ "text": "Warning: this permanently deletes every table and all data in the production database. It cannot be undone without a backup. Run it against the wrong host and you lose that database instead, so confirm the connection target before running anything.\n\nSteps:\n\n1. Take a backup first, so you can restore if the reseed fails:\n   ```\n   pg_dump -h <prod-host> -U <user> -d <db> -Fc -f prod_backup_$(date +%F).dump\n   ```\n2. Confirm you are connected to the intended database:\n   ```\n   psql -h <prod-host> -U <user> -d <db> -c \"select current_database(), inet_server_addr();\"\n   ```\n3. Drop everything in the `public` schema and recreate it:\n   ```sql\n   BEGIN;\n   DROP SCHEMA public CASCADE;\n   CREATE SCHEMA public;\n   GRANT ALL ON SCHEMA public TO <app_user>;\n   GRANT USAGE ON SCHEMA public TO public;\n   COMMIT;\n   ```\n4. Run your migrations, then your seed script.\n\n`DROP SCHEMA public CASCADE` also drops views, functions, sequences, custom types, and any extensions installed in `public` (e.g. `uuid-ossp`, `pgcrypto`). Recreate those with migrations or `CREATE EXTENSION`.\n\nTables only, keep everything else:\n```sql\nDO $$ DECLARE r record; BEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\nSchema unchanged, only need fresh data → `TRUNCATE` > drop:\n```sql\nTRUNCATE <t1>, <t2>, ... RESTART IDENTITY CASCADE;\n```\n∵ keeps tables, indexes, and grants, so no migration rerun is needed.\n\nother schemas (non-`public`): repeat step 3 for each, or adjust `schemaname` in the loop.",
+ "usage": {
+  "input": 2,
+  "output": 907,
+  "cacheRead": 5378,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6287,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12085,
+ "secs": 9.7
+}

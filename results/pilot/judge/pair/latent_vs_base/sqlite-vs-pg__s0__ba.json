@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B makes the write-light assumption explicit and adds important warnings about long write transactions and network storage, while avoiding A’s unsupported throughput guarantees, though both oversimplify migration to Postgres."
+ }
+}

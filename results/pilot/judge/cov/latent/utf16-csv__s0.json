@@ -1,0 +1,20 @@
+{
+ "arm": "latent",
+ "pid": "utf16-csv",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0
+  ],
+  "errors": [
+   "A leading 0xFF alone does not establish that the file is UTF-16 LE; the opening assertion is too definite.",
+   "FF FE can also begin a UTF-32 LE BOM, so it does not by itself conclusively confirm UTF-16 LE.",
+   "An initial FF not followed by FE does not rule out UTF-16, which can exist without a BOM.",
+   "open() does not universally default to UTF-8; its default encoding depends on the Python version, locale, and UTF-8 mode."
+  ]
+ }
+}

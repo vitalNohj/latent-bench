@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "race-simple",
+ "sample": 0,
+ "ok": true,
+ "text": "A **race condition** happens when two or more things run at the same time, share some data, and the result depends on **which one happens to finish first**. That timing is unpredictable, so the bug appears only sometimes.\n\n**Everyday example:**\nYou and a friend share a bank account with $100. At the same moment:\n1. You both check the balance and see $100.\n2. You deposit $50, so you set the balance to $150.\n3. Your friend deposits $20, so they set the balance to $120.\n\nThe final balance is $120, not $170. Your deposit was overwritten because you both read the old value before either of you wrote.\n\n**In code:**\n```js\n// Two threads both run this at the same time\nlet x = counter;   // both read 5\nx = x + 1;         // both compute 6\ncounter = x;       // both write 6, so it should be 7\n```\n\n**Why it's tricky:** It usually works fine, and only fails when the timing lines up badly. That makes it hard to reproduce.\n\n**How to fix it:** Make the \"read, change, write\" steps happen as one uninterruptible unit:\n- **Locks/mutexes**: only one thread can enter that section at a time.\n- **Atomic operations**: e.g. `counter.incrementAndGet()`.\n- **Avoid shared mutable state**: give each thread its own data, or pass messages instead.",
+ "usage": {
+  "input": 2,
+  "output": 436,
+  "cacheRead": 0,
+  "cacheWrite": 817,
+  "reasoning": 0,
+  "totalTokens": 1255,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 89,
+ "secs": 5.6
+}

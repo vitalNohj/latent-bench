@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "idem-key",
+ "sample": 0,
+ "ok": true,
+ "text": "An **idempotency key** is a unique value (usually a UUID) that the client attaches to a request so the server can recognize retries of the same operation and perform it **at most once**.\n\n## The problem it solves\n\nNetworks are unreliable. Suppose you send `POST /charges` for $50 and the connection drops before you get a response. You can't tell which of these happened:\n\n1. The request never reached the server, so no charge was made.\n2. The server charged the card, but the response was lost.\n\nIf you retry blindly, case 2 becomes a **double charge**. If you don't retry, case 1 means a **lost payment**. Neither is acceptable for money.\n\n## How it works\n\n```http\nPOST /v1/charges\nIdempotency-Key: 7f3c9a2e-1b4d-4e8a-9c6f-2d5e8b1a3f70\nContent-Type: application/json\n\n{\"amount\": 5000, \"currency\": \"usd\", \"source\": \"tok_visa\"}\n```\n\nServer-side:\n\n1. **First request with key K**: process it, then store `K → (request fingerprint, response)`.\n2. **Retry with the same K**: skip processing and return the stored response.\n3. **Same K but different parameters**: reject it (e.g., `422`), since this is likely a client bug.\n4. **Concurrent requests with the same K**: lock on the key, so the second one waits or gets `409 Conflict`.\n5. Keys expire after a window (Stripe uses 24h).\n\nThis makes retries safe: the client can retry with the same key as many times as needed and get exactly one charge.\n\n## Why payment APIs in particular\n\n- **Non-idempotent by nature**: `POST /charges` creates a new charge each time. `GET`, `PUT`, and `DELETE` are naturally idempotent, but `POST` isn't.\n- **High cost of duplicates**: double charges cause chargebacks, support tickets, and lost trust.\n- **Retries are everywhere**: client SDKs, load balancers, mobile apps on flaky connections, and job queues all retry automatically.\n- **Distributed systems**: there's no exactly-once delivery over a network. \"At-least-once delivery + idempotency\" is how you get effectively-once processing.\n\n## Client-side best practices\n\n- Generate the key **once per logical operation** (e.g., when the user clicks \"Pay\"), not once per HTTP attempt.\n- Persist it alongside your order record so retries after a crash or restart reuse it.\n- Use a **new key** for a genuinely new operation, even with identical parameters, such as a customer intentionally buying twice.\n\n```python\norder.idempotency_key = order.idempotency_key or str(uuid4())\ndb.save(order)\n\nfor attempt in retry_with_backoff():\n    resp = stripe.Charge.create(\n        amount=order.total,\n        currency=\"usd\",\n        source=order.token,\n        idempotency_key=order.idempotency_key,\n    )\n```\n\nStripe, Adyen, PayPal, Square, and most banking APIs support this pattern. It's also commonly used for webhooks and message consumers, where you dedupe by event ID.",
+ "usage": {
+  "input": 2,
+  "output": 1024,
+  "cacheRead": 808,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1834,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 59,
+ "secs": 12.0
+}

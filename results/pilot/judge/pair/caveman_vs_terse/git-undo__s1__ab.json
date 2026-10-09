@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "git-undo",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "Both give the correct reset commands and share the caveat that reverting a pushed commit does not preserve its changes, but B is faster to read and avoids A’s misleading claim that resetting necessarily causes conflicts for others pulling."
+ }
+}

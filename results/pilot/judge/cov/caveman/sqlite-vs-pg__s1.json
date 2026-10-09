@@ -1,0 +1,19 @@
+{
+ "arm": "caveman",
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   0.5,
+   1,
+   1
+  ],
+  "errors": [
+   "The claim that concurrent writes throw 'database is locked' without WAL plus busy_timeout is too categorical: writes can succeed without these settings, and lock errors can still occur with them.",
+   "Twenty users does not guarantee a light write workload; SQLite's suitability and write throughput depend on transaction duration, write frequency, hardware, and contention.",
+   "Using an ORM or query builder and avoiding dialect-specific SQL does not guarantee a cheap migration to Postgres; schemas, types, concurrency behavior, and application assumptions can still require significant changes."
+  ]
+ }
+}

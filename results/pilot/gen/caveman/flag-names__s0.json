@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "flag-names",
+ "sample": 0,
+ "ok": true,
+ "text": "1. **Flagfall**: dead flags drop. Pun on taxi flagfall fee.\n2. **Tombstone**: marks flags dead, ready for burial.\n3. **Flag Reaper**: harvests stale toggles. Clear purpose.\n4. **Deadswitch**: twist on dead man's switch. Short, memorable.\n5. **Half-Mast**: flag lowered, mourning dead code. Subtle.\n\nTop pick: **Deadswitch**. Short, CLI-friendly (`deadswitch scan`), meaning obvious.",
+ "usage": {
+  "input": 2,
+  "output": 205,
+  "cacheRead": 0,
+  "cacheWrite": 2708,
+  "reasoning": 0,
+  "totalTokens": 2915,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4796,
+ "secs": 3.6
+}

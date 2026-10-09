@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "utf16-csv",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives the likely diagnosis and practical fixes without A’s unjustified certainty that a lone 0xFF proves UTF-16 LE or its misleading claim that absence of 0xFE rules out UTF-16."
+ }
+}

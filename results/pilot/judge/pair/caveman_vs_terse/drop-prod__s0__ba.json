@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B better explains the destructive scope, offers truncation when reseeding only requires wiping data, notes non-public schemas, and cautions that migration reset commands may not be permitted in production."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "idem-key",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A explains safe payment retries clearly without B’s unconditional at-most-once guarantee despite key expiration or its misleading claim that reusing a key across different charges silently swallows the second rather than potentially rejecting mismatched parameters."
+ }
+}

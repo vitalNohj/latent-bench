@@ -1,0 +1,16 @@
+{
+ "arm": "terse",
+ "pid": "drop-prod",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   0.5,
+   0.5,
+   1,
+   0.5,
+   1
+  ],
+  "errors": []
+ }
+}

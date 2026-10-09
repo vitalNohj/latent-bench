@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "utf16-csv",
+ "sample": 0,
+ "ok": true,
+ "text": "File likely **UTF-16 LE**, not UTF-8. Byte `0xff` at position 0 is first half of UTF-16 LE BOM (`FF FE`). Common when client exports from Excel as \"Unicode Text\" or from Windows tools (PowerShell `Out-File` default in older versions).\n\nConfirm:\n```bash\nhead -c 4 file.csv | xxd\n# 00000000: fffe 6100  ..a.   <- FF FE = UTF-16 LE BOM\nfile file.csv\n# Little-endian UTF-16 Unicode text...\n```\n\nFix, Python:\n```python\nimport pandas as pd\ndf = pd.read_csv(\"file.csv\", encoding=\"utf-16\")\n```\nor stdlib:\n```python\nimport csv\nwith open(\"file.csv\", encoding=\"utf-16\", newline=\"\") as f:\n    rows = list(csv.reader(f))\n```\n`utf-16` reads BOM and picks endianness automatically.\n\nIf you get one column, delimiter probably tab. Excel \"Unicode Text\" export is tab-separated:\n```python\npd.read_csv(\"file.csv\", encoding=\"utf-16\", sep=\"\\t\")\n```\n\nConvert once to UTF-8 instead:\n```bash\niconv -f UTF-16 -t UTF-8 file.csv > file_utf8.csv\n```\n\nLong-term: ask client to export as \"CSV UTF-8 (Comma delimited)\" in Excel.",
+ "usage": {
+  "input": 2,
+  "output": 523,
+  "cacheRead": 0,
+  "cacheWrite": 2743,
+  "reasoning": 0,
+  "totalTokens": 3268,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4867,
+ "secs": 6.7
+}

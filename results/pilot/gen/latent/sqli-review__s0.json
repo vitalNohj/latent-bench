@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "sqli-review",
+ "sample": 0,
+ "ok": true,
+ "text": "This function has a SQL injection vulnerability. `user_id` is interpolated directly into the query string, so anyone who controls that value controls the SQL. For example, `user_id = \"1 OR 1=1\"` matches every row, and `\"1; DROP TABLE users\"` can destroy data on drivers that allow multiple statements. Use parameterized queries and never build SQL with f-strings, `%`, or `.format()`.\n\nfix:\n```python\ndef get_user(user_id: int):\n    query = \"SELECT id, name, email FROM users WHERE id = ?\"\n    return db.execute(query, (user_id,)).fetchone()\n```\nplaceholder style depends on driver: `?` sqlite3 | `%s` psycopg/MySQLdb | `:id` SQLAlchemy `text()` [assumed: sqlite3]\n\nnits:\n- `SELECT *` → explicit columns. Schema changes stop leaking new fields such as `password_hash`, and row shape stays stable\n- `fetchone()` returns `None` on miss. Callers must handle it, or raise `UserNotFound` here\n- `user_id` untyped. Add `int` hint and validate at the boundary. Parameterization still covers safety, but validation catches bad input earlier\n- `db` global → hidden dependency, hard to test. Pass connection | session in",
+ "usage": {
+  "input": 2,
+  "output": 531,
+  "cacheRead": 0,
+  "cacheWrite": 5416,
+  "reasoning": 0,
+  "totalTokens": 5949,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12168,
+ "secs": 7.0
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "strict-mode",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A correctly explains StrictMode’s cleanup stress test and warns against useRef “run once” guards, whereas B recommends such a guard for one-time initialization even though it can mask cleanup bugs and does not ensure once-per-app execution."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "ci-speed",
+ "sample": 1,
+ "ok": true,
+ "text": "**Measure first:** find which jobs and steps dominate the 25 minutes (CI timing dashboards, `--profile` flags). Then:\n\n**Do less work**\n- **Affected-only builds/tests:** Nx affected, Turborepo `--filter=...[origin/main]`, Bazel, Pants, or path filters. Only run what the diff touches plus its dependents.\n- **Remote build/test caching:** Turbo/Nx remote cache, Bazel remote cache. Unchanged packages become no-ops.\n- **Skip non-code changes** (docs, md) with path filters.\n- **Move slow suites** (full e2e, perf, cross-browser) to the merge queue or nightly. Run a smoke subset on PRs.\n\n**Parallelize**\n- **Split jobs per package or task** (lint, typecheck, unit, build) instead of one serial job.\n- **Shard tests** by historical timing (Jest/Vitest/Playwright `--shard`, CircleCI/Knapsack splitting).\n- **Use bigger runners** where CPU-bound. They're often cheaper overall because they finish sooner.\n\n**Cut setup overhead**\n- **Cache dependencies** (pnpm store, `~/.cache`, Gradle/Maven, pip). Prefer `pnpm` or `bun` over `npm`.\n- **Pre-baked CI images** with toolchains installed. No `apt-get` per run.\n- **Docker:** BuildKit layer cache (`cache-from`/`cache-to`), multi-stage builds, order layers well.\n- **Shallow/partial clone** (`fetch-depth`, sparse checkout).\n\n**Faster tools**\n- Swap in faster equivalents: esbuild/swc over tsc/babel for transpiling, `tsc --build` incremental, Biome/oxlint over ESLint, Vitest over Jest.\n- Fix slow tests: real sleeps, network calls, per-test DB setup (use transactions/templates).\n\n**Pipeline hygiene**\n- **Fail fast:** cheap checks first, cancel superseded runs (`concurrency: cancel-in-progress`).\n- **Quarantine flaky tests.** Retries silently add minutes.\n- **Merge queue:** PR CI can be lighter if the queue runs the full suite.\n\n**Typical biggest wins:** affected-only plus remote cache, then test sharding, then dependency/Docker caching.\n\nShare your CI config and stack for specific suggestions.",
+ "usage": {
+  "input": 2,
+  "output": 864,
+  "cacheRead": 821,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1687,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 65,
+ "secs": 11.1
+}

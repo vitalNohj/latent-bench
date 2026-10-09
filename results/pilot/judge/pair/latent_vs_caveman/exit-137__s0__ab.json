@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "exit-137",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more concise and accurately explains how probe failures lead to SIGKILL, while B misleadingly claims that a heap larger than the memory limit causes instant startup OOM and adds debugging steps that may not work in the container."
+ }
+}

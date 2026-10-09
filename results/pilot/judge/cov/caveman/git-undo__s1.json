@@ -1,0 +1,18 @@
+{
+ "arm": "caveman",
+ "pid": "git-undo",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0
+  ],
+  "errors": [
+   "Resetting a pushed commit does not necessarily cause conflicts for others pulling; it can cause divergent histories or require reconciliation.",
+   "git revert HEAD reverses the commit's changes rather than preserving them staged or unstaged, so it is not a direct substitute for the requested operation."
+  ]
+ }
+}

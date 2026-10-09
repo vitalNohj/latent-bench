@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "docker-slim",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B better covers dependency-dominated image sizes and runtime verification, while A incorrectly claims Alpine breaks musl wheels and gives speculative per-step savings that can overlap."
+ }
+}

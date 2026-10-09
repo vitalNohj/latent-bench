@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more concise and avoids B’s misleading claim that the tables-only command keeps functions, types, and extensions, since DROP TABLE ... CASCADE can also remove dependent objects."
+ }
+}

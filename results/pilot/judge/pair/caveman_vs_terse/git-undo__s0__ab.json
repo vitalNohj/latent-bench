@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "git-undo",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both give the correct reset commands, but A explicitly warns that reverting a pushed commit undoes the changes rather than preserving them, avoiding B’s misleading recommendation for this request."
+ }
+}

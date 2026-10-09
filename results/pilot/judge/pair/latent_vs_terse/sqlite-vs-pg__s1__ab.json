@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A explicitly states SQLite’s single-writer limitation, provides a safe backup command, and qualifies migration ease, whereas B misleadingly suggests live backups are just file copies and ORM-based migration is painless."
+ }
+}

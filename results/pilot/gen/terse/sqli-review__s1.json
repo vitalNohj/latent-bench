@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "sqli-review",
+ "sample": 1,
+ "ok": true,
+ "text": "**Critical: SQL injection.** `user_id` is interpolated directly into the query, so input like `1 OR 1=1` or `1; DROP TABLE users` would execute as SQL.\n\n**Fix: use a parameterized query.**\n\n```python\ndef get_user(user_id):\n    query = \"SELECT * FROM users WHERE id = ?\"   # use %s for psycopg2/MySQLdb\n    return db.execute(query, (user_id,)).fetchone()\n```\n\n**Minor:**\n- `SELECT *` can expose sensitive columns (e.g., password hashes) and breaks if the schema changes. List the columns you need.\n- Consider validating `user_id`, e.g., `int(user_id)`, to fail fast on bad input.\n- `db` is a global. Passing it in or using a scoped connection makes the function easier to test.",
+ "usage": {
+  "input": 2,
+  "output": 325,
+  "cacheRead": 858,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1185,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 164,
+ "secs": 4.7
+}

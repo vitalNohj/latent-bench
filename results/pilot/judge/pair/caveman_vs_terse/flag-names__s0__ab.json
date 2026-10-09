@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "flag-names",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "Both provide five relevant name ideas, but B is faster to scan and avoids A’s unnecessary commentary and overstated claim that Deadswitch’s meaning is obvious."
+ }
+}

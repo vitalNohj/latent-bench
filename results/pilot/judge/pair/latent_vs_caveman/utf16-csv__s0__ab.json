@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "utf16-csv",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B correctly presents UTF-16 LE as likely rather than proven by a lone 0xFF byte, gives confirmation and practical fixes, and avoids A’s misleading claim that absence of FF FE rules out UTF-16 and its unsupported cp1252 probability."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "sqli-review",
+ "sample": 0,
+ "ok": true,
+ "text": "## Issues\n\n**1. SQL injection (critical)**\n`user_id` is interpolated directly into the query. Input like `\"1 OR 1=1\"` returns another user's row. Input like `\"1; DROP TABLE users\"` could be destructive if the driver allows multiple statements.\n\n**2. `SELECT *`**\nThis can return sensitive columns, such as password hashes or tokens, to callers that don't need them. Schema changes also silently alter what the function returns.\n\n**3. No input validation**\nNothing ensures `user_id` is the expected type.\n\n## Fix\n\nUse a parameterized query. The placeholder syntax depends on your driver:\n\n```python\ndef get_user(user_id: int):\n    query = \"SELECT id, username, email FROM users WHERE id = ?\"  # sqlite3\n    # query = \"... WHERE id = %s\"  # psycopg2 / MySQLdb\n    return db.execute(query, (user_id,)).fetchone()\n```\n\nOptionally, validate the input up front:\n\n```python\nif not isinstance(user_id, int):\n    raise TypeError(\"user_id must be an int\")\n```\n\n## Minor\n\n- The function returns `None` when no user is found. Document that, or raise a `NotFound`-style exception if callers expect a user.\n- Where `db` comes from is unclear. Consider passing the connection in explicitly to make testing easier.",
+ "usage": {
+  "input": 2,
+  "output": 468,
+  "cacheRead": 0,
+  "cacheWrite": 850,
+  "reasoning": 0,
+  "totalTokens": 1320,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 145,
+ "secs": 5.4
+}

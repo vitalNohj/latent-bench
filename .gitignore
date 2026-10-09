@@ -1,0 +1,5 @@
+__pycache__/
+*.tmp
+results/*/sessions/
+results/smoke/
+.DS_Store

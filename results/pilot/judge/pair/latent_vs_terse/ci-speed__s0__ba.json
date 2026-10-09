@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the main CI optimizations clearly with fewer misleading claims, whereas B overstates near-linear scaling from larger runners and suggests skipping heavy checks for config-only changes that can affect the entire monorepo."
+ }
+}

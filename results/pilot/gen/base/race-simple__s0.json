@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "race-simple",
+ "sample": 0,
+ "ok": true,
+ "text": "A **race condition** happens when two or more things run at the same time, touch the same data, and the result depends on **which one finishes first**. Since you can't control that timing, you sometimes get the wrong answer.\n\n## Everyday analogy\n\nYou and your roommate share a bank account with **$100**.\n\n1. You check the balance: $100\n2. Your roommate checks the balance: $100\n3. You deposit $50, so you write down **$150**\n4. Your roommate deposits $20, so they write down **$120**\n\nThe final balance says **$120**, but it should be **$170**. Your deposit got overwritten because you both read the old value before either of you wrote the new one.\n\n## In code\n\n```python\ncounter = 0\n\ndef increment():\n    global counter\n    temp = counter      # 1. read\n    temp = temp + 1     # 2. modify\n    counter = temp      # 3. write\n```\n\nIf two threads run `increment()` at the same time:\n\n| Thread A          | Thread B          | counter |\n|-------------------|-------------------|---------|\n| read (0)          |                   | 0       |\n|                   | read (0)          | 0       |\n| write 0+1         |                   | 1       |\n|                   | write 0+1         | 1       |\n\nTwo increments happened, but `counter` is **1**, not 2.\n\n## Why they're nasty\n\n- **Intermittent:** the code works most of the time and fails only when the timing lines up badly.\n- **Hard to reproduce:** adding print statements or a debugger changes the timing, so the bug may disappear.\n\n## How to fix them\n\nMake the read-modify-write happen as one uninterruptible step:\n\n- **Locks / mutexes:** only one thread at a time can enter that section.\n  ```python\n  with lock:\n      counter += 1\n  ```\n- **Atomic operations:** built-in operations guaranteed not to be interrupted.\n- **Avoid shared data:** give each thread its own copy, or pass messages instead of sharing variables.\n\n**In short:** a race condition means multiple workers share something, the timing isn't controlled, and you sometimes get the wrong result.",
+ "usage": {
+  "input": 2,
+  "output": 680,
+  "cacheRead": 0,
+  "cacheWrite": 809,
+  "reasoning": 0,
+  "totalTokens": 1491,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 70,
+ "secs": 7.6
+}

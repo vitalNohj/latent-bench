@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A provides a safe SQLite backup command rather than B’s potentially unsafe advice to copy a live WAL-mode database file, and adds useful foreign-key enforcement and migration caveats."
+ }
+}

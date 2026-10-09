@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "race-simple",
+ "sample": 1,
+ "ok": true,
+ "text": "Race condition = result depends on **timing** of two things running at same time. Wrong timing, wrong result.\n\n**Example: shared bank account, $100 balance.**\n\nYou and partner both withdraw $50 at same moment, from two ATMs:\n\n1. ATM A reads balance: $100\n2. ATM B reads balance: $100\n3. ATM A writes $100 − $50 = $50\n4. ATM B writes $100 − $50 = $50\n\nFinal balance: $50. Should be $0. Bank lost $50.\n\nEach ATM did math correctly. Problem: both read before either wrote. Steps interleaved badly.\n\n**Same thing in code:**\n\n```js\n// two threads run this at once\nlet count = 0;\nfunction increment() {\n  const temp = count;   // read\n  count = temp + 1;     // write\n}\n```\n\nCall `increment()` twice in parallel. Expect `2`, sometimes get `1`.\n\n**Why hard to catch:** timing changes every run. Bug shows 1 in 1000 times, works fine on your machine, breaks in production.\n\n**Fix idea:** make read-modify-write happen as one unbreakable step. Tools for that:\n- **Lock / mutex**: only one thread enters at a time, others wait\n- **Atomic operations**: CPU does read+write as single step (`AtomicInteger`, `Interlocked.Increment`)\n- **DB transactions**: e.g. `UPDATE accounts SET balance = balance - 50 WHERE ...` instead of reading then writing separately\n\nRule of thumb: two things touch same data, at least one writes, no coordination, possible race.",
+ "usage": {
+  "input": 2,
+  "output": 544,
+  "cacheRead": 2701,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3247,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4787,
+ "secs": 10.4
+}

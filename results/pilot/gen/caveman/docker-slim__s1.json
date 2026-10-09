@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "docker-slim",
+ "sample": 1,
+ "ok": true,
+ "text": "Plan only. Dockerfile not seen, so steps assume common case: `python:3.x` full image (Debian). Adjust after inspection.\n\n**1. Measure first**\n- `docker history <image> --no-trunc` to find fat layers.\n- `dive <image>` to inspect wasted space and duplicate files.\n- Check `.dockerignore`. Missing ignore often copies `.git`, `venv`, `node_modules`, `__pycache__` and tests into image.\n\n**2. Slim variant, same distro**\n- `python:3.12` (~1GB base) becomes `python:3.12-slim` (~130MB). Same Debian release (bookworm). Pin full tag: `python:3.12-slim-bookworm`.\n\n**3. Multi-stage build**\n- Stage `builder` uses slim base plus `build-essential`, `gcc` and `*-dev` headers. Run `pip wheel` or build venv in `/opt/venv`.\n- Stage `runtime` uses slim base. Copy only `/opt/venv` and app code. Install runtime shared libs only, such as `libpq5` not `libpq-dev`.\n- Compilers stay out of final image. Usually biggest win after base swap.\n\n**4. Pip hygiene**\n- `pip install --no-cache-dir`.\n- Split dev deps (`pytest`, `black`, linters) into `requirements-dev.txt`. Exclude from prod.\n- Audit heavy deps such as `pandas`, `numpy`, `torch` and `opencv`. Prefer CPU-only or `-headless` wheels.\n\n**5. Apt hygiene**\n- `apt-get install --no-install-recommends ...`.\n- Run install and `rm -rf /var/lib/apt/lists/*` in same `RUN` layer. Cleanup in later layer saves nothing.\n\n**6. Layer order and cleanup**\n- Copy `requirements.txt` first, install deps, then copy code. Better cache, no size change.\n- Set `PYTHONDONTWRITEBYTECODE=1` or delete `__pycache__` and `*.pyc` in builder.\n- Strip tests and docs from site-packages only if needed. Low gain, some risk.\n\n**7. Runtime**\n- Use `gunicorn` as server. No dev server, no extra tooling.\n- Run as non-root user. Security win, not size.\n\n**8. Verify**\n- Compare `docker images` before and after.\n- Run smoke test: app boots, health endpoint responds, native-extension imports work (common break when runtime libs missing).\n\n**Expected:** 1.4GB to ~150–300MB without heavy ML deps. With heavy ML deps, deps dominate, so audit in step 4 matters most.\n\n**Next:** share Dockerfile, `requirements.txt` and `docker history` output for concrete diff.",
+ "usage": {
+  "input": 2,
+  "output": 1018,
+  "cacheRead": 2718,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3738,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4811,
+ "secs": 11.3
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "race-simple",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A explains the timing-dependent bug clearly with a valid thread interleaving, while B misleadingly uses an ordinary JavaScript variable as though it were shared between threads."
+ }
+}

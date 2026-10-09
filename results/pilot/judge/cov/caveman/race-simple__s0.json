@@ -1,0 +1,17 @@
+{
+ "arm": "caveman",
+ "pid": "race-simple",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The JavaScript example is misleading as executable code: ordinary JavaScript threads do not share a plain `let count` variable, and synchronous calls to `increment()` cannot interleave this way. It works as pseudocode for threads sharing memory, not as shown in standard JavaScript."
+  ]
+ }
+}

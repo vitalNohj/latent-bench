@@ -1,0 +1,189 @@
+{
+ "arm": "latent",
+ "convo": 0,
+ "ok": true,
+ "turns": [
+  {
+   "turn": 0,
+   "q": "our postgres queries got slow after a migration. where do i start?",
+   "ok": true,
+   "text": "Start with `ANALYZE`. Migrations that rewrite tables (`ALTER COLUMN TYPE`, `pg_upgrade`, dump/restore) leave the planner with stale or missing stats → bad plans. It is cheap to run and fixes the most common cause.\n\nlikely causes:\n- [p=.4] stale stats: rewrite or reload → planner guesses row counts → seq scan | wrong join type\n- [p=.3] index gone or unusable: dropped by the migration, `INVALID` after a failed `CREATE INDEX CONCURRENTLY`, or column type changed → implicit cast in `WHERE` → index skipped\n- [p=.2] new access pattern: new column or filter with no index\n- [p=.1] bloat | locks: big `UPDATE` backfill → dead tuples; long migration txn still holding locks\n\nsteps:\n1. Run `ANALYZE;` (or `ANALYZE table_name;` per affected table), then retest. If speed returns, the cause was stats.\n2. Find the slowest queries:\n   ```sql\n   SELECT query, calls, mean_exec_time, total_exec_time\n   FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 10;\n   ```\n   This needs the `pg_stat_statements` extension. Without it, set `log_min_duration_statement = 500` and read the log.\n3. For each slow query, run `EXPLAIN (ANALYZE, BUFFERS) <query>;`. Look for `Seq Scan` on large tables, estimated rows far from actual rows (stats), and a `Filter` with a cast such as `::text` (type mismatch).\n4. Check for invalid indexes:\n   ```sql\n   SELECT indexrelid::regclass FROM pg_index WHERE NOT indisvalid;\n   ```\n5. Diff the indexes before and after: compare `\\d table_name` against the migration file or a pre-migration schema dump.\n6. Check bloat and locks: look at `n_dead_tup` in `pg_stat_user_tables` (high → `VACUUM`), and look in `pg_stat_activity` for `idle in transaction` sessions.\n\nnext: post one slow query's `EXPLAIN (ANALYZE, BUFFERS)` output + the migration diff → pinpoint cause",
+   "usage": {
+    "input": 2,
+    "output": 1023,
+    "cacheRead": 5375,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 6400,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 12089,
+   "secs": 12.3
+  },
+  {
+   "turn": 1,
+   "q": "the migration added a column and an index on orders(customer_id, created_at). could that index be the problem?",
+   "ok": true,
+   "text": "**Reads: unlikely. Writes: possibly.** A new index rarely slows reads. Every `INSERT` on `orders` and every `UPDATE` that touches `customer_id` or `created_at` now maintains one more B-tree.\n\nways it could hurt:\n- write overhead: insert/update latency up, more WAL → replica lag. Redundant if `orders(customer_id)` already exists ∵ the composite index covers lookups on the leading column\n- planner switch [inferred]: queries filtering `customer_id` now pick the new index over an older, better one. Misestimate → worse plan. On PG 18+, B-tree skip scan lets queries filtering only `created_at` use it too\n- `INVALID` index: a failed `CREATE INDEX CONCURRENTLY` → planner ignores it for reads, but writes still maintain it → pure cost\n- the column, not the index: `ADD COLUMN ... DEFAULT <volatile>` (e.g. `random()`, `clock_timestamp()`), or any default on PG < 11 → full table rewrite → stale stats + bloat → back to `ANALYZE` from step 1\n\nchecks:\n1. Find out what got slow, reads or writes. If writes, the index is the prime suspect.\n2. Run `EXPLAIN (ANALYZE, BUFFERS)` on a slow read and see whether the new index appears in the plan. If it does not, the index cannot be slowing that query.\n3. Check index usage and validity:\n   ```sql\n   SELECT indexrelname, idx_scan, pg_size_pretty(pg_relation_size(indexrelid))\n   FROM pg_stat_user_indexes WHERE relname = 'orders';\n   SELECT indexrelid::regclass, indisvalid FROM pg_index\n   WHERE indrelid = 'orders'::regclass;\n   ```\n4. Test the plan without the index, using `hypopg`'s `hypopg_hide_index('idx_name'::regclass)` in your session. Only `EXPLAIN` in that session sees the change, and it takes no lock.\n\nrisk: Avoid the `BEGIN; DROP INDEX ...; EXPLAIN ...; ROLLBACK;` trick on production. `DROP INDEX` takes an ACCESS EXCLUSIVE lock on `orders` that lasts until rollback, so every query on the table blocks during the test.\n\nnext: post one slow query + its `EXPLAIN (ANALYZE, BUFFERS)` + output of `\\d orders` → confirm or rule out the index",
+   "usage": {
+    "input": 4,
+    "output": 1667,
+    "cacheRead": 5374,
+    "cacheWrite": 807,
+    "reasoning": 0,
+    "totalTokens": 7852,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 110,
+   "secs": 18.9
+  },
+  {
+   "turn": 2,
+   "q": "how do i check whether the planner actually uses it?",
+   "ok": true,
+   "text": "Two views: per query with `EXPLAIN`, and across the workload with `pg_stat_user_indexes`.\n\nper query:\n```sql\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT ... FROM orders WHERE customer_id = 42 ORDER BY created_at DESC LIMIT 20;\n```\n- used → plan node names it: `Index Scan using <idx> on orders`, `Index Only Scan using <idx>`, or `Bitmap Index Scan on <idx>`\n- not used → `Seq Scan on orders` or a different index name\n- `ANALYZE` executes the query. Wrap `UPDATE`/`DELETE` in `BEGIN; ... ROLLBACK;`\n- use real parameter values ∵ the plan depends on selectivity. A customer with 50k orders can get a different plan than one with 3\n- app uses prepared statements → plan may be generic ≠ your literal test. Reproduce with `PREPARE q(int) AS ...; EXPLAIN EXECUTE q(42);` (generic plan kicks in after 5 executions)\n\nworkload-wide:\n```sql\nSELECT indexrelname, idx_scan, last_idx_scan, idx_tup_read\nFROM pg_stat_user_indexes WHERE relname = 'orders';\n```\n- `idx_scan` = cumulative scans since last stats reset. 0 after real traffic → planner never picks it\n- `last_idx_scan` exists on PG 16+. Older: snapshot `idx_scan`, wait under load, compare\n- counters are per node ∵ read traffic on replicas does not show on the primary. Query each replica\n\ncontinuous capture, slow queries only:\n```sql\nLOAD 'auto_explain';\nSET auto_explain.log_min_duration = '500ms';\nSET auto_explain.log_analyze = on;\n```\n→ plans of slow queries land in the server log, with the real parameters. Set it in `postgresql.conf` (`session_preload_libraries`) to cover app sessions, not only yours.\n\n`auto_explain.log_analyze = on` adds timing overhead to every query, not only logged ones. Keep it on briefly, or set `auto_explain.log_timing = off`.\n\nnext: run step 1 on the top query from `pg_stat_statements` → index name in plan or not settles it",
+   "usage": {
+    "input": 4,
+    "output": 1017,
+    "cacheRead": 6181,
+    "cacheWrite": 867,
+    "reasoning": 0,
+    "totalTokens": 8069,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 52,
+   "secs": 11.9
+  },
+  {
+   "turn": 3,
+   "q": "it uses it, but the query still takes 2s. the table has 40M rows. what next?",
+   "ok": true,
+   "text": "\"Uses the index\" ≠ \"uses it efficiently\". The `EXPLAIN (ANALYZE, BUFFERS)` numbers show where the 2 s goes. Read the plan nodes against this table:\n\n| symptom in plan | cause | fix |\n|---|---|---|\n| `Execution Time` ≪ 2 s | time spent outside the executor: lock wait, network, client pulling a large result | check `wait_event` in `pg_stat_activity` during the query; shrink the result set |\n| `Rows Removed by Filter` large | `WHERE` has a column outside the index (e.g. `status`, the new column) → index finds rows, heap fetch, then discard | extend index `(customer_id, status, created_at)` or partial index `WHERE status = 'open'` |\n| `Sort` above the index scan | `ORDER BY` does not match index order: `IN (...)` on `customer_id`, a range on `customer_id`, or ordering by another column | align query with index order, or add an index matching the `ORDER BY` |\n| `actual rows` huge (100k+) | heavy customer, no `LIMIT` → every matching row fetched | keyset pagination: `WHERE customer_id = $1 AND created_at < $2 ORDER BY created_at DESC LIMIT 50` |\n| `Buffers: shared read` ≫ `hit` | random heap I/O on 40M rows, cold cache. Each row is a separate page read | covering index `INCLUDE (selected cols)` → `Index Only Scan` |\n| `Index Only Scan` with `Heap Fetches` ≈ rows | visibility map not set, often after the backfill `UPDATE` | `VACUUM (ANALYZE) orders;` |\n| `Nested Loop`, inner index scan `loops=` large | index probed once per outer row | join order or estimate problem; check estimates on the outer side |\n| estimated rows 10×+ off actual | correlated columns or skew → wrong plan shape | `CREATE STATISTICS ... (dependencies) ON customer_id, status FROM orders; ANALYZE orders;` or raise column statistics target |\n\nindex bloat [p=.2]: the backfill can bloat indexes → compare `pg_relation_size` of the new index against similar indexes; if oversized → `REINDEX INDEX CONCURRENTLY idx_name;` (no write block, needs ≈ index size of free disk)\n\nrisk: Building any new index on 40M rows takes minutes and extra disk. Use `CREATE INDEX CONCURRENTLY` so writes to `orders` are not blocked. If the build fails, it leaves an `INVALID` index that must be dropped.\n\nnext: post the query text + full `EXPLAIN (ANALYZE, BUFFERS)` output → pick the row from the table above and give the exact fix",
+   "usage": {
+    "input": 4,
+    "output": 1979,
+    "cacheRead": 7048,
+    "cacheWrite": 810,
+    "reasoning": 0,
+    "totalTokens": 9841,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 76,
+   "secs": 22.5
+  },
+  {
+   "turn": 4,
+   "q": "unrelated: what's the difference between a process and a thread?",
+   "ok": true,
+   "text": "Process = running program with its own address space. Thread = execution path inside a process, sharing that address space with sibling threads.\n\nanalogy: process = apartment (own walls, own kitchen); threads = roommates. Shared fridge → cheap to share food, easy to fight over the last milk.\n\n| | process | thread |\n|---|---|---|\n| memory | private virtual address space | shared heap + globals; own stack + registers |\n| resources | own file descriptors, PID, env | shares parent process's |\n| create / switch cost | higher: page tables, TLB flush on switch | lower: same address space |\n| communication | IPC: pipes, sockets, shared memory segments | direct read/write of shared memory |\n| crash isolation | one crashes → others unaffected | one segfaults → whole process dies |\n| main hazard | IPC overhead, serialization | data races, deadlocks → need locks / atomics |\n\nmechanism: OS scheduler schedules threads, not processes. A process = container (address space + resources) holding ≥ 1 thread. Linux: both are `task_struct`; `clone()` flags decide what is shared ∴ the distinction is a spectrum there.\n\nexamples:\n- Chrome: process per site → one tab crashes, others live; sandboxing\n- Postgres: process per connection → isolation, but heavier per connection ∴ PgBouncer\n- MySQL: thread per connection → lighter, shared crash fate\n- Python: threads share the GIL → no CPU parallelism for pure Python (before free-threaded 3.13+ builds) ∴ `multiprocessing` for CPU work, threads for I/O\n\nrelated: green threads / goroutines / async tasks = scheduled in user space, many mapped onto few OS threads → cheaper still",
+   "usage": {
+    "input": 4,
+    "output": 602,
+    "cacheRead": 7858,
+    "cacheWrite": 961,
+    "reasoning": 0,
+    "totalTokens": 9425,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 64,
+   "secs": 9.3
+  },
+  {
+   "turn": 5,
+   "q": "thanks, that helps! can you give me a bash one-liner to list the 10 largest files under a directory?",
+   "ok": true,
+   "text": "macOS (BSD `find`, no `-printf`), works on Linux too:\n```bash\nfind /path/to/dir -type f -exec du -h {} + | sort -rh | head -10\n```\n\nLinux (GNU `find`), exact bytes, faster ∵ no `du` subprocesses:\n```bash\nfind /path/to/dir -type f -printf '%s\\t%p\\n' | sort -rn | head -10\n```\n\nmacOS, exact bytes:\n```bash\nfind /path/to/dir -type f -exec stat -f '%z%t%N' {} + | sort -rn | head -10\n```\n\nnotes:\n- `du` = disk usage (blocks allocated) ≠ apparent size. Sparse files and compressed APFS files can differ. `stat` / `-printf '%s'` = apparent size\n- add `-xdev` after the path to stay on one filesystem (skips mounts like `/Volumes`)\n- `2>/dev/null` before `|` hides permission-denied noise\n- `du -ah dir | sort -rh | head` is shorter but also lists directories, which crowd out files",
+   "usage": {
+    "input": 4,
+    "output": 660,
+    "cacheRead": 8819,
+    "cacheWrite": 607,
+    "reasoning": 0,
+    "totalTokens": 10090,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 100,
+   "secs": 8.6
+  },
+  {
+   "turn": 6,
+   "q": "last one: should we upgrade from postgres 14 to 16 now or wait?",
+   "ok": true,
+   "text": "Upgrade now, but target 17 or 18, not 16. PG 14 hits end of life on **November 12, 2026**, about 5 weeks from today. After that date it gets no security or bug fixes.\n\n| target | EOL | note |\n|---|---|---|\n| 14 (stay) | Nov 2026 | no patches after; RDS / Cloud SQL → paid extended support |\n| 16 | Nov 2028 | ≈ 2 yrs runway → another upgrade soon |\n| 17 | Nov 2029 | mature, broad extension + tooling support |\n| 18 | Nov 2030 | `pg_upgrade` carries planner stats → no post-upgrade bad-plan window [inferred]; B-tree skip scan; async I/O |\n\npick: 18 if your extensions and provider support it; otherwise 17. 16 only if the provider caps you there.\n\nsequence:\n1. Fix the `orders` query first. An upgrade in the middle of perf debugging changes the planner and stats, so you lose the ability to tell which change caused what.\n2. Then upgrade within weeks. EOL does not stop the database, it only stops patches, so a short slip past Nov 12 is a risk, not an outage.\n\n14 → 17/18 breaking changes to check:\n- PG 15: `CREATE` on the `public` schema revoked from non-owners → app roles that create tables there fail\n- PG 15+: stats collector removed → monitoring that reads old stats views or settings may break\n- PG 17: `old_snapshot_threshold` removed\n- PG 18: `initdb` enables data checksums by default. `pg_upgrade` requires matching settings, so a 14 cluster without checksums needs the new cluster created with `--no-data-checksums`\n- PG 18: MD5 passwords deprecated → move roles to SCRAM\n- every extension (PostGIS, `pg_stat_statements`, `hypopg`, ...) must have a build for the target version\n\nmethod:\n- `pg_upgrade --link`: minutes of downtime, even at 40M rows\n- logical replication: near-zero downtime, more setup\n- managed service: provider's in-place major upgrade or blue/green\n\nrisk: Rehearse the upgrade on a restored copy of production first, and take a verified backup before running it. `pg_upgrade --link` makes the old cluster unusable once the new one has started, so rolling back means restoring from that backup.\n\nafter the upgrade, if the target is below 18: run `vacuumdb --all --analyze-in-stages`. Until it finishes, the planner has no stats, and you get the same symptom as the original migration.\n\nnext: check which versions your provider offers and whether your extensions support 18",
+   "usage": {
+    "input": 4,
+    "output": 1531,
+    "cacheRead": 9426,
+    "cacheWrite": 385,
+    "reasoning": 0,
+    "totalTokens": 11346,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 63,
+   "secs": 17.6
+  }
+ ]
+}

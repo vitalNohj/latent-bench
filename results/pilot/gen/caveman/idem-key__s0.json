@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "idem-key",
+ "sample": 0,
+ "ok": true,
+ "text": "**Idempotency key**: unique client-generated ID (usually UUID) sent with request, typically as header. Server uses it to recognize retries of same operation and run operation at most once.\n\n```http\nPOST /v1/charges\nIdempotency-Key: 8f14e45f-ceea-467f-a8d5-2b6c1e3a9d10\n```\n\n**Why payments need it**\n\nNetwork unreliable. Client sends \"charge $50\", then timeout. Client can't tell which happened:\n- request never reached server\n- server charged card, but response lost\n\nRetry without key risks double charge. No retry risks no charge. Key makes retry safe. Server sees same key, skips re-execution, returns stored original response.\n\n**How server handles it**\n\n1. Request arrives. Look up key in store, scoped per account/API key.\n2. Key not found: insert key as \"in progress\" atomically, run charge, save response, return it.\n3. Key found and completed: return saved response. No new charge.\n4. Key found and still in progress: return `409 Conflict` or wait. Stops concurrent duplicates.\n5. Same key with different request body: reject with error. Usually hash request params and compare.\n6. Keys expire after time window. Stripe keeps them ~24h.\n\n**Client rules**\n\n- Generate key once per logical operation, not per HTTP attempt. Reuse same key on every retry.\n- New purchase needs new key.\n- Persist key before sending if retries can survive crash or restart.\n\n**Why not rely on HTTP semantics**\n\n`POST` not idempotent by spec. `PUT` and `DELETE` naturally idempotent, but \"create charge\" is a create action, so `POST` fits. Key adds idempotency on top.\n\n**Related**: same pattern shows up in message queues (dedup IDs), webhooks (event IDs), and exactly-once processing generally. Network gives at-least-once delivery. Dedup on receiver side turns it into effectively-once.",
+ "usage": {
+  "input": 2,
+  "output": 645,
+  "cacheRead": 2700,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3347,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4776,
+ "secs": 8.5
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "race-simple",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A more accurately explains that races depend on uncontrolled operation ordering, not merely which task finishes first, and its explicit interleaving shows clearly how an update gets lost."
+ }
+}

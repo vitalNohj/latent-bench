@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "race-simple",
+ "sample": 1,
+ "ok": true,
+ "text": "A **race condition** happens when two or more things run at the same time, touch the same data, and the result depends on **who gets there first**. Since you can't control the timing, the result is sometimes wrong.\n\n## Simple analogy\n\nYou and a roommate share a bank account with **$100**.\n\n1. You check the balance: $100\n2. Your roommate checks the balance: $100\n3. You deposit $50 and write the new balance: **$150**\n4. Your roommate deposits $50 and writes the balance they calculated: **$150**\n\nFinal balance: **$150**. It should be **$200**. One deposit got lost because you both read the old value before either of you wrote the new one.\n\n## In code\n\n```js\nlet count = 0;\n\n// Two threads both run this at the same time:\ncount = count + 1;\n```\n\n`count = count + 1` is actually three steps:\n\n1. Read `count`\n2. Add 1\n3. Write it back\n\nIf two threads interleave:\n\n```\nThread A: read count  → 0\nThread B: read count  → 0\nThread A: write 0+1   → count = 1\nThread B: write 0+1   → count = 1   ❌ (should be 2)\n```\n\n## Why they're nasty\n\n- **Intermittent:** most runs work fine, and it only fails when the timing lines up badly.\n- **Hard to reproduce:** adding logging or a debugger changes the timing, so the bug can disappear while you're looking for it.\n\n## How to fix them\n\n- **Locks / mutexes:** only one thread can enter the critical section at a time.\n- **Atomic operations:** the read, modify, and write happen as one step that can't be interrupted (e.g. `AtomicInteger.incrementAndGet()`, or a database `UPDATE x = x + 1`).\n- **Avoid shared mutable state:** give each thread its own data, or pass messages instead of sharing variables.\n\n**In one line:** a race condition is a bug where the outcome depends on the unpredictable order in which concurrent operations happen.",
+ "usage": {
+  "input": 2,
+  "output": 650,
+  "cacheRead": 809,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1461,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 70,
+ "secs": 7.4
+}

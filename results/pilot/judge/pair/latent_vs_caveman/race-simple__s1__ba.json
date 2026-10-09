@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B explains the timing-dependent lost update clearly without A’s misleading JavaScript example, where ordinary threads do not share a local variable and synchronous calls cannot interleave as shown."
+ }
+}

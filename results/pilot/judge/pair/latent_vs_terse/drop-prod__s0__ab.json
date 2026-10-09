@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "drop-prod",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better addresses production risks with connection verification, transactional rollback, migration-history and cross-schema CASCADE warnings, and narrower schema grants, whereas B unnecessarily grants schema creation privileges to everyone and omits important dependency warnings."
+ }
+}

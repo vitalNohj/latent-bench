@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives similarly substantive advice in a faster-to-scan structure while avoiding A’s misleading claims that CPU-bound steps scale near-linearly with cores and that config-only changes can safely skip heavy checks."
+ }
+}

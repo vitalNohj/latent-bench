@@ -1,0 +1,17 @@
+{
+ "arm": "base",
+ "pid": "sqli-review",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The claim that \"1; DROP TABLE users\" gets executed is too broad: stacked statements depend on the driver and configuration; sqlite3.execute, for example, rejects multiple statements."
+  ]
+ }
+}

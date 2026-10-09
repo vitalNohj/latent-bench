@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "exit-137",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B better explains that liveness-triggered restarts can end in SIGKILL after the grace period and that empty logs may reflect buffering or the new container, whereas A misleadingly excludes shutdown-related SIGKILL from crash loops and treats empty logs as a direct consequence of the kill."
+ }
+}

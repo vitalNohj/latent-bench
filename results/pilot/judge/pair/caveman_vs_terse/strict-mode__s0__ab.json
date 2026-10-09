@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "Both explain the development-only StrictMode effect replay and the need for cleanup, but B delivers the essential guidance and warnings more quickly without A’s unnecessary module-level guard example."
+ }
+}

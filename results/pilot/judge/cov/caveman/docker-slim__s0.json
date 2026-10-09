@@ -1,0 +1,19 @@
+{
+ "arm": "caveman",
+ "pid": "docker-slim",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The slim image does not remove only build tooling and documentation; it also omits many system utilities and libraries present in the full image, so additional runtime packages may be needed."
+  ]
+ }
+}

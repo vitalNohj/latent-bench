@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "race-simple",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "Both correctly illustrate a lost-update race and the main remedies, but B explains them in clearer language with less unnecessary detail for a beginner."
+ }
+}

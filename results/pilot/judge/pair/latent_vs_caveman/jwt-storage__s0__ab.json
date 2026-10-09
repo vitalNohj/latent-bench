@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "jwt-storage",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B covers the key risks and safer storage patterns clearly without A’s misleading claim that cross-domain cookie authentication requires a shared site; cross-site cookies can work with SameSite=None, Secure, and credentialed CORS, subject to browser restrictions."
+ }
+}

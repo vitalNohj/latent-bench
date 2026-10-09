@@ -1,0 +1,18 @@
+{
+ "arm": "terse",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "Being killed externally with SIGKILL does not inherently make logs empty; output already written to stdout/stderr should still be available."
+  ]
+ }
+}

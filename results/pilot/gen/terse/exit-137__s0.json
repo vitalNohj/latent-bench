@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "exit-137",
+ "sample": 0,
+ "ok": true,
+ "text": "Exit code 137 = SIGKILL (128 + 9). Usually the container was killed from outside, so empty logs are expected.\n\n**Likely causes**\n1. **OOMKilled** (most common): the container exceeded its memory limit.\n   - Check: `kubectl describe pod <pod>` → `Last State: Terminated, Reason: OOMKilled`\n   - Fix: raise `resources.limits.memory`, or cap app memory (e.g. JVM `-XX:MaxRAMPercentage=75`, Node `--max-old-space-size`).\n2. **Failing liveness probe**: kubelet kills the container.\n   - Check: Events in `describe pod` show \"Liveness probe failed\".\n   - Fix: add `initialDelaySeconds` or use a `startupProbe` for slow starts.\n3. **Node memory pressure / eviction**: check `kubectl get events --sort-by=.lastTimestamp` and `kubectl describe node <node>`.\n4. **Graceful shutdown timeout**: the app ignores SIGTERM and gets SIGKILLed after `terminationGracePeriodSeconds`.\n\n**Debug commands**\n```sh\nkubectl describe pod <pod>                # Reason, Events\nkubectl logs <pod> --previous             # logs from the crashed instance\nkubectl get pod <pod> -o jsonpath='{.status.containerStatuses[*].lastState}'\nkubectl top pod <pod>                     # memory usage (needs metrics-server)\n```\n\n**If logs are still empty**\n- The process may die before flushing stdout. Try unbuffered output (e.g. `PYTHONUNBUFFERED=1`).\n- Override the command to keep the container alive, then exec in and run the app manually:\n  ```yaml\n  command: [\"sleep\", \"infinity\"]\n  ```",
+ "usage": {
+  "input": 2,
+  "output": 646,
+  "cacheRead": 0,
+  "cacheWrite": 829,
+  "reasoning": 0,
+  "totalTokens": 1477,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 78,
+ "secs": 7.2
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "strict-mode",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "Both provide essentially the same correct explanation and cleanup guidance, but A explicitly marks StrictMode as an inference and offers a faster-to-scan symptom checklist and concrete next step."
+ }
+}

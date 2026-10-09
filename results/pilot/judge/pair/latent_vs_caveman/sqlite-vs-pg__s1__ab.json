@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A makes its SQLite recommendation conditional on write-light usage, while B misleadingly infers write load from user count, overstates locking failures without WAL, and recommends synchronous=NORMAL without noting that recent commits can be lost after a power failure."
+ }
+}

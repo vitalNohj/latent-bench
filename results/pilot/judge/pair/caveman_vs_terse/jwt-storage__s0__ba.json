@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the essential XSS risk, cookie protections, and access/refresh-token pattern more concisely, while avoiding B’s misleading suggestion that stolen JWTs cannot be revoked before expiry."
+ }
+}

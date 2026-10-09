@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "pg-port",
+ "sample": 1,
+ "ok": true,
+ "text": "PostgreSQL's default port is **5432** (TCP).",
+ "usage": {
+  "input": 2,
+  "output": 82,
+  "cacheRead": 796,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 880,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 22,
+ "secs": 2.6
+}

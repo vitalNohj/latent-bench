@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A provides the essential checks and fixes more concisely, while B adds unsupported probabilities, misleading suggestions that shell wrappers or init containers themselves trigger kills, and an inaccurate implication that kubectl top measures peak memory usage."
+ }
+}

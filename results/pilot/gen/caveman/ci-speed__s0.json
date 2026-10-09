@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "ci-speed",
+ "sample": 0,
+ "ok": true,
+ "text": "First find where 25 min goes. Pull per-job, per-step timings from last ~50 PR runs. Usually 2-3 steps eat most of it.\n\n**Run only affected code (biggest win in monorepos)**\n- Build dependency graph and test only changed packages plus their dependents. Tools: Nx `affected`, Turborepo `--filter=...[origin/main]`, Bazel, Pants, Moon.\n- Path filters on workflows (`paths:` in GitHub Actions, `dorny/paths-filter`). Docs-only PR should skip build.\n- Changed-file test selection: `jest --changedSince`, `pytest-testmon`, Bazel test targets.\n\n**Remote cache**\n- Nx Cloud, Turbo remote cache, Bazel remote cache. Unchanged packages become cache hits, so build/test cost near zero.\n- Make tasks deterministic (no timestamps, stable env) or cache never hits.\n\n**Dependency install**\n- Cache package store keyed on lockfile hash (pnpm store, `~/.cache/pip`, Gradle, Go mod).\n- Switch npm/yarn to pnpm, pip to uv. Often 3-10x faster.\n- Prebake toolchain plus deps into custom runner image or Docker base image.\n\n**Parallelize**\n- Split lint / typecheck / unit / e2e into separate jobs, not one serial job.\n- Shard tests across N runners (`jest --shard`, `pytest-split`, Playwright `--shard`). Balance shards by historical timing, not file count.\n- Run in-job parallelism: `pytest -n auto`, `turbo run --concurrency`.\n\n**Faster machines**\n- Bigger runners (8-16 cores). Often cheaper overall because minutes drop.\n- Self-hosted or third-party runners (Blacksmith, Namespace, BuildJet, Depot) with warm local disk cache.\n- Docker builds: BuildKit with `cache-from`/`cache-to` registry cache, or Depot. Order Dockerfile layers so deps come before source.\n\n**Move slow stuff off critical path**\n- Full e2e, perf, cross-platform matrix run in merge queue or nightly, not every push. PR gets smoke e2e only.\n- Merge queue (GitHub merge queue, Mergify, Graphite) runs heavy checks once before merge.\n- `concurrency: cancel-in-progress` kills stale runs on new push. Frees runners.\n\n**Test hygiene**\n- Find slowest 20 tests and fix them. Usual causes: real sleeps, real network, DB setup per test.\n- Use transaction-rollback DB fixtures or testcontainers reuse instead of re-migrating every test.\n- Quarantine flaky tests. Retries hide time cost.\n\n**Tool swaps**\n- ESLint to Biome/oxlint, Prettier to Biome, tsc to `tsc -b` incremental with cached `.tsbuildinfo`, webpack to esbuild/Vite/Rspack, Jest to Vitest, flake8/black to ruff.\n\n**Fail fast**\n- Run lint and typecheck first, cheap and seconds. Expensive jobs `needs:` them, or run all in parallel with fail-fast on.\n\nTypical outcome: affected-only plus remote cache plus sharding takes 25 min down to 5-8 min for most PRs.\n\nShare CI config (`.github/workflows/*.yml` or similar), monorepo tool, and language stack for specific changes.",
+ "usage": {
+  "input": 2,
+  "output": 1204,
+  "cacheRead": 0,
+  "cacheWrite": 2705,
+  "reasoning": 0,
+  "totalTokens": 3911,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4763,
+ "secs": 15.1
+}

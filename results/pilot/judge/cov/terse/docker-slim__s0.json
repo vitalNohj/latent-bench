@@ -1,0 +1,19 @@
+{
+ "arm": "terse",
+ "pid": "docker-slim",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5,
+   1,
+   1
+  ],
+  "errors": [
+   "Copying /wheels into the runtime image and deleting them in a subsequent RUN does not remove their bytes from the earlier COPY layer, so the wheels still increase the final image size."
+  ]
+ }
+}

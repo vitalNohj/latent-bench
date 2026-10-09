@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "race-simple",
+ "sample": 1,
+ "ok": true,
+ "text": "A **race condition** happens when two or more things run at the same time, share some data, and the result depends on which one finishes first.\n\n**Analogy:** You and a roommate both see one cookie left. You each think \"I'll eat it,\" and you both reach for it. What happens depends on who's faster, and you never agreed on who gets it.\n\n**In code:** Two threads both try to add 1 to a counter that starts at 5:\n\n```\nThread A reads counter → 5\nThread B reads counter → 5\nThread A writes 5+1   → 6\nThread B writes 5+1   → 6   ← should be 7!\n```\n\nEach thread does \"read, add, write\" as separate steps. Their steps interleave, so one update gets lost.\n\n**Why it's tricky:**\n- It only happens with certain timing, so the bug appears randomly.\n- It often works fine in testing and fails under real load.\n\n**How to fix it:** Make sure only one thread can touch the shared data at a time, using:\n- **Locks/mutexes** (\"I'm using this, wait your turn\")\n- **Atomic operations** (read-add-write as one step that can't be split)\n- **Not sharing state** in the first place (e.g., message passing or immutable data)",
+ "usage": {
+  "input": 2,
+  "output": 409,
+  "cacheRead": 817,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1228,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 89,
+ "secs": 5.9
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "utf16-csv",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both explain the likely UTF-16 BOM mismatch and provide confirmation, decoding fixes, delimiter guidance, and conversion, but A delivers the essential information more concisely."
+ }
+}

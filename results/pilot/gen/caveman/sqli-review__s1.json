@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "sqli-review",
+ "sample": 1,
+ "ok": true,
+ "text": "**Security warning: SQL injection.** `user_id` is interpolated directly into the query string. An attacker can pass a value like `1 OR 1=1` or `1; DROP TABLE users;--` and run arbitrary SQL. This can expose or destroy data.\n\nFix: use a parameterized query. The driver binds the value separately, so input is never parsed as SQL.\n\n```python\ndef get_user(user_id):\n    query = \"SELECT * FROM users WHERE id = ?\"\n    return db.execute(query, (user_id,)).fetchone()\n```\n\nThe placeholder style depends on the driver:\n- `sqlite3`: `?`\n- `psycopg2`/`psycopg`, `mysql-connector`, `PyMySQL`: `%s`\n- SQLAlchemy `text()`: `:id` with `{\"id\": user_id}`\n\nOther issues:\n\n- **`SELECT *`**: Fetches every column, including sensitive ones like `password_hash`. Schema changes also break callers silently. Name columns explicitly.\n- **No type check**: Validate `user_id` early, e.g. `int(user_id)`, so bad input fails fast with a clear error. This does not replace parameters.\n- **Global `db`**: Hidden dependency makes testing hard. Pass connection or session as argument.\n- **`None` on miss**: `fetchone()` returns `None` when no row exists. Document this or raise `UserNotFound`, so callers don't crash on `None[\"name\"]`.\n\nFuller version:\n\n```python\ndef get_user(conn, user_id: int):\n    row = conn.execute(\n        \"SELECT id, name, email FROM users WHERE id = ?\",\n        (user_id,),\n    ).fetchone()\n    if row is None:\n        raise UserNotFound(user_id)\n    return row\n```",
+ "usage": {
+  "input": 2,
+  "output": 678,
+  "cacheRead": 2742,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3422,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4862,
+ "secs": 7.5
+}

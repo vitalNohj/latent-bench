@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "winston-p99",
+ "sample": 0,
+ "ok": true,
+ "text": "Most likely causes, in order of probability:\n\n1. **Synchronous or blocking writes.** Common culprits are a `File` transport writing to a slow disk, a `Console` transport when stdout is a pipe or file (synchronous in Node), or any custom `fs.*Sync` call. Every request then blocks the event loop, and the tail latency stacks up.\n\n2. **Backpressure or unbounded buffering.** If the transport (file, HTTP, CloudWatch, Loki, etc.) can't keep up, winston's streams buffer in memory. That causes GC pressure and long GC pauses, which show up as p99 spikes.\n\n3. **Expensive formatting per request.** Examples include `format.json()` or `prettyPrint()` on large objects (full `req`/`res`, headers, bodies), `util.inspect`, `format.errors({stack:true})`, and colorize or timestamp chains. Serializing big objects is CPU on the main thread.\n\n4. **Network transports awaited inline.** An HTTP or remote transport, or an `await logger.log(...)` in middleware, adds round-trip latency to every response.\n\n5. **Logging at debug/silly level in prod.** Volume multiplies all of the above.\n\n**How to confirm quickly:**\n- Measure event-loop lag with `perf_hooks.monitorEventLoopDelay()`. If it spikes, the slowdown is blocking or CPU work (1 and 3).\n- Profile with `node --cpu-prof` or `clinic flame` and look for `JSON.stringify`, `writeSync`, or the format functions.\n- Disable transports one at a time.\n\n**Fixes:**\n- Log a small, fixed set of fields (method, path, status, duration, reqId), not whole objects.\n- Write to stdout asynchronously and let the platform ship the logs. Avoid in-process network transports.\n- Set the level to `info` or higher in prod.\n- Consider **pino** with `pino.destination({sync:false})` or a worker-thread transport. It's typically 5–10x cheaper than winston.\n- Never `await` logging in the request path.",
+ "usage": {
+  "input": 2,
+  "output": 775,
+  "cacheRead": 0,
+  "cacheWrite": 826,
+  "reasoning": 0,
+  "totalTokens": 1603,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 108,
+ "secs": 9.5
+}

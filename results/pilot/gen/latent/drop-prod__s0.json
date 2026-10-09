@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "drop-prod",
+ "sample": 0,
+ "ok": true,
+ "text": "This permanently deletes every table and all its data in production, and it cannot be undone. Take a backup first. Stop the app and any workers first so they do not write to half-dropped tables or hold locks that block the drop.\n\n1. Confirm you are connected to the right database:\n   ```sql\n   SELECT current_database(), inet_server_addr(), current_user;\n   ```\n2. Back up the database:\n   ```bash\n   pg_dump -Fc -h <host> -U <user> -d <db> -f prod_$(date +%F_%H%M).dump\n   ```\n3. Stop the app and workers. Then check that no other sessions remain:\n   ```sql\n   SELECT pid, usename, application_name, state\n   FROM pg_stat_activity\n   WHERE datname = current_database() AND pid <> pg_backend_pid();\n   ```\n4. Drop all tables in a single transaction. Pick one option:\n\n   option A: drop only tables. Keeps the schema, functions, types, extensions, and grants.\n   ```sql\n   BEGIN;\n   DO $$\n   DECLARE r record;\n   BEGIN\n     FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n       EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n     END LOOP;\n   END $$;\n   -- inspect, then:\n   COMMIT;   -- or ROLLBACK;\n   ```\n\n   option B: wipe the whole schema. Also drops views, sequences, functions, types, and extensions installed in `public`.\n   ```sql\n   BEGIN;\n   DROP SCHEMA public CASCADE;\n   CREATE SCHEMA public;\n   GRANT ALL ON SCHEMA public TO <app_owner_role>;\n   GRANT USAGE ON SCHEMA public TO PUBLIC;\n   COMMIT;\n   ```\n\n5. Run migrations, then seed. The migrations tracking table, such as `schema_migrations` or `_prisma_migrations`, is gone too, so every migration runs from scratch.\n\nnotes:\n- A > B for reseeding ∵ extensions (`uuid-ossp`, `pgcrypto`, `postgis`) and their grants survive. B → reinstall extensions with `CREATE EXTENSION`, otherwise migrations fail.\n- Tables in other schemas (anything outside `public`) are untouched by both options [assumed: everything lives in `public`].\n- `CASCADE` → also drops views and FKs in other schemas that depend on these tables.\n- Restore if needed: `pg_restore -h <host> -U <user> -d <db> --clean prod_<ts>.dump`",
+ "usage": {
+  "input": 2,
+  "output": 1204,
+  "cacheRead": 0,
+  "cacheWrite": 5378,
+  "reasoning": 0,
+  "totalTokens": 6584,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12085,
+ "secs": 12.9
+}

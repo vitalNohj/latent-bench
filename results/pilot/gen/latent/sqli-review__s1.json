@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "sqli-review",
+ "sample": 1,
+ "ok": true,
+ "text": "This function is vulnerable to SQL injection. `user_id` is interpolated directly into the SQL string, so a caller can change the query itself. For example, `user_id = \"1 OR 1=1\"` returns an arbitrary user, and a value like `\"1; DROP TABLE users\"` can run extra statements on drivers that allow them. Any path where `user_id` comes from a request, such as a URL, form, or header, is exploitable.\n\nfix: parameterized query. Driver binds the value and never parses it as SQL.\n```python\ndef get_user(user_id):\n    return db.execute(\n        \"SELECT id, name, email FROM users WHERE id = ?\",\n        (user_id,),\n    ).fetchone()\n```\nPlaceholder depends on driver: `?` for sqlite3, `%s` for psycopg and MySQLdb, `:id` for SQLAlchemy `text()` [assumed: `db` is a DB-API connection]\n\nnits:\n- `SELECT *` → explicit columns. Avoids leaking columns added later, such as `password_hash`, and avoids breakage when the schema changes\n- not found → returns `None`. Callers must handle it, or raise `UserNotFound` here\n- type hint `user_id: int` + validate at boundary → bad input fails before the DB",
+ "usage": {
+  "input": 2,
+  "output": 478,
+  "cacheRead": 5416,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 5896,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12168,
+ "secs": 6.5
+}

@@ -1,0 +1,19 @@
+{
+ "arm": "terse",
+ "pid": "winston-p99",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "Node stdout writes to pipes are asynchronous on POSIX and synchronous on Windows; the blanket claim that piped stdout is synchronous is incorrect.",
+   "Winston's built-in File transport normally uses asynchronous stream writes, so describing it as a synchronous event-loop blocker is misleading.",
+   "Winston's logger.log() normally returns the logger, not a promise for transport completion. Awaiting it does not ordinarily wait for a network round trip."
+  ]
+ }
+}

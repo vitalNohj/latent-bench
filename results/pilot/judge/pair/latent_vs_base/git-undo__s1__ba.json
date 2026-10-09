@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "git-undo",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the correct command and relevant alternatives clearly, while B adds misleading recovery advice: resetting softly to an old commit moves HEAD but does not restore discarded working-tree changes."
+ }
+}

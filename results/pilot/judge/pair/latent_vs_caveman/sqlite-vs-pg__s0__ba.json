@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives a sound recommendation and useful switching criteria while acknowledging dialect differences, whereas B misleadingly presents migration to Postgres as just a configuration change plus data copy."
+ }
+}

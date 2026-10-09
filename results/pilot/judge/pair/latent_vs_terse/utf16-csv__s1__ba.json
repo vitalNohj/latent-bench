@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "utf16-csv",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives the same practical UTF-16 fix and delimiter warning while also explaining why UTF-8 fails, checking for UTF-32, and warning against decoding workarounds that can corrupt the data."
+ }
+}

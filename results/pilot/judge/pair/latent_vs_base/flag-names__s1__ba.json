@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "flag-names",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives five usable names with clearer connections to dead feature flags and a practical recommendation, making it easier to choose without sacrificing relevant substance."
+ }
+}

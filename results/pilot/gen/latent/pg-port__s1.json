@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "pg-port",
+ "sample": 1,
+ "ok": true,
+ "text": "`5432` (TCP). Override via `port` in `postgresql.conf`, `-p` flag, or `PGPORT` env for clients.",
+ "usage": {
+  "input": 2,
+  "output": 77,
+  "cacheRead": 5362,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 5441,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12045,
+ "secs": 2.4
+}

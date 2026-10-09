@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "flag-names",
+ "sample": 1,
+ "ok": true,
+ "text": "1. **Flagrot**: finds flags rotting in code.\n2. **Deadswitch**: dead toggle, plain meaning.\n3. **Flag Reaper**: hunts and harvests stale flags.\n4. **Tombstone**: marks flags ready for burial.\n5. **Unfurl**: removes flags no longer flying.\n\nPick: **Flagrot**. Short, memorable, says problem directly.",
+ "usage": {
+  "input": 2,
+  "output": 158,
+  "cacheRead": 2708,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 2868,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4796,
+ "secs": 3.9
+}

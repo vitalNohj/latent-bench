@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "git-undo",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the correct reset commands and a more accurate pushed-history warning, while B misleadingly claims others pulling will get conflicts and recommends revert as a substitute even though it does not keep the changes."
+ }
+}

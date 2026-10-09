@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "flag-names",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both provide five relevant name ideas without substantive errors, but A answers the request more directly and is faster to scan, while B adds an unnecessary recommendation and availability caveat."
+ }
+}

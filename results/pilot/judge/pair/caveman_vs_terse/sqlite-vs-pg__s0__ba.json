@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "B",
+  "reason": "B provides a safe backup command and enables foreign-key enforcement, addressing important omissions in A, although it overstates how reliably busy_timeout prevents lock errors and how cheaply an ORM enables migration."
+ }
+}

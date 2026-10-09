@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "winston-p99",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "Both incorrectly describe stdout pipes as synchronous on Linux, but B avoids A’s additional misleading claim that every format runs once per transport and gives a concise, actionable transport-isolation test."
+ }
+}

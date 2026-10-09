@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "ok": true,
+ "text": "**SQLite**, with WAL mode enabled. At ~20 users on one server, it's simpler (no separate service, backup is copying a file) and fast enough.\n\n```sql\nPRAGMA journal_mode=WAL;\nPRAGMA busy_timeout=5000;\n```\n\n**Choose Postgres instead if:**\n- You'll run multiple app servers, or the DB must live on a separate host\n- You have many concurrent writers or long write transactions (SQLite allows one writer at a time)\n- You need Postgres-specific features: `LISTEN/NOTIFY`, rich JSONB indexing, row-level security, extensions like PostGIS or pgvector\n- Your team already runs Postgres, so the operational overhead is close to zero\n\n**Tips if you start with SQLite:**\n- Use an ORM or query builder so migrating later is easy.\n- Use Litestream for continuous backups.",
+ "usage": {
+  "input": 2,
+  "output": 329,
+  "cacheRead": 0,
+  "cacheWrite": 821,
+  "reasoning": 0,
+  "totalTokens": 1152,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 81,
+ "secs": 4.6
+}

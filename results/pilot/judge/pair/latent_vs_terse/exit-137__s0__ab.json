@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "exit-137",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A more accurately explains that a liveness-probe failure produces exit 137 only if shutdown escalates to SIGKILL, and includes container-specific log checks and a clearer diagnostic path through termination reason and events."
+ }
+}

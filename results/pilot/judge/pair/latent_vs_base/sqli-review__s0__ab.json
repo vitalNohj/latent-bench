@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqli-review",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the same essential fixes and caveats more concisely, while more accurately describing `1 OR 1=1` as matching every row rather than necessarily returning another user's row."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "drop-prod",
+ "sample": 1,
+ "ok": true,
+ "text": "**Back up first**, since this is prod:\n\n```bash\npg_dump -Fc -d \"$PROD_URL\" -f prod_backup_$(date +%F).dump\n```\n\n**Option 1: drop and recreate the schema** (fastest; also removes views, sequences, and functions in `public`):\n\n```sql\nDROP SCHEMA public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO public;  -- adjust to your roles\n```\n\n**Option 2: drop only tables** (keeps the schema and its grants):\n\n```sql\nDO $$ DECLARE r record;\nBEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\nRun either with:\n\n```bash\npsql \"$PROD_URL\" -c \"...\"\n```\n\nBefore running, double-check that `$PROD_URL` points to the database you intend to wipe. If you use migrations (Prisma, Rails, Django, etc.), their reset command (e.g. `prisma migrate reset`) may be the cleaner way to drop and reseed in one step.",
+ "usage": {
+  "input": 2,
+  "output": 455,
+  "cacheRead": 820,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1277,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 81,
+ "secs": 6.0
+}

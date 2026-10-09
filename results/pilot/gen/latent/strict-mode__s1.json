@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "strict-mode",
+ "sample": 1,
+ "ok": true,
+ "text": "Not a bug: React 18+ `<StrictMode>` in dev runs mount → unmount → mount on purpose. Prod runs once. [inferred: app wrapped in `<StrictMode>`, typical in `main.tsx` / `index.js`]\n\nwhy: it stress-tests cleanup. Future React features (Activity/offscreen, fast refresh) can unmount and remount a component with its state kept, so effects must survive setup → cleanup → setup.\n\nfix: write a correct cleanup function. Do not remove StrictMode or add a `useRef` \"ran once\" guard; both hide the bug StrictMode is exposing.\n\n```js\n// subscription / listener\nuseEffect(() => {\n  const id = setInterval(tick, 1000);\n  return () => clearInterval(id);\n}, []);\n\n// fetch\nuseEffect(() => {\n  const ctrl = new AbortController();\n  fetch(url, { signal: ctrl.signal })\n    .then(r => r.json())\n    .then(setData)\n    .catch(e => { if (e.name !== 'AbortError') throw e; });\n  return () => ctrl.abort();\n}, [url]);\n```\n\nsymptom → meaning:\n- two network requests visible, UI correct → fine. First request is aborted or ignored\n- duplicate listeners, double sockets, interval ticking 2× → missing cleanup = real bug that prod will hit later\n- side effect that must run once per app (analytics init, POST on load) → move it out of the effect: a module-level call, an event handler, or a data library (TanStack Query, framework loader)\n\nnext: check the effect's `return`. If it has none and the effect subscribes, opens, or starts something, add a cleanup.",
+ "usage": {
+  "input": 2,
+  "output": 685,
+  "cacheRead": 5380,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6067,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12080,
+ "secs": 8.2
+}

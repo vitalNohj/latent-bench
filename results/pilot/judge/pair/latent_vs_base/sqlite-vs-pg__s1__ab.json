@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A makes the workload assumption explicit and covers the key tradeoffs concisely, while B overstates what user count implies about write load and calls synchronous=NORMAL safe without warning that committed transactions can be lost after a power failure."
+ }
+}

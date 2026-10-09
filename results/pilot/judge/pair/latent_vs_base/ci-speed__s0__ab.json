@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "B",
+  "reason": "B covers the key optimizations while avoiding A’s unsafe suggestion to skip heavy jobs for config-only changes and overconfident near-linear runner scaling, and it explicitly warns that affected detection may require additional Git history."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "utf16-csv",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives the same practical diagnosis, fixes, and delimiter warning while appropriately hedging the UTF-16 inference, which A states as certain despite the error revealing only the first byte."
+ }
+}

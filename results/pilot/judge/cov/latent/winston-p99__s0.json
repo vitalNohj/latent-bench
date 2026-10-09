@@ -1,0 +1,17 @@
+{
+ "arm": "latent",
+ "pid": "winston-p99",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "On Linux/POSIX, process.stdout writes to pipes and sockets are asynchronous, not synchronous. Writes to regular files and terminals are synchronous, so Docker or Kubernetes log pipes do not inherently block the event loop as claimed."
+  ]
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A covers the main optimizations without B’s misleading near-linear core-scaling claims, overly precise speedup estimates, or unsafe suggestion that config-only changes can skip heavy jobs."
+ }
+}

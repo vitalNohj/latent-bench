@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "jwt-storage",
+ "sample": 0,
+ "ok": true,
+ "text": "Not for anything sensitive. Any XSS bug on your origin, including one in a third-party script or npm dependency, can read localStorage and send the token to an attacker. The attacker can then use it from their own machine until it expires. An HttpOnly cookie cannot be read by JavaScript, so XSS cannot steal it, though XSS can still make requests while the user's page is open.\n\n| | localStorage | HttpOnly cookie | memory + refresh cookie |\n|---|---|---|---|\n| XSS token theft | yes | no | access token only, short-lived |\n| CSRF | immune | needs `SameSite` + CSRF token | refresh endpoint needs `SameSite` |\n| survives reload | yes | yes | via silent refresh |\n| cross-domain API | easy | needs CORS `credentials` + shared site | same |\n\npick: short-lived access JWT (≈ 5-15 min) in a JS variable, refresh token in a cookie with `HttpOnly; Secure; SameSite=Strict|Lax; Path=/auth/refresh`, rotated on each use. A plain session cookie with no JWT also works, and is simpler if there is one backend.\n\nlocalStorage acceptable when: low-value data, short expiry, strict CSP, no third-party scripts. It is a trade-off, not a hard ban.\n\nXSS is the root risk either way. A cookie limits how much damage XSS can do but does not stop it. CSP and output escaping are still required.",
+ "usage": {
+  "input": 2,
+  "output": 645,
+  "cacheRead": 0,
+  "cacheWrite": 5372,
+  "reasoning": 0,
+  "totalTokens": 6019,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12063,
+ "secs": 8.2
+}

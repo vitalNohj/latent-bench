@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B covers the essential retry-safety mechanism more clearly and avoids A’s misleading blanket claim that reusing a key across different charges silently swallows the second charge, when changed parameters typically cause an error."
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "arm": "terse",
+ "pid": "ci-speed",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "A merge queue does not inherently make the full suite run only once at merge instead of on every push; that requires workflow configuration, and queue updates can trigger additional runs."
+  ]
+ }
+}

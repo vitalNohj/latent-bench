@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "git-undo",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both give the correct soft and mixed reset commands and warn about rewriting pushed history, but A delivers the relevant guidance faster without B’s unnecessary amend and recovery detours."
+ }
+}

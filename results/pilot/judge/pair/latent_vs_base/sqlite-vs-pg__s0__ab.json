@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A better qualifies SQLite’s suitability by workload and warns about local-disk storage and long write transactions, while B makes unsupported throughput guarantees and calls synchronous=NORMAL safe without noting possible loss of committed transactions after a power failure."
+ }
+}

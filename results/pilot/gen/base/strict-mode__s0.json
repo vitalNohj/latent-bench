@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "strict-mode",
+ "sample": 0,
+ "ok": true,
+ "text": "Not a bug. It's **React 18+ StrictMode** behavior, intentionally dev-only.\n\n**What's happening:** In development, `<React.StrictMode>` mounts each component, unmounts it, then mounts it again. So your effect runs → cleanup runs → effect runs again. Production skips this.\n\n**Why:** It surfaces effects that lack proper cleanup, such as leaked subscriptions, duplicate listeners, or race conditions. If your component breaks when mounted twice, it will also break in real scenarios like Fast Refresh, offscreen/Activity, and route caching.\n\n**The fix is a correct cleanup function, not suppressing the double run:**\n\n```js\nuseEffect(() => {\n  const controller = new AbortController();\n  fetch(url, { signal: controller.signal })\n    .then(r => r.json())\n    .then(setData)\n    .catch(e => { if (e.name !== 'AbortError') throw e; });\n  return () => controller.abort();\n}, [url]);\n```\n\n```js\nuseEffect(() => {\n  const handler = () => {/* ... */};\n  window.addEventListener('resize', handler);\n  return () => window.removeEventListener('resize', handler);\n}, []);\n```\n\n**Options if it's actually causing problems:**\n- **Best:** Add cleanup as shown above.\n- **Truly one-time init** (e.g., analytics setup): use a module-level guard:\n  ```js\n  let didInit = false;\n  useEffect(() => { if (didInit) return; didInit = true; init(); }, []);\n  ```\n- **Data fetching:** Use a library like TanStack Query or SWR, or your framework's loader. They handle dedup and caching.\n- **Not recommended:** Removing `<StrictMode>` from your root (`main.jsx`/`index.js`). It hides the symptom and you lose the checks.\n\nIf you share the effect, I can suggest the right cleanup.",
+ "usage": {
+  "input": 2,
+  "output": 664,
+  "cacheRead": 0,
+  "cacheWrite": 814,
+  "reasoning": 0,
+  "totalTokens": 1480,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 57,
+ "secs": 7.6
+}

@@ -1,0 +1,189 @@
+{
+ "arm": "base",
+ "convo": 0,
+ "ok": true,
+ "turns": [
+  {
+   "turn": 0,
+   "q": "our postgres queries got slow after a migration. where do i start?",
+   "ok": true,
+   "text": "Most post-migration slowdowns come from a few causes. Check these in order:\n\n## 1. Stale statistics (most common)\nMigrations that bulk-load, rewrite tables, or upgrade Postgres (`pg_upgrade` doesn't carry stats over) leave the planner guessing.\n```sql\nANALYZE;              -- whole DB, or ANALYZE my_table;\n```\nIf queries speed up right after, that was it.\n\n## 2. Find the slow queries\n```sql\n-- requires pg_stat_statements extension\nSELECT query, calls, mean_exec_time, total_exec_time\nFROM pg_stat_statements\nORDER BY total_exec_time DESC\nLIMIT 20;\n```\nOr set `log_min_duration_statement = 500` (ms) to log slow queries.\n\n## 3. Look at the plan\n```sql\nEXPLAIN (ANALYZE, BUFFERS) <your slow query>;\n```\nLook for:\n- **Seq Scan** on a big table where you expected an index\n- **Estimated vs. actual rows** far apart, which points to bad stats (see #1)\n- Nested loops over large row counts\n\n## 4. Check for lost or invalid indexes\nMigrations that drop/recreate tables or columns, or a failed `CREATE INDEX CONCURRENTLY`, can leave indexes missing or invalid:\n```sql\n-- invalid indexes\nSELECT indexrelid::regclass FROM pg_index WHERE NOT indisvalid;\n\n-- compare against what you expect\n\\d my_table\n```\n\n## 5. Type changes\nIf a column type changed (e.g. `int` to `bigint`, `varchar` to `text`, `uuid` stored as text), queries comparing mismatched types may stop using indexes. Check that the plan shows `Index Cond`, not a `Filter` with a cast.\n\n## 6. Bloat / vacuum\nBig `UPDATE`s or `ALTER`s leave dead tuples:\n```sql\nSELECT relname, n_dead_tup, last_autovacuum, last_autoanalyze\nFROM pg_stat_user_tables ORDER BY n_dead_tup DESC LIMIT 10;\n```\n`VACUUM (ANALYZE) my_table;` if dead tuples are high.\n\n## 7. If it was a Postgres version upgrade\n- Run `ANALYZE` (stats don't transfer)\n- Re-check config (`shared_buffers`, `work_mem`, `random_page_cost`), since it's sometimes reset to defaults\n- Check for extensions that need `ALTER EXTENSION ... UPDATE`\n\n---\n\n**What kind of migration was it?** A schema migration (Rails/Alembic/Flyway, etc.), a Postgres version upgrade, or a move to new hardware/cloud? If you share the migration file or an `EXPLAIN ANALYZE` output, I can narrow it down.",
+   "usage": {
+    "input": 2,
+    "output": 988,
+    "cacheRead": 809,
+    "cacheWrite": 0,
+    "reasoning": 0,
+    "totalTokens": 1799,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 66,
+   "secs": 11.7
+  },
+  {
+   "turn": 1,
+   "q": "the migration added a column and an index on orders(customer_id, created_at). could that index be the problem?",
+   "ok": true,
+   "text": "It could be, but a new index usually affects performance in a few specific ways. First narrow it down: **are reads slow, writes slow, or both?**\n\n## How the index could hurt\n\n**Writes (INSERT/UPDATE on `orders`)**\n- Every insert now maintains one more index. This adds a small cost per row, but it adds up on high-write tables.\n- Updates to `customer_id` or `created_at` can no longer be HOT updates, so they write more and cause more bloat.\n\n**Reads**\n- **The planner prefers the new index when it shouldn't.** For example, a query like `WHERE customer_id = ? ORDER BY id` or a `created_at` range scan might switch to `(customer_id, created_at)` and run slower. This is more likely if stats are stale.\n- **Invalid index from a failed `CREATE INDEX CONCURRENTLY`.** The index is never used for reads, but it still slows every write.\n- **A dropped or replaced index.** Check whether the migration also removed an old index, such as a plain `orders(customer_id)`.\n\n## The new column could be the culprit instead\n- On **PG < 11**, `ADD COLUMN ... DEFAULT x` rewrites the whole table.\n- On any version, a **volatile default** (`DEFAULT now()`, `gen_random_uuid()`) also rewrites the table.\n- A backfill `UPDATE` afterward creates dead tuples and bloat.\n\n## Diagnose\n\n```sql\n-- Is the index valid, and is it being used?\nSELECT indexrelid::regclass, indisvalid FROM pg_index\nWHERE indrelid = 'orders'::regclass;\n\nSELECT indexrelname, idx_scan, pg_size_pretty(pg_relation_size(indexrelid))\nFROM pg_stat_user_indexes WHERE relname = 'orders';\n\n-- Bloat / stale stats from the column add or backfill\nSELECT n_live_tup, n_dead_tup, last_autoanalyze, last_analyze\nFROM pg_stat_user_tables WHERE relname = 'orders';\n```\n\nThen run `EXPLAIN (ANALYZE, BUFFERS)` on a slow query and see whether it uses the new index.\n\n## Test without the index\n\n**Safest:** use the `hypopg` extension to hide the index only for your session.\n```sql\nSELECT hypopg_hide_index('orders_customer_id_created_at_idx'::regclass);\nEXPLAIN ANALYZE <slow query>;\n```\n\n**Without hypopg:** drop the index inside a transaction and roll back.\n```sql\nBEGIN;\nDROP INDEX orders_customer_id_created_at_idx;\nEXPLAIN ANALYZE <slow query>;\nROLLBACK;\n```\n⚠️ `DROP INDEX` takes an exclusive lock on `orders` until the rollback, so all other queries on the table will block. Avoid this in production, or keep the transaction to a second or two.\n\n## Likely fixes\n- `ANALYZE orders;` is cheap, so try it first.\n- If the index is invalid, run `DROP INDEX CONCURRENTLY` and rebuild it.\n- If writes are slow and the index is barely used, reconsider whether you need it. An existing `(customer_id)` index is redundant now, since the composite covers it. Dropping that one recovers some of the write cost.\n- If you see bloat, run `VACUUM (ANALYZE) orders;`.\n\nIf you paste a slow query with its `EXPLAIN ANALYZE` output, I can tell you whether the new index is involved.",
+   "usage": {
+    "input": 4,
+    "output": 1632,
+    "cacheRead": 808,
+    "cacheWrite": 1005,
+    "reasoning": 0,
+    "totalTokens": 3449,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 110,
+   "secs": 18.8
+  },
+  {
+   "turn": 2,
+   "q": "how do i check whether the planner actually uses it?",
+   "ok": true,
+   "text": "There are two angles: **does a specific query use it** (EXPLAIN), and **is it used at all across the workload** (index stats).\n\n## 1. For a specific query: `EXPLAIN`\n\n```sql\nEXPLAIN (ANALYZE, BUFFERS)\nSELECT * FROM orders\nWHERE customer_id = 42\nORDER BY created_at DESC\nLIMIT 20;\n```\n\nLook for your index name in one of these nodes:\n- `Index Scan using orders_customer_id_created_at_idx`\n- `Index Only Scan using ...`\n- `Bitmap Index Scan on ...`\n\nIf you see `Seq Scan on orders` or a different index, the planner isn't using it for that query.\n\nThings to check in the output:\n- **`Index Cond`** should include `customer_id` (and `created_at` if you filter on it). If those columns appear under `Filter` instead, the index isn't doing the filtering.\n- **No `Sort` node** above the index scan for `ORDER BY created_at` means the index is providing the order, which is the main benefit of this composite.\n- **`rows=` estimated vs. actual**: big gaps mean stale stats. Run `ANALYZE orders;`.\n\nUse **real parameter values** from your app. A heavy customer and a light customer can get different plans.\n\n## 2. Parameterized queries from your app\n\nApps usually send prepared statements, which can switch to a generic plan after 5 executions. A plain `EXPLAIN` with literals may not match. To mimic the app:\n\n```sql\nPREPARE q(bigint) AS\n  SELECT * FROM orders WHERE customer_id = $1 ORDER BY created_at DESC LIMIT 20;\n\nEXPLAIN (ANALYZE) EXECUTE q(42);\n-- run EXECUTE 6+ times, then EXPLAIN again to see the generic plan\n```\n\n## 3. Across the whole workload: index usage stats\n\n```sql\nSELECT indexrelname,\n       idx_scan,\n       idx_tup_read,\n       pg_size_pretty(pg_relation_size(indexrelid)) AS size\nFROM pg_stat_user_indexes\nWHERE relname = 'orders'\nORDER BY idx_scan;\n```\n\n`idx_scan` is cumulative since the last stats reset, so take a snapshot, wait a while under normal traffic, and compare:\n\n```sql\nSELECT idx_scan FROM pg_stat_user_indexes\nWHERE indexrelname = 'orders_customer_id_created_at_idx';\n-- wait 10–30 min, run again\n```\n\nIf the number doesn't move, nothing is using it. On **PG 16+** you can also check `last_idx_scan` in the same view.\n\nAlso compare with any old `orders(customer_id)` index. If its counter stopped growing after the migration, queries moved to the new index.\n\n## 4. Capture real plans automatically: `auto_explain`\n\nTo see the plans production queries actually got, without guessing which queries to test:\n\n```sql\n-- per session, for testing\nLOAD 'auto_explain';\nSET auto_explain.log_min_duration = '200ms';\nSET auto_explain.log_analyze = on;\n```\n\nFor all sessions, add it to `session_preload_libraries` in `postgresql.conf`. Slow queries' plans then appear in the Postgres log. Keep `log_analyze` off or use a high threshold on busy systems, because it adds overhead.\n\n---\n\n**Quick read of results:**\n- The index is used and queries are slow: look at the plan for bad estimates or a wrong index choice.\n- The index is unused and writes are slow: it's pure overhead, so consider dropping it.\n- The index is unused and reads are slow: the problem is elsewhere (stats, bloat from the column add, or a dropped index).",
+   "usage": {
+    "input": 4,
+    "output": 1573,
+    "cacheRead": 1813,
+    "cacheWrite": 1213,
+    "reasoning": 0,
+    "totalTokens": 4603,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 52,
+   "secs": 19.2
+  },
+  {
+   "turn": 3,
+   "q": "it uses it, but the query still takes 2s. the table has 40M rows. what next?",
+   "ok": true,
+   "text": "Since the planner uses the index, the question becomes **which part of the plan takes the 2s**. Get the full plan with real parameter values:\n\n```sql\nEXPLAIN (ANALYZE, BUFFERS, VERBOSE)\n<your slow query>;\n```\n\nFirst compare `Execution Time` at the bottom with the 2s you see in the app:\n- **Execution Time is much less than 2s:** the database isn't the bottleneck. Look at lock waits, network, connection pool, or the number of rows being sent back to the app.\n- **Execution Time is about 2s:** find the node with the largest `actual time` and read on.\n\n## What to look for, and the fix\n\n**1. The query matches too many rows**\n`actual rows=` on the index scan is in the hundreds of thousands. This happens with a heavy customer or a wide `created_at` range.\n- Add or tighten the `LIMIT`.\n- Replace `OFFSET` pagination with keyset pagination:\n  ```sql\n  WHERE customer_id = $1 AND created_at < $last_seen\n  ORDER BY created_at DESC LIMIT 50\n  ```\n- If it's an aggregate over many rows, consider a summary table or materialized view.\n\n**2. `Rows Removed by Filter` is large**\nThe index finds candidate rows, but another predicate such as `status = 'paid'` throws most of them away after fetching them from the heap.\n- Add that column to the index, e.g. `(customer_id, status, created_at)`.\n- Or, if you always filter on the same value, use a partial index:\n  ```sql\n  CREATE INDEX CONCURRENTLY ... ON orders (customer_id, created_at)\n  WHERE status = 'paid';\n  ```\n\n**3. `Buffers: shared read=` is high**\nThe query reads pages from disk instead of cache. With 40M rows, rows for one customer are scattered across many heap pages, so each row can cost a random read.\n- Make it an **index-only scan** by covering the selected columns, and avoid `SELECT *`:\n  ```sql\n  CREATE INDEX CONCURRENTLY ... ON orders (customer_id, created_at)\n  INCLUDE (total, status);\n  ```\n- Check `Heap Fetches:` on index-only scans. If it's high, run `VACUUM orders;` so the visibility map is current.\n- Physically ordering the table by `customer_id` with `pg_repack` or `CLUSTER` helps a lot. `CLUSTER` locks the table, so prefer `pg_repack` in production.\n- Run the query twice. If the second run is fast, the cause is cold cache or memory pressure, so check `shared_buffers` and RAM.\n\n**4. There's still a `Sort` node**\nThe index isn't providing the order. Common causes:\n- `customer_id IN (...)` or a range on `customer_id`\n- `ORDER BY` on a different column, or mixed directions\n\nFix the query shape, or match the index to it.\n\n**5. `Bitmap Heap Scan` with `lossy` blocks or `Recheck Cond` removing many rows**\n`work_mem` is too small. Test with `SET work_mem = '64MB';` in your session.\n\n**6. The slow part is a different node**\nA join, subquery, or nested loop elsewhere in the plan may account for most of the time, with the `orders` scan being fast. Check `loops=`, since a node's time is multiplied by its loop count.\n\n**7. Index bloat**\nCompare the index size with what you'd expect. If it's much larger, rebuild it:\n```sql\nREINDEX INDEX CONCURRENTLY orders_customer_id_created_at_idx;\n```\n\n---\n\nIf you paste the query and its `EXPLAIN (ANALYZE, BUFFERS)` output, I can point to the exact node causing the delay. [explain.depesz.com](https://explain.depesz.com) is also useful for reading large plans.",
+   "usage": {
+    "input": 4,
+    "output": 1888,
+    "cacheRead": 3026,
+    "cacheWrite": 1288,
+    "reasoning": 0,
+    "totalTokens": 6206,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 76,
+   "secs": 20.6
+  },
+  {
+   "turn": 4,
+   "q": "unrelated: what's the difference between a process and a thread?",
+   "ok": true,
+   "text": "A **process** is a running program with its own isolated memory space. A **thread** is a unit of execution inside a process; threads in the same process share its memory.\n\n| | Process | Thread |\n|---|---|---|\n| Memory | Own address space | Shares the process's heap, globals, and file descriptors |\n| Has its own | Memory, file descriptors, PID | Stack, registers, program counter |\n| Creation cost | Higher (`fork`/`exec`) | Lower |\n| Context switch | Slower (address space change, TLB flush) | Faster |\n| Communication | IPC: pipes, sockets, shared memory | Directly through shared variables |\n| Isolation | A crash usually stays in that process | A crash or memory corruption can take down every thread |\n| Concurrency bugs | Fewer, since memory isn't shared by default | Race conditions and deadlocks; needs locks or atomics |\n\n**Rule of thumb:**\n- Use **processes** for isolation and fault tolerance, such as browser tabs or worker pools that may crash.\n- Use **threads** for cheap parallelism over shared data, such as a web server handling requests with a shared cache.\n\n**Connection to your earlier question:** Postgres uses a **process per connection**. Each client connection gets its own backend process, with shared memory (`shared_buffers`) set up explicitly between them. That's why thousands of connections get expensive, and why a pooler like PgBouncer is standard. MySQL, by contrast, uses a thread per connection.",
+   "usage": {
+    "input": 4,
+    "output": 534,
+    "cacheRead": 4314,
+    "cacheWrite": 1313,
+    "reasoning": 0,
+    "totalTokens": 6165,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 64,
+   "secs": 11.0
+  },
+  {
+   "turn": 5,
+   "q": "thanks, that helps! can you give me a bash one-liner to list the 10 largest files under a directory?",
+   "ok": true,
+   "text": "```bash\nfind /path/to/dir -type f -exec du -h {} + 2>/dev/null | sort -rh | head -n 10\n```\n\n- `find ... -type f` lists files only, recursively.\n- `du -h` gives each file's size in human-readable units (`-exec ... +` batches files for speed).\n- `sort -rh` sorts human-readable sizes, largest first.\n- `2>/dev/null` hides permission-denied errors.\n\n**On Linux (GNU find)**, this version is faster and handles odd filenames well:\n```bash\nfind /path/to/dir -type f -printf '%s\\t%p\\n' 2>/dev/null | sort -rn | head -n 10 | numfmt --field=1 --to=iec\n```\n\n**On macOS**, `-printf` and `numfmt` aren't available by default, so use the first command. It works with the built-in BSD tools.\n\nTo include directories as well as files (e.g., \"what's eating my disk\"):\n```bash\ndu -ah /path/to/dir 2>/dev/null | sort -rh | head -n 10\n```",
+   "usage": {
+    "input": 4,
+    "output": 393,
+    "cacheRead": 5627,
+    "cacheWrite": 528,
+    "reasoning": 0,
+    "totalTokens": 6552,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 100,
+   "secs": 6.4
+  },
+  {
+   "turn": 6,
+   "q": "last one: should we upgrade from postgres 14 to 16 now or wait?",
+   "ok": true,
+   "text": "**Upgrade soon, but probably not to 16, and not until you've fixed the current slowdown.**\n\n## Timing: you're nearly out of time on 14\nPostgreSQL 14 reaches end of life on **November 12, 2026**, about a month from now. After that it gets no security or bug fixes. Waiting much longer isn't a good option.\n\n## Target: consider 17 or 18 instead of 16\n\n| Version | Released | End of life |\n|---|---|---|\n| 14 | 2021 | **Nov 2026** |\n| 16 | 2023 | Nov 2028 |\n| 17 | 2024 | Nov 2029 |\n| 18 | 2025 | Nov 2030 |\n\nGoing to 16 gives you only about two years before the next upgrade. 17 is mature and well tested. 18 has been out for a year and has had several minor releases, so it's a reasonable choice too. One feature matters for you: **`pg_upgrade` to 18 preserves planner statistics**, which avoids the slow-queries-until-`ANALYZE` problem after upgrading. Before choosing, check that your extensions, cloud provider, and tooling (ORMs, poolers, backup tools) support the target version.\n\n## Sequencing: don't mix the two problems\nResolve the current `orders` slowdown on 14 first. If you upgrade now and things change, you won't know whether the migration, the index, or the new version caused it.\n\n## Upgrade checklist\n1. Read the release notes for **every major version** between yours and the target, especially the \"Migration\" sections for incompatibilities.\n2. Restore a production snapshot on the new version and run your test suite plus your slowest real queries. Compare `EXPLAIN` plans.\n3. Choose a method:\n   - `pg_upgrade --link`: fast, takes minutes of downtime.\n   - Logical replication: near-zero downtime, but more work.\n   - Managed services (RDS, Cloud SQL) have their own upgrade paths, including blue/green deployments.\n4. Afterward, run `ANALYZE` (or `vacuumdb --all --analyze-in-stages`) if the version doesn't carry stats over. Also update extensions with `ALTER EXTENSION ... UPDATE` and re-check config settings.\n5. Have a tested rollback plan, such as keeping the old cluster or a snapshot.\n\n**In short:** fix the query issue this week, then upgrade to 17 or 18 before or shortly after the November EOL, after testing on a production copy.",
+   "usage": {
+    "input": 4,
+    "output": 1113,
+    "cacheRead": 6155,
+    "cacheWrite": 378,
+    "reasoning": 0,
+    "totalTokens": 7650,
+    "cost": {
+     "input": 0,
+     "output": 0,
+     "cacheRead": 0,
+     "cacheWrite": 0,
+     "total": 0
+    }
+   },
+   "stop": "stop",
+   "err": null,
+   "model": "cc/claude-opus-5-5",
+   "user_chars": 63,
+   "secs": 15.4
+  }
+ ]
+}

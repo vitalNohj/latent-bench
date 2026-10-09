@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "pg-port",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "Both correctly identify 5432 (TCP), but A answers the question directly and is faster to read without unnecessary configuration details."
+ }
+}

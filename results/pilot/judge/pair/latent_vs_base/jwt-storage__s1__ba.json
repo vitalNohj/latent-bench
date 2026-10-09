@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "jwt-storage",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A provides accurate, actionable guidance with important caveats, while B misleadingly conflates cross-origin APIs with same-site cookie requirements and overstates that HttpOnly cookies prevent XSS from stealing tokens."
+ }
+}

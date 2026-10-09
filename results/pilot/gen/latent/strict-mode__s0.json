@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "strict-mode",
+ "sample": 0,
+ "ok": true,
+ "text": "Not a bug: React 18+ `<StrictMode>` in dev mounts → unmounts → remounts every component once, so effects run, clean up, then run again [inferred: dev only, prod fine]\n\npurpose: surfaces missing cleanup. A real remount can happen anyway, for example from Fast Refresh or a route change back to the same component. An effect that breaks on run → cleanup → run already has a bug.\nprod: no double invoke ∴ \"prod fine\"\n\ncheck: `<React.StrictMode>` wrapping the root in `main.tsx` | `index.js`. Next.js App Router enables it by default.\n\nfix: make the effect idempotent with a cleanup. Do not remove StrictMode.\n```js\nuseEffect(() => {\n  const ctrl = new AbortController();\n  fetch(url, { signal: ctrl.signal })\n    .then(r => r.json())\n    .then(setData)\n    .catch(e => { if (e.name !== 'AbortError') throw e; });\n  return () => ctrl.abort();\n}, [url]);\n```\n- subscription | listener | interval → unsubscribe | `removeEventListener` | `clearInterval` in the cleanup\n- truly once-only work, like analytics init or a POST: move it out of the effect, into an event handler or module scope | guard with a `useRef` flag\n\nanti-pattern: a `useRef` \"has run\" guard around a fetch. It hides the missing cleanup instead of fixing it.\n\nnext: if the duplicate is a side effect with no undo, such as a POST, it belongs in an event handler, not `useEffect`.",
+ "usage": {
+  "input": 2,
+  "output": 620,
+  "cacheRead": 0,
+  "cacheWrite": 5380,
+  "reasoning": 0,
+  "totalTokens": 6002,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12080,
+ "secs": 7.9
+}

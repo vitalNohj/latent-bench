@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives a clear, accurate interleaving example, while B misleadingly suggests ordinary JavaScript threads can share a local variable and execute these synchronous increments in parallel."
+ }
+}

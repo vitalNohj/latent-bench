@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "race-simple",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B explains the same key concepts more clearly and avoids A’s misleading JavaScript example, where ordinary threads do not share a local variable like `count`."
+ }
+}

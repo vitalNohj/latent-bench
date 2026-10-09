@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "text": "Exit code 137 = SIGKILL (128 + 9). Usually the container was killed from outside, so empty logs are expected.\n\n**Likely causes**\n1. **OOMKilled**: memory limit too low, or a leak or spike at startup.\n2. **Liveness probe failing**: kubelet kills the container before it logs anything.\n3. **Node memory pressure or eviction.**\n4. **Startup too slow**: the probe fires before the app is ready (common with JVM).\n\n**Check**\n```bash\nkubectl describe pod <pod>          # Look at \"Last State: Terminated, Reason: OOMKilled\"\nkubectl get pod <pod> -o jsonpath='{.status.containerStatuses[*].lastState}'\nkubectl logs <pod> --previous       # logs from the crashed instance\nkubectl get events --sort-by=.lastTimestamp\nkubectl top pod <pod>               # needs metrics-server\n```\n\n**Fixes**\n- If OOMKilled: raise `resources.limits.memory`. For the JVM, set `-XX:MaxRAMPercentage=75`. For Node, set `--max-old-space-size`.\n- If the probe is killing it: add a `startupProbe`, or increase `initialDelaySeconds`, `timeoutSeconds`, and `failureThreshold`.\n- To debug interactively, override the command with `sleep infinity`, then `kubectl exec` in and run the app manually to watch memory and output.\n- Check `dmesg` on the node for OOM-killer messages if the Reason field doesn't say OOMKilled.",
+ "usage": {
+  "input": 2,
+  "output": 559,
+  "cacheRead": 829,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1390,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 78,
+ "secs": 7.3
+}

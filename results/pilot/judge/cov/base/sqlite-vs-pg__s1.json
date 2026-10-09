@@ -1,0 +1,19 @@
+{
+ "arm": "base",
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "User count alone does not establish write load; 20 users can generate heavy concurrent writes, and SQLite's write throughput depends on workload and hardware.",
+   "Calling synchronous=NORMAL 'safe with WAL' is incomplete: it preserves database consistency, but recently committed transactions can be lost after a power failure or OS crash.",
+   "An ORM or query builder does not necessarily make SQLite-to-Postgres migration fairly painless; schema, typing, SQL behavior, and data migration can still require substantial work."
+  ]
+ }
+}

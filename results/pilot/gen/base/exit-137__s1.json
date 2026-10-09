@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "text": "Exit code **137 = 128 + 9 (SIGKILL)**. The process was killed externally, which is why the logs are empty: it never got a chance to flush or log. The usual causes, from most to least likely:\n\n### 1. OOMKilled (most common)\n```bash\nkubectl describe pod <pod> | grep -A5 \"Last State\"\n# Look for: Reason: OOMKilled\nkubectl get pod <pod> -o jsonpath='{.status.containerStatuses[*].lastState}'\n```\n**Fixes:**\n- Raise `resources.limits.memory`.\n- Check for runtimes that ignore cgroup limits:\n  - **JVM:** use `-XX:MaxRAMPercentage=75` and a recent JDK.\n  - **Node:** set `--max-old-space-size` below the limit.\n  - **Go:** set `GOMEMLIMIT`.\n- Check for a memory spike at startup (cache warmup, loading large files).\n- Use `kubectl top pod` (or metrics) to see actual usage.\n\n### 2. Liveness probe failing → kubelet kills it\n```bash\nkubectl describe pod <pod>   # Events: \"Liveness probe failed ... will be restarted\"\n```\n**Fixes:** increase `initialDelaySeconds` or `failureThreshold`, or add a `startupProbe` for slow-starting apps.\n\n### 3. Node memory pressure / eviction\n```bash\nkubectl get events --sort-by=.lastTimestamp\nkubectl describe node <node>   # MemoryPressure condition\n```\n\n### 4. Get the previous container's logs\nEmpty logs often means you're looking at the *new* container:\n```bash\nkubectl logs <pod> --previous\n```\n\n### 5. Other possibilities\n- **Container ignores SIGTERM:** after `terminationGracePeriodSeconds` it gets SIGKILL. This only matters on shutdown, not in a crash loop.\n- **Entrypoint exits instantly:** usually a different exit code, but worth checking with `kubectl run -it --rm debug --image=<img> --command -- sh` and running the entrypoint manually.\n- **Kernel OOM on the node:** check `dmesg` or `journalctl -k | grep -i oom` on the node.\n\n**Quickest triage:** run `kubectl describe pod <pod>`. The `Last State: Terminated, Reason:` field and the Events section will tell you which of these it is in about 90% of cases.",
+ "usage": {
+  "input": 2,
+  "output": 858,
+  "cacheRead": 821,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1681,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 59,
+ "secs": 10.2
+}

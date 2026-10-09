@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "race-simple",
+ "sample": 0,
+ "ok": true,
+ "text": "Race condition = two things run at same time, touch same data, result depend on who finish first. Timing luck decide outcome. Bad.\n\n**Bank example:**\n\nAccount have $100. Two ATMs withdraw $50 at same moment.\n\n1. ATM A read balance: $100\n2. ATM B read balance: $100 (A not save yet)\n3. A compute 100 − 50, save $50\n4. B compute 100 − 50, save $50\n\n$100 withdrawn, balance say $50. Should be $0. B overwrite A's work.\n\n**Code version:**\n\n```js\nlet count = 0;\n\n// two threads both run this\nfunction increment() {\n  const temp = count;   // read\n  count = temp + 1;     // write\n}\n```\n\nRun twice, expect `2`. Sometimes get `1`. Both threads read `0` before either write.\n\n**Why sneaky:**\n- Work fine most runs. Fail rarely, randomly.\n- Hard reproduce. Adding logs or debugger change timing, bug vanish.\n\n**Fix:** make read-modify-write happen as one uninterrupted step.\n- **Lock / mutex**: only one thread enter at time. Others wait.\n- **Atomic operations**: CPU/DB do read+write as single indivisible step (e.g. `UPDATE accounts SET balance = balance - 50`).\n- **Avoid shared mutable state**: each thread own data, or pass messages.\n\nCore idea: shared data + concurrent access + at least one writer + no coordination = race condition.",
+ "usage": {
+  "input": 2,
+  "output": 508,
+  "cacheRead": 0,
+  "cacheWrite": 2701,
+  "reasoning": 0,
+  "totalTokens": 3211,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4787,
+ "secs": 10.7
+}

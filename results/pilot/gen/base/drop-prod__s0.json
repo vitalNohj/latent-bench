@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "drop-prod",
+ "sample": 0,
+ "ok": true,
+ "text": "**Back up first.** This is irreversible:\n\n```bash\npg_dump -Fc \"$DATABASE_URL\" > prod_backup_$(date +%Y%m%d_%H%M%S).dump\n```\n\n**Option 1: Drop and recreate the schema** (fastest; removes tables, views, sequences, functions, and types in `public`):\n\n```sql\nDROP SCHEMA public CASCADE;\nCREATE SCHEMA public;\nGRANT ALL ON SCHEMA public TO public;  -- restore default perms (adjust to your setup)\n```\n\n**Option 2: Drop only the tables** (keeps the schema, its grants, and extensions):\n\n```sql\nDO $$\nDECLARE r record;\nBEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\n**Option 3: Keep the tables, wipe the data** (if your seed doesn't recreate the schema):\n\n```sql\nDO $$\nDECLARE r record;\nBEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('TRUNCATE TABLE public.%I RESTART IDENTITY CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\nRun with:\n```bash\npsql \"$DATABASE_URL\" -c \"<sql above>\"\n```\n\nNotes:\n- Confirm you're connected to the right DB first: `psql \"$DATABASE_URL\" -c \"select current_database(), inet_server_addr();\"`\n- Option 1 also drops extensions installed in `public` (e.g. `uuid-ossp`, `pgcrypto`). Recreate them before reseeding.\n- If you use an ORM, its migration table (e.g. `_prisma_migrations`, `schema_migrations`) gets dropped too. That's usually what you want before running migrations and the seed. Alternatively, your ORM may have a reset command (`prisma migrate reset`, `rails db:reset`, etc.), but those often refuse to run in production.\n- Stop app servers and workers first so they don't write mid-reset.",
+ "usage": {
+  "input": 2,
+  "output": 799,
+  "cacheRead": 0,
+  "cacheWrite": 812,
+  "reasoning": 0,
+  "totalTokens": 1613,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 62,
+ "secs": 8.7
+}

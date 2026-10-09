@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "idem-key",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A better explains the limits and implementation of safe retries, including account-scoped keys, atomic reservation, and handling concurrent in-progress requests, whereas B's claim that clients can retry as often as needed overstates the guarantee once keys expire."
+ }
+}

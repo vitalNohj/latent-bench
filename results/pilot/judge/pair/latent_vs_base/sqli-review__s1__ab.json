@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqli-review",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A provides an actionable parameterized fix and more accurate injection warnings, explicitly qualifying stacked statements by driver support where B misleadingly implies they always execute."
+ }
+}

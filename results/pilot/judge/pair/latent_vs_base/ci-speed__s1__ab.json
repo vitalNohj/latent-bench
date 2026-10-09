@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "ci-speed",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives actionable priorities and the crucial warning that affected-only CI requires an accurate dependency graph and full-run backstop, while B omits that safeguard and overstates merge-queue savings and likely runtime reductions."
+ }
+}

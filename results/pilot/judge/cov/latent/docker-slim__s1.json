@@ -1,0 +1,19 @@
+{
+ "arm": "latent",
+ "pid": "docker-slim",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5,
+   1,
+   1
+  ],
+  "errors": [
+   "Lacking manylinux wheels does not necessarily require a builder stage, and Alpine does not invariably force source builds: pure-Python wheels and compatible musllinux wheels can be installed directly."
+  ]
+ }
+}

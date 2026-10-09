@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "race-simple",
+ "sample": 1,
+ "ok": true,
+ "text": "A race condition is a bug where the result depends on the timing of two things running at the same time. Run it once and it works; run it again and it breaks, depending on which one happened to go first.\n\nanalogy: Two roommates share a fridge. Both see there's no milk, both go out and buy some, and now there are two cartons. Each one checked, then acted, but the other changed the situation in between.\n\nThe same thing in code: two requests both add $10 to a balance of $100.\n\n```\nRequest A: reads balance → 100\nRequest B: reads balance → 100\nRequest A: writes 100 + 10 → 110\nRequest B: writes 100 + 10 → 110   ← A's $10 is lost; should be 120\n```\n\nEach step is correct on its own. The bug is in the gap between reading and writing, where the other request can sneak in.\n\nRace conditions are hard to catch because the bad ordering happens only occasionally. Tests usually pass, and then the bug shows up under real load.\n\nfix: Make the \"read, then change\" step happen as one unbreakable unit, so nothing can get in between. Common ways to do that:\n- Lock: only one request can touch the balance at a time. The other waits its turn.\n- Atomic operation: the database does the whole thing in one step, e.g. `UPDATE accounts SET balance = balance + 10`.\n- Avoid sharing: give each worker its own data, so there's nothing to collide on.\n\nIn the analogy: leave a note on the fridge saying \"I'm getting milk\" before you leave.",
+ "usage": {
+  "input": 2,
+  "output": 531,
+  "cacheRead": 5375,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 5908,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12093,
+ "secs": 7.3
+}

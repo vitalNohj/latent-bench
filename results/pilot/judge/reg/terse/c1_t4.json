@@ -1,0 +1,12 @@
+{
+ "arm": "terse",
+ "convo": 1,
+ "turn": 4,
+ "ok": true,
+ "judge": {
+  "register": 1,
+  "social": false,
+  "offer": false,
+  "meta": false
+ }
+}

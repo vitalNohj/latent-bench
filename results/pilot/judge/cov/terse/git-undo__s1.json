@@ -1,0 +1,17 @@
+{
+ "arm": "terse",
+ "pid": "git-undo",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   0.5,
+   0
+  ],
+  "errors": [
+   "git revert HEAD creates a new commit that reverses the changes; it does not undo the commit while keeping its changes staged or unstaged."
+  ]
+ }
+}

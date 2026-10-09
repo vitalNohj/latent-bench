@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more reliable: it emphasizes measurement and cache determinism, while B misleadingly suggests skipping heavy checks for config-only changes and overstates near-linear gains from larger runners and test sharding."
+ }
+}

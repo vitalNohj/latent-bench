@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "docker-slim",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A better qualifies the size estimate and unknown base image, explicitly distinguishes caching and security improvements from size reductions, and avoids B’s blanket advice to exclude potentially required data."
+ }
+}

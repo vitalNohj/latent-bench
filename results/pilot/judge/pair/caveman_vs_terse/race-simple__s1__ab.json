@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B explains the lost-update problem clearly with valid pseudocode, while A misleadingly suggests ordinary JavaScript threads can concurrently modify the same local variable."
+ }
+}

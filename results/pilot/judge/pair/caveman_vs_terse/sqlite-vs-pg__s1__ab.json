@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives safer backup guidance and explicitly explains SQLite’s single-writer constraint, while B misleadingly suggests backups are just file copies (unsafe for a live WAL database) and ORM-assisted migration is painless."
+ }
+}

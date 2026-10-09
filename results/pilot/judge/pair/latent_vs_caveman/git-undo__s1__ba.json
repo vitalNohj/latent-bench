@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "git-undo",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B gives the correct staged and unstaged options, more accurately describes divergence after resetting a pushed commit, and explicitly warns against the destructive --hard option."
+ }
+}

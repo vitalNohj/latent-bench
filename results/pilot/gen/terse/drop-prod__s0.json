@@ -1,0 +1,27 @@
+{
+ "arm": "terse",
+ "pid": "drop-prod",
+ "sample": 0,
+ "ok": true,
+ "text": "**Back up first:**\n```bash\npg_dump -Fc -d \"$PROD_URL\" -f prod_backup_$(date +%F).dump\n```\n\n**Drop everything (tables, views, sequences, functions) in `public`:**\n```bash\npsql \"$PROD_URL\" -c \"DROP SCHEMA public CASCADE; CREATE SCHEMA public; GRANT ALL ON SCHEMA public TO public;\"\n```\n\nIf the app connects as a specific role, also run `GRANT ALL ON SCHEMA public TO <app_user>;` and restore any extensions you used (e.g. `CREATE EXTENSION IF NOT EXISTS pgcrypto;`).\n\n**Tables only (keeps functions and types):**\n```sql\nDO $$ DECLARE r record;\nBEGIN\n  FOR r IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP\n    EXECUTE format('DROP TABLE IF EXISTS public.%I CASCADE', r.tablename);\n  END LOOP;\nEND $$;\n```\n\nBefore running:\n- Run `SELECT current_database(), inet_server_addr();` to confirm you're on the intended DB.\n- Stop the app or put it in maintenance mode so it doesn't write mid-reseed.\n- If your migration tool (Prisma, Rails, Alembic, etc.) has a reset command, use it instead. It handles the schema and migration history together.",
+ "usage": {
+  "input": 2,
+  "output": 521,
+  "cacheRead": 0,
+  "cacheWrite": 820,
+  "reasoning": 0,
+  "totalTokens": 1343,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 81,
+ "secs": 7.3
+}

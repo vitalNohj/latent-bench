@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "idem-key",
+ "sample": 1,
+ "ok": true,
+ "text": "**Idempotency key**: unique client-generated ID (usually UUID) sent with request, typically in header like `Idempotency-Key: 8f3c...`. Server stores key plus result of first request. Same key arrives again, so server returns stored result instead of executing again.\n\n**Why payments need it:**\n\nNetworks fail ambiguously. Client sends `POST /charges`, then timeout. Client cannot know whether:\n- request never reached server\n- server charged card, but response got lost\n\nRetry without key risks double charge. No retry risks lost payment. Key makes retry safe: server sees duplicate key, skips second charge, returns original response.\n\n**How it works server-side:**\n1. Request arrives with key. Server checks store (DB/Redis).\n2. Key unseen: server records key as \"in progress\", executes charge, saves response with key.\n3. Key seen and completed: server returns saved response (same status, same body).\n4. Key seen and still in progress: server returns `409 Conflict` or similar, so client retries later.\n5. Same key with different request body: server rejects with error, since key misuse indicates client bug.\n6. Keys expire after window (Stripe uses 24h).\n\n**Client rules:**\n- Generate key once per logical operation, before first attempt.\n- Reuse same key on every retry of that operation.\n- New operation gets new key.\n\n```http\nPOST /v1/charges\nIdempotency-Key: 3f1e2a7c-9b4d-4c1e-8a2f-6d5e0b7c9a11\nContent-Type: application/json\n\n{\"amount\": 5000, \"currency\": \"usd\", \"source\": \"tok_visa\"}\n```\n\n**Why not rely on HTTP semantics:** `GET`/`PUT`/`DELETE` are idempotent by spec. `POST` (create charge) is not. Key gives `POST` exactly-once *effect* with at-least-once *delivery*.\n\nUsed by Stripe, Adyen, PayPal, Square, and many others. Same pattern fits any non-repeatable side effect: sending emails, creating orders, transferring funds.",
+ "usage": {
+  "input": 2,
+  "output": 691,
+  "cacheRead": 2700,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3393,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4776,
+ "secs": 8.5
+}

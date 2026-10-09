@@ -1,0 +1,18 @@
+{
+ "arm": "caveman",
+ "pid": "sqlite-vs-pg",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "busy_timeout=5000 waits up to five seconds for certain lock conflicts; it does not guarantee prevention of 'database is locked' errors, even under light contention.",
+   "Using an ORM or query builder does not guarantee a cheap migration to Postgres; schema, data types, SQL behavior, and application assumptions can still require substantial changes."
+  ]
+ }
+}

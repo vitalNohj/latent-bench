@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "git-undo",
+ "sample": 0,
+ "ok": true,
+ "text": "```bash\ngit reset --soft HEAD~1\n```\n\nCommit gone. Changes stay **staged**.\n\nWant them **unstaged** instead:\n\n```bash\ngit reset HEAD~1\n```\n\n(`--mixed` default. Changes stay in working tree, unstaged.)\n\nAlready pushed? Rewriting history break others' clones. Use revert instead:\n\n```bash\ngit revert HEAD\n```\n\nCreates new commit that undoes last one. Keeps history intact. Note: `git revert` does not leave changes in working tree. It undoes them.\n\nOops recovery: `git reflog` shows old commit hash. Run `git reset --soft <hash>` to restore it.",
+ "usage": {
+  "input": 2,
+  "output": 273,
+  "cacheRead": 0,
+  "cacheWrite": 2698,
+  "reasoning": 0,
+  "totalTokens": 2973,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4770,
+ "secs": 4.6
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "sqlite-vs-pg",
+ "sample": 1,
+ "ok": true,
+ "text": "**SQLite.** 20 users, one server: far below its limits.\n\n**Why SQLite fits:**\n- Zero ops. No daemon, no auth, no tuning. DB is one file.\n- Backup simple: `sqlite3 app.db \".backup backup.db\"` or Litestream for continuous replication to S3.\n- Fast. In-process reads, no network hop.\n- Handles thousands of writes/sec with WAL. 20 users won't come close.\n\n**Setup that matters:**\n```sql\nPRAGMA journal_mode = WAL;\nPRAGMA busy_timeout = 5000;\nPRAGMA synchronous = NORMAL;\nPRAGMA foreign_keys = ON;\n```\nWithout WAL plus `busy_timeout`, concurrent writes throw `database is locked`.\n\n**Pick Postgres instead if:**\n- Multiple app servers or containers need same DB, now or soon.\n- Need features SQLite lacks or does weakly: `LISTEN/NOTIFY`, row-level security, rich types (arrays, ranges), strong JSONB indexing, PostGIS.\n- Long write transactions or heavy concurrent writes. SQLite allows one writer at a time.\n- Team already runs managed Postgres. Then marginal cost is near zero.\n- BI tools or analysts need direct network access to DB.\n\n**Hedge:** use ORM or query builder (Drizzle, SQLAlchemy, Prisma) and avoid dialect-specific SQL. Migrating later stays cheap.\n\nDefault: SQLite plus WAL plus Litestream. Revisit if second server appears.",
+ "usage": {
+  "input": 2,
+  "output": 569,
+  "cacheRead": 2705,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3276,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4779,
+ "secs": 7.0
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "git-undo",
+ "sample": 0,
+ "ok": true,
+ "text": "`git reset --soft HEAD~1` undoes the last commit and keeps its changes staged.\n\n```\ngit reset --soft HEAD~1\n```\n\nvariants:\n- `git reset HEAD~1` keeps the changes unstaged (`--mixed`, the default)\n- `git commit --amend` edits the last commit instead of undoing it, if you only need to fix the message or add files\n- only commit in the repo → `HEAD~1` does not exist; use `git update-ref -d HEAD`\n\nIf the commit is already pushed, resetting rewrites shared history, and pushing afterward requires `--force`, which can break teammates' branches. On a shared branch, use `git revert HEAD` instead. It adds a new commit that undoes the last one and leaves history intact.\n\nrecover: if you reset by mistake, `git reflog` shows the old commit hash; `git reset --hard <hash>` restores it.",
+ "usage": {
+  "input": 2,
+  "output": 443,
+  "cacheRead": 0,
+  "cacheWrite": 5372,
+  "reasoning": 0,
+  "totalTokens": 5817,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12076,
+ "secs": 14.2
+}

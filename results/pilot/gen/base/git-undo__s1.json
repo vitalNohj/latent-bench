@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "git-undo",
+ "sample": 1,
+ "ok": true,
+ "text": "```bash\ngit reset --soft HEAD~1\n```\n\nThis undoes the last commit and leaves its changes **staged**.\n\nVariants:\n- `git reset HEAD~1` (same as `--mixed`): undoes the commit and leaves the changes **unstaged** in your working directory.\n- `git reset --hard HEAD~1`: **discards** the changes entirely. Avoid this if you want to keep your work.\n\nIf you've already pushed the commit, prefer `git revert HEAD`. It creates a new commit that undoes the old one without rewriting history. Otherwise you'd need to force-push after the reset.",
+ "usage": {
+  "input": 2,
+  "output": 241,
+  "cacheRead": 806,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1049,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 53,
+ "secs": 3.6
+}

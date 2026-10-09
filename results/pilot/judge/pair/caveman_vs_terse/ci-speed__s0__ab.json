@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "ci-speed",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A is more technically accurate and actionable, emphasizing profiling and cache determinism, while B misleadingly presents pytest-xdist and Go’s -p as cross-runner sharding and implies remote caching guarantees no rebuilds or retests."
+ }
+}

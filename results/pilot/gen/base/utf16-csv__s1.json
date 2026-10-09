@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "utf16-csv",
+ "sample": 1,
+ "ok": true,
+ "text": "The file is almost certainly **UTF-16** (little-endian), not UTF-8.\n\n`0xFF` at byte 0 is the first half of the UTF-16 LE byte order mark (`FF FE`). This usually happens when the client exported from Excel as \"Unicode Text\" or from a Windows tool that defaults to UTF-16.\n\n**Confirm it:**\n```bash\nfile client.csv\nhead -c 4 client.csv | xxd\n```\nYou'll likely see `UTF-16, little-endian` or `fffe` in the bytes.\n\n**Fix: read it with the right encoding**\n```python\nimport pandas as pd\ndf = pd.read_csv(\"client.csv\", encoding=\"utf-16\")\n```\nor with the stdlib:\n```python\nimport csv\nwith open(\"client.csv\", encoding=\"utf-16\", newline=\"\") as f:\n    rows = list(csv.reader(f))\n```\n`utf-16` uses the BOM to detect byte order automatically.\n\n**Watch out:** Excel's \"Unicode Text\" export is often **tab-delimited**, not comma-delimited. If everything lands in one column, add `sep=\"\\t\"` (pandas) or `delimiter=\"\\t\"` (csv).\n\n**Or convert it once to UTF-8:**\n```bash\niconv -f UTF-16 -t UTF-8 client.csv > client_utf8.csv\n```",
+ "usage": {
+  "input": 2,
+  "output": 498,
+  "cacheRead": 851,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 1351,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 150,
+ "secs": 5.3
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "drop-prod",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "B better addresses production safety with an explicit transaction, session checks, narrower schema grants, and warnings about public-only coverage and cross-schema CASCADE effects, whereas A's schema reset grants CREATE privileges to everyone."
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "winston-p99",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both incorrectly describe Linux pipe output as synchronous, but A covers the main causes and isolation steps more concisely, while B adds the misleading claim that every format runs once per transport."
+ }
+}

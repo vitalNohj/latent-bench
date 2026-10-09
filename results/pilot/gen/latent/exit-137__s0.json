@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "exit-137",
+ "sample": 0,
+ "ok": true,
+ "text": "137 = 128 + 9 → **SIGKILL**. Something outside the process killed it, so no crash trace is expected.\n\n[p=.6] OOMKilled: usage exceeds `resources.limits.memory` → cgroup OOM killer → 137\n- common at startup: JVM heap or Node `--max-old-space-size` sized for the node, not the limit; large caches or model loading\n- check: `kubectl describe pod <pod>` → `Last State: Terminated  Reason: OOMKilled`\n- fix: raise the limit | cap the heap below the limit (JVM `-XX:MaxRAMPercentage=75`)\n\n[p=.3] liveness probe kill: probe fails during slow startup → kubelet sends SIGTERM → grace period expires → SIGKILL → 137\n- check: Events show `Liveness probe failed`; Reason `Error`, not `OOMKilled`\n- fix: add a `startupProbe` | raise `initialDelaySeconds` and `failureThreshold`\n- often worse when the app ignores SIGTERM, e.g. a shell wrapper as PID 1 that does not forward signals\n\n[p=.1] node-level kill: node memory pressure → kernel OOM killer | eviction\n- check: `kubectl get events --field-selector involvedObject.name=<pod>`; `dmesg | grep -i oom` on the node; `kubectl describe node` → `MemoryPressure`\n\nempty logs:\n- plain `kubectl logs` shows the new container instance → use `kubectl logs <pod> --previous`\n- killed before the first flush → Python: `PYTHONUNBUFFERED=1`\n- multi-container pod → add `-c <container>`; also check init containers\n\nnext: `kubectl describe pod <pod>` → the `Last State` Reason plus Events separate the OOM case from the probe case",
+ "usage": {
+  "input": 2,
+  "output": 982,
+  "cacheRead": 0,
+  "cacheWrite": 5387,
+  "reasoning": 0,
+  "totalTokens": 6371,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12082,
+ "secs": 11.0
+}

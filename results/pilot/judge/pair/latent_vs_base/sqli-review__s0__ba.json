@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "sqli-review",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "B",
+  "reason": "Both identify the key vulnerability and provide a sound parameterized fix with relevant caveats, but B covers the same practical issues more concisely and more precisely describes the injection example."
+ }
+}

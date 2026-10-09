@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "flag-names",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both provide five relevant name ideas, but A offers shorter, more direct explanations and a clear recommendation, making it easier to scan and choose."
+ }
+}

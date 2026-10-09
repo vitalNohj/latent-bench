@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "race-simple",
+ "sample": 0,
+ "ok": true,
+ "text": "A race condition is a bug where the result depends on which of two things happens first, and the order isn't controlled.\n\nAnalogy: you and a roommate share a fridge. You both see there's no milk, and you both go buy some. Each of you checked, saw \"no milk,\" and acted, but neither knew the other was doing the same. Now you have two cartons. Nothing went wrong in either person's steps; the problem is that the checking and the acting weren't done as one locked unit.\n\nThe same thing in code, with two threads adding 1 to a shared counter that starts at 5:\n\n```\nThread A: read counter   → 5\nThread B: read counter   → 5\nThread A: write 5 + 1    → 6\nThread B: write 5 + 1    → 6\n```\n\nTwo increments ran, but the counter ends at 6, not 7. B's write overwrote A's because B read the old value before A finished.\n\nIt's called a \"race\" because the threads are effectively racing, and the outcome depends on who gets there first. That makes these bugs hard to catch. Most runs happen in a lucky order and work fine, then one run in a thousand interleaves badly and fails. Re-running often makes the failure disappear, which is why race conditions show up as \"flaky\" bugs.\n\nThe usual fix is to make the check-and-act step happen as a single unit that no one else can interrupt:\n\n- **Lock (mutex):** only one thread can hold it at a time, so the others wait their turn. In the analogy, you leave a note on the fridge saying \"I'm buying milk.\"\n- **Atomic operation:** the hardware or database does read-modify-write in one indivisible step, for example `UPDATE counter SET n = n + 1`.\n- **No shared state:** give each thread its own data so there's nothing to race over.\n\nThe rule of thumb: whenever two things can touch the same data at the same time and at least one of them changes it, you need one of these protections.",
+ "usage": {
+  "input": 2,
+  "output": 661,
+  "cacheRead": 0,
+  "cacheWrite": 5375,
+  "reasoning": 0,
+  "totalTokens": 6038,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12093,
+ "secs": 9.0
+}

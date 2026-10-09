@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "sqli-review",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B covers the essential vulnerability, parameterized fix, and practical review points more concisely, while avoiding A’s misleading claim that parameterization simply works by the driver escaping values."
+ }
+}

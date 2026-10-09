@@ -1,0 +1,18 @@
+{
+ "arm": "caveman",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "Node stdout writes to pipes are asynchronous on Linux/POSIX, not synchronous. TTY writes are synchronous on POSIX but asynchronous on Windows.",
+   "Winston's logger-level format pipeline runs once per log entry, not once per transport; only transport-specific format pipelines run separately per transport."
+  ]
+ }
+}

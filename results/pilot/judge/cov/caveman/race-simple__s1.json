@@ -1,0 +1,17 @@
+{
+ "arm": "caveman",
+ "pid": "race-simple",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1
+  ],
+  "errors": [
+   "The JavaScript example is misleading: ordinary JavaScript variables are not shared between worker threads, and this synchronous increment function runs to completion on a single thread. As written, two calls do not produce the claimed lost update; a JavaScript example would need shared memory or asynchronous interleaving."
+  ]
+ }
+}

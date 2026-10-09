@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "B",
+  "reason": "B covers the essential risks and safer storage pattern more clearly, while A misleadingly implies cookie-based cross-domain APIs require a shared site, although cross-site cookies can work with appropriate SameSite and CORS settings, subject to browser restrictions."
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "arm": "base",
+ "pid": "winston-p99",
+ "sample": 0,
+ "ok": true,
+ "text": "# Why per-request Winston logging can raise p99 from 80ms to 900ms\n\nA 10x jump in p99 (not p50) usually means the **event loop is getting blocked** or there are **GC pauses**. Logging on every request causes both in a few well-known ways. Most likely causes, roughly in order:\n\n## 1. Synchronous stdout writes (very common in containers)\nIn Node on Linux, `process.stdout` is **synchronous for files, TTYs, and pipes**. Docker and k8s log collectors read stdout through a pipe. When the collector falls behind, every `logger.info()` blocks the event loop until the write completes. One slow flush stalls every in-flight request, which shows up directly as tail latency.\n\n## 2. Logging huge objects\n```js\nlogger.info('request', { req })          // or res, or err with full context\n```\n- `req` and `res` reference sockets, parsers, and agents. Winston's `safe-stable-stringify` walks that whole graph on every call.\n- Large request or response bodies are expensive too.\n- This is CPU on the main thread plus lots of garbage, which leads to GC pauses and spikes.\n\n## 3. Expensive formats in the pipeline\n`format.prettyPrint()`, `colorize()`, `splat()`, `errors({ stack: true })`, and multiple `combine()` steps all run synchronously per log line. `prettyPrint` is especially slow because it uses `util.inspect`.\n\n## 4. Transport backpressure / memory growth\n- **File transport:** if the disk is slower than the log rate, Winston buffers in memory. Heap growth leads to longer major GCs, which hurts p99.\n- **HTTP transport** or similar: one outbound request per log line competes for sockets and the event loop.\n\n## 5. Work done before level filtering\n```js\nlogger.debug(`state: ${JSON.stringify(bigThing)}`)  // stringified even if debug is off\n```\n\n## Confirm it quickly\n```js\nconst { monitorEventLoopDelay } = require('perf_hooks');\nconst h = monitorEventLoopDelay({ resolution: 10 }); h.enable();\nsetInterval(() => { console.error('ELU p99 ms', h.percentile(99) / 1e6); h.reset(); }, 5000);\n```\nIf event-loop delay p99 is in the hundreds of ms, logging is blocking. Then profile:\n```\nnode --cpu-prof app.js        # or: npx clinic flame -- node app.js\n```\nLook for `stringify`, `inspect`, `writeSync`, or `format.transform` near the top of the profile.\n\n## Fixes\n- **Log a small flat object:** `{ method, url, status, durationMs, reqId }`, never `req` or `res`.\n- **Remove `prettyPrint` and `colorize` in prod.** Use `format.json()` only.\n- **Make writes async**, or switch to **pino** with `pino.destination({ sync: false })` or `pino.transport()`. Pino moves serialization and I/O off the hot path or into a worker thread and is usually 5–10x cheaper.\n- Guard expensive debug logs: `if (logger.isDebugEnabled()) ...`\n- Consider sampling success logs at high RPS and always logging errors and slow requests.\n\nIf you paste your logger config and the per-request log call, I can point to the exact culprit.",
+ "usage": {
+  "input": 2,
+  "output": 1556,
+  "cacheRead": 0,
+  "cacheWrite": 818,
+  "reasoning": 0,
+  "totalTokens": 2376,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 89,
+ "secs": 18.0
+}

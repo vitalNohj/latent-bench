@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "strict-mode",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A correctly emphasizes cleanup and warns against useRef run-once guards, while B confusingly recommends those guards for once-only work and groups POST requests with module-scope initialization, risking suppressed effects or unintended requests."
+ }
+}

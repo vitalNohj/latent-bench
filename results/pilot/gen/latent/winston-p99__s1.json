@@ -1,0 +1,27 @@
+{
+ "arm": "latent",
+ "pid": "winston-p99",
+ "sample": 1,
+ "ok": true,
+ "text": "Per-request logging runs on the event loop, which is single-threaded. Each log call takes CPU or blocks on I/O, so requests queue behind it. The tail gets the worst of it: p99 = requests stuck behind many log calls. [inferred: no code seen]\n\nRanked suspects:\n- [p=.4] sync stdout: Console transport + stdout piped to a file or pipe (Docker, k8s, pm2) on Linux → `process.stdout.write` is **synchronous** → every request blocks until the log line is flushed. A slow log collector makes it worse\n- [p=.3] serialization: logging `req`/`res` objects or bodies → `format.json()` + `splat` + `prettyPrint` walk large, deep objects (sockets, headers, buffers) → milliseconds of CPU per line, on the main thread\n- [p=.2] GC: big meta objects per request + File/HTTP transport buffering faster than it drains → heap grows → GC pauses → p99 spikes, p50 barely moves\n- [p=.1] expensive custom format: caller info via `new Error().stack`, `colorize` in prod, `level: 'debug'` in prod\n\nwhy p99 ≫ p50: event-loop stalls add up. Request N waits for the log work of N-1…N-k → queueing amplifies the tail.\n\ncheck:\n1. `perf_hooks.monitorEventLoopDelay()` → p99 delay ≈ 800 ms confirms main-thread blocking\n2. `node --cpu-prof` under load → time in `safe-stable-stringify`, `logform`, `writeSync` points to serialization or sync I/O\n3. transports + formats config: what fields per request, where stdout goes\n\nfix, by impact:\n- log scalar fields only: `method`, `url`, `status`, `ms`, `reqId`. Never raw `req`/`res`\n- drop `prettyPrint`/`colorize` in prod → plain `format.json()`\n- pino + `pino.transport()` > winston: serialization is cheap, and writes happen in a worker thread, off the event loop\n- sample success logs (e.g. 1–10%), keep all errors\n\nnext: paste the winston `createLogger` config + logging middleware → pins which suspect",
+ "usage": {
+  "input": 2,
+  "output": 1344,
+  "cacheRead": 5384,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 6730,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 12112,
+ "secs": 22.0
+}

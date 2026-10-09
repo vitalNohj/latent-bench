@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "terse"
+ ],
+ "pid": "git-undo",
+ "sample": 0,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives the needed staged and unstaged options clearly and warns against destructive resets, while B adds an unqualified `git reset --hard <hash>` recovery instruction that can discard current changes."
+ }
+}

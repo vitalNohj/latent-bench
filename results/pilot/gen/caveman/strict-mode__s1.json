@@ -1,0 +1,27 @@
+{
+ "arm": "caveman",
+ "pid": "strict-mode",
+ "sample": 1,
+ "ok": true,
+ "text": "Not bug. React `StrictMode` behavior (React 18+). Dev only: React mount component, run effects, run cleanup, run effects again. Purpose: catch effects missing cleanup. Prod build skip this.\n\nCheck `main.jsx` / `index.js`:\n\n```jsx\n<React.StrictMode>\n  <App />\n</React.StrictMode>\n```\n\nRight fix: make effect safe to run twice. Write cleanup, don't remove StrictMode.\n\nSubscription/listener:\n\n```jsx\nuseEffect(() => {\n  const onResize = () => setW(window.innerWidth);\n  window.addEventListener('resize', onResize);\n  return () => window.removeEventListener('resize', onResize);\n}, []);\n```\n\nFetch:\n\n```jsx\nuseEffect(() => {\n  const ctrl = new AbortController();\n  fetch(url, { signal: ctrl.signal })\n    .then(r => r.json())\n    .then(setData)\n    .catch(e => { if (e.name !== 'AbortError') throw e; });\n  return () => ctrl.abort();\n}, [url]);\n```\n\nOr ignore flag:\n\n```jsx\nuseEffect(() => {\n  let ignore = false;\n  fetchData().then(d => { if (!ignore) setData(d); });\n  return () => { ignore = true; };\n}, []);\n```\n\nTwo network requests in dev still show in Network tab. Normal. Only one result gets used.\n\nTrue one-time app init (analytics, SDK setup): move outside component, or guard with module-level flag:\n\n```jsx\nlet didInit = false;\nfunction App() {\n  useEffect(() => {\n    if (didInit) return;\n    didInit = true;\n    initSdk();\n  }, []);\n}\n```\n\nAvoid `useRef` guard hack for data fetch. It hide missing cleanup, and React may break it later (Offscreen/Activity reuse).\n\nRemoving `<StrictMode>` stop double run, but you lose dev checks. Not recommended.",
+ "usage": {
+  "input": 2,
+  "output": 741,
+  "cacheRead": 2706,
+  "cacheWrite": 0,
+  "reasoning": 0,
+  "totalTokens": 3449,
+  "cost": {
+   "input": 0,
+   "output": 0,
+   "cacheRead": 0,
+   "cacheWrite": 0,
+   "total": 0
+  }
+ },
+ "stop": "stop",
+ "err": null,
+ "model": "cc/claude-opus-5-5",
+ "user_chars": 4774,
+ "secs": 8.1
+}

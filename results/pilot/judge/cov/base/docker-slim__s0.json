@@ -1,0 +1,17 @@
+{
+ "arm": "base",
+ "pid": "docker-slim",
+ "sample": 0,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   0.5,
+   1,
+   1
+  ],
+  "errors": []
+ }
+}

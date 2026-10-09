@@ -1,0 +1,20 @@
+{
+ "arm": "caveman",
+ "pid": "exit-137",
+ "sample": 1,
+ "ok": true,
+ "judge": {
+  "scores": [
+   1,
+   1,
+   1,
+   1,
+   0.5
+  ],
+  "errors": [
+   "Modern JVMs generally detect container memory limits automatically; setting MaxRAMPercentage or Xmx is not required for container awareness.",
+   "A termination reason of Error with exit code 137 does not rule out an OOM kill; the runtime may not identify every OOM kill as OOMKilled.",
+   "A failed liveness probe does not necessarily produce exit code 137: termination normally starts with SIGTERM, with SIGKILL only if the container fails to exit within the grace period."
+  ]
+ }
+}

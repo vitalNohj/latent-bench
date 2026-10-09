@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "sqli-review",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "terse",
+ "judge": {
+  "winner": "A",
+  "reason": "Both identify the key vulnerability and provide parameterized-query fixes, but A delivers the essential review faster; B adds mostly optional detail without resolving the shared overstatement that stacked SQL statements necessarily execute."
+ }
+}

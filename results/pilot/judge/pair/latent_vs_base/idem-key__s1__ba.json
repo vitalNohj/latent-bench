@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "idem-key",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "base",
+ "judge": {
+  "winner": "A",
+  "reason": "A explains safe payment retries clearly without B’s misleading blanket claim that reusing a key across different charges silently swallows the second charge, when changed request parameters are typically rejected."
+ }
+}

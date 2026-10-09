@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "base"
+ ],
+ "pid": "race-simple",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A more accurately defines a race condition in terms of uncontrolled operation ordering rather than which worker finishes first, and explains the key failure and remedies without unnecessary code or formatting."
+ }
+}

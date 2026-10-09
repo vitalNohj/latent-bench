@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "caveman",
+  "terse"
+ ],
+ "pid": "jwt-storage",
+ "sample": 0,
+ "order": "ab",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives more actionable security guidance, including refresh-token rotation and logout revocation, and avoids B’s misleading suggestion that an app being internal alone makes localStorage acceptable."
+ }
+}

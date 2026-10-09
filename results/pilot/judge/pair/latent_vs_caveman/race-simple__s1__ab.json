@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "race-simple",
+ "sample": 1,
+ "order": "ab",
+ "ok": true,
+ "winner": "latent",
+ "judge": {
+  "winner": "A",
+  "reason": "A gives a clear, accurate explanation and example, while B misleadingly suggests ordinary JavaScript threads can share a local variable and interleave a synchronous increment function."
+ }
+}

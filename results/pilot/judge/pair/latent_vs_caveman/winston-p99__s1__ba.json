@@ -1,0 +1,15 @@
+{
+ "pair": [
+  "latent",
+  "caveman"
+ ],
+ "pid": "winston-p99",
+ "sample": 1,
+ "order": "ba",
+ "ok": true,
+ "winner": "caveman",
+ "judge": {
+  "winner": "A",
+  "reason": "Both incorrectly claim stdout pipes are synchronous on Linux (they are asynchronous), but B makes that error its leading diagnosis and adds unsupported probabilities and an overly definitive event-loop-delay test, while A offers broader, more actionable troubleshooting."
+ }
+}
